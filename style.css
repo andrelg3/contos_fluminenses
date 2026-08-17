@@ -705,8 +705,8 @@ code {
 }
 
 .modal-login {
-  max-width: 480px;
-  padding: 36px;
+  max-width: 420px;
+  padding: 22px 24px;
   text-align: center;
 }
 
@@ -755,62 +755,63 @@ code {
 
 /* Modal Headers */
 .modal-header {
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   border-bottom: 1px solid var(--border-subtle);
-  padding-bottom: 16px;
+  padding-bottom: 14px;
 }
 
 .modal-header h2 {
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   color: var(--primary-gold);
 }
 
 .modal-header p {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: var(--text-muted);
 }
 
 .modal-header-decor {
-  width: 60px;
-  height: 60px;
+  width: 46px;
+  height: 46px;
   background: rgba(212, 175, 55, 0.15);
   border: 1px solid var(--border-gold);
   border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 16px auto;
-  font-size: 1.8rem;
+  margin: 0 auto 10px auto;
+  font-size: 1.4rem;
 }
 
 .modal-title {
-  font-size: 1.6rem;
+  font-size: 1.3rem;
   color: var(--primary-gold);
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
 .modal-subtitle {
-  font-size: 0.92rem;
+  font-size: 0.82rem;
   color: var(--text-muted);
-  margin-bottom: 24px;
+  margin-bottom: 16px;
+  line-height: 1.4;
 }
 
 /* Forms */
 .login-form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 12px;
   text-align: left;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
 }
 
 .form-group label {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 600;
   color: var(--text-light);
 }
@@ -823,9 +824,9 @@ code {
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid var(--border-gold);
   border-radius: var(--radius-md);
-  padding: 12px 16px;
+  padding: 8px 14px;
   color: #fff;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-family: var(--font-sans);
   transition: var(--transition-fast);
 }
