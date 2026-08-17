@@ -340,31 +340,20 @@
         <div class="prof-header">
           <div>
             <h2>📊 Painel Avaliativo do Professor</h2>
-            <p>Relatório completo do rendimento dos estudantes da obra *Contos Fluminenses*.</p>
+            <p>Relatório completo do rendimento dos estudantes da obra <em>Contos Fluminenses</em>.</p>
           </div>
           <div class="prof-actions">
-            <button id="btnOpenGoogleSheets" class="btn btn-secondary" title="Abrir a planilha do Google no navegador">
-              📊 Abrir Planilha Google
+            <a href="https://docs.google.com/spreadsheets/d/1R4f6Oottbca3KVYBnS7h6V1S1ZUvphUCFM142Hgzb5w/edit?gid=0#gid=0" target="_blank" rel="noopener noreferrer" id="btnOpenGoogleSheets" class="btn btn-secondary btn-sm" title="Abrir a planilha do Google no navegador">
+              📊 Planilha Google ↗
+            </a>
+            <button id="btnSyncSheetsNow" class="btn btn-primary btn-sm" title="Atualizar e recarregar dados mais recentes da planilha">
+              🔃 Atualizar Dados
             </button>
-            <button id="btnSyncSheetsNow" class="btn btn-outline" title="Enviar e sincronizar dados dos alunos com a planilha">
-              🔄 Sincronizar Planilha
-            </button>
-            <button id="btnImportJSON" class="btn btn-outline" title="Importar arquivos de alunos coletados de outros computadores">
-              📂 Importar (Pendrive)
-            </button>
-            <button id="btnExportCSV" class="btn btn-secondary">
-              📥 Exportar Excel (CSV)
-            </button>
-            <button id="btnPrintReport" class="btn btn-primary">
-              🖨️ Imprimir Diário (PDF)
-            </button>
-            <button id="btnResetAllData" class="btn btn-outline" style="border-color:#dc3545; color:#dc3545;" title="Zerar todos os alunos e ranking local">
+            <button id="btnResetAllData" class="btn btn-outline btn-sm" style="border-color:#dc3545; color:#dc3545;" title="Zerar todos os alunos e ranking">
               🗑️ Zerar Ranking
             </button>
           </div>
         </div>
-        <!-- Hidden file input for import -->
-        <input type="file" id="inputImportJSON" accept=".json" class="hidden">
 
         <!-- Metric Cards -->
         <div class="prof-metrics-grid">

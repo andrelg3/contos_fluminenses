@@ -1739,10 +1739,37 @@
     });
   }
 
+  function refreshDataNow() {
+    if (DOM.btnSyncSheetsNow) {
+      DOM.btnSyncSheetsNow.disabled = true;
+      DOM.btnSyncSheetsNow.innerHTML = "⏳ Atualizando...";
+    }
+    showToast("🔃 Buscando dados mais recentes da Planilha Google...");
+
+    Promise.all([
+      fetchClassesFromGoogleSheets(),
+      fetchRankingFromGoogleSheets()
+    ]).then(() => {
+      renderProfAnalytics();
+      renderRankingModal();
+      if (DOM.btnSyncSheetsNow) {
+        DOM.btnSyncSheetsNow.disabled = false;
+        DOM.btnSyncSheetsNow.innerHTML = "🔃 Atualizar Dados";
+      }
+      showToast("✅ Dados pedagógicos e turmas atualizados com sucesso!", "success");
+    }).catch(() => {
+      if (DOM.btnSyncSheetsNow) {
+        DOM.btnSyncSheetsNow.disabled = false;
+        DOM.btnSyncSheetsNow.innerHTML = "🔃 Atualizar Dados";
+      }
+      showToast("Não foi possível atualizar dados agora.", "error");
+    });
+  }
+
   function resetAllData() {
     customConfirm(
       "Zerar Ranking e Alunos",
-      "Tem certeza que deseja zerar a lista de todos os alunos e o ranking? Esta ação apagará os dados locais salvos neste navegador.",
+      "Tem certeza que deseja zerar a lista de todos os alunos e o ranking? Esta ação apagará os dados locais salvos neste navegador para iniciar um novo período letivo.",
       () => {
         STATE.studentsList = [];
         STATE.currentUser = null;
@@ -2041,14 +2068,19 @@
 
     // Teacher Controls
     DOM.btnUnlockProf.addEventListener('click', unlockProfDashboard);
-    DOM.btnExportCSV.addEventListener('click', exportCSV);
-    DOM.btnPrintReport.addEventListener('click', () => window.print());
+
+    if (DOM.btnExportCSV) {
+      DOM.btnExportCSV.addEventListener('click', exportCSV);
+    }
+    if (DOM.btnPrintReport) {
+      DOM.btnPrintReport.addEventListener('click', () => window.print());
+    }
 
     if (DOM.btnOpenGoogleSheets) {
       DOM.btnOpenGoogleSheets.addEventListener('click', openGoogleSheetsLink);
     }
     if (DOM.btnSyncSheetsNow) {
-      DOM.btnSyncSheetsNow.addEventListener('click', () => syncAllStudentsNow(true));
+      DOM.btnSyncSheetsNow.addEventListener('click', refreshDataNow);
     }
 
     const btnProfLoginShortcut = document.getElementById('btnProfLoginShortcut');

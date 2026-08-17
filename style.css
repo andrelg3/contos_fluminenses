@@ -1404,7 +1404,18 @@ select.form-input {
 
 .prof-actions {
   display: flex;
+  align-items: center;
   gap: 10px;
+  flex-wrap: wrap;
+}
+
+.prof-actions .btn-sm {
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .prof-metrics-grid {
