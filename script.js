@@ -570,6 +570,8 @@
     toastContainer: document.getElementById('toastContainer')
   };
 
+  const DEFAULT_GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbwK1kroh1NTj8Yq43EJV0IBh99f9BHFgUYej3HFjEwd7iq0t4xYJa0B4MCWWAKB3dz9HQ/exec";
+
   /* ==========================================================================
      INITIALIZATION & STORAGE
      ========================================================================== */
@@ -578,6 +580,7 @@
     loadStudentsFromStorage();
     setupEventListeners();
     updateClassDropdowns();
+    fetchRankingFromGoogleSheets();
 
     if (STATE.currentUser) {
       closeModal(DOM.modalLogin);
@@ -704,7 +707,7 @@
   }
 
   function getGoogleSheetsURL() {
-    return localStorage.getItem('CF_GOOGLE_SHEETS_URL') || '';
+    return localStorage.getItem('CF_GOOGLE_SHEETS_URL') || DEFAULT_GOOGLE_SHEETS_URL;
   }
 
   function syncStudentToGoogleSheets(student) {
