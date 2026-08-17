@@ -570,7 +570,7 @@
     toastContainer: document.getElementById('toastContainer')
   };
 
-  const DEFAULT_GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycby6HMi3ffNPWm4eKo-wBfOFd42hLYK_-mNhKbJ_dDWzbjfg4KzTJ43qLbneaHMpOAsRnw/exec";
+  const DEFAULT_GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbyo2AYUDWmIjRgpD_bfoDdotMv5q1xmASzA3upMr_aaFs0QuAjPgDkx1ob8khCBINVzkw";
 
   /* ==========================================================================
      INITIALIZATION & STORAGE
