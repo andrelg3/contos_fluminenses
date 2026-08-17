@@ -1,0 +1,8 @@
+{
+  "name": "O Enigma dos Contos Fluminenses",
+  "description": "Jogo educativo interativo sobre a obra Contos Fluminenses de Machado de Assis com enigmas, análise textual e preparação para o vestibular.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
