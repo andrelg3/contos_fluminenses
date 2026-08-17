@@ -1,520 +1,438 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>O Enigma dos Contos Fluminenses — Gamificação Literária</title>
-
-  <!-- Typography: Cinzel, Playfair Display & Inter -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet" />
-
-  <!-- App Stylesheet -->
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>O Enigma dos Contos Fluminenses — Machado de Assis | Jogo Educativo & Vestibular</title>
+  <meta name="description" content="Jogo educativo interativo sobre o livro Contos Fluminenses de Machado de Assis. Resolva enigmas, analise a ironia machadiana e prepare-se para o vestibular.">
+  
+  <!-- Google Fonts: Cinzel, Playfair Display, Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Playfair+Display:ital,wght@0,600;0,800;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Main Styling -->
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- ==========================================================================
-       HEADER / NAVBAR
-       ========================================================================== -->
+  <!-- Top Navigation Header -->
   <header class="app-header">
     <div class="header-container">
       <div class="logo-group">
         <span class="logo-icon">📜</span>
         <div>
           <h1 class="app-title">Contos Fluminenses</h1>
-          <p class="app-subtitle">Investigação Literária Machado de Assis</p>
+          <p class="app-subtitle">Investigação Literária — Machado de Assis (1870)</p>
         </div>
       </div>
 
-      <!-- Player Profile Bar -->
-      <div class="player-bar" id="playerBar">
+      <!-- Player Info Bar (Shows when logged in) -->
+      <div id="playerBar" class="player-bar hidden">
         <div class="player-pill">
-          <span class="player-avatar" id="playerAvatar">🕵️‍♂️</span>
+          <span class="player-avatar">👤</span>
           <div class="player-details">
-            <span class="player-name" id="playerNameDisplay">Estudante</span>
-            <span class="player-class" id="playerClassDisplay">3º Ano EM</span>
+            <span id="headerPlayerName" class="player-name">Estudante</span>
+            <span id="headerPlayerClass" class="player-class">Turma --</span>
           </div>
         </div>
-
-        <div class="score-badge" id="btnHistory" title="Clique para ver o histórico de progresso">
-          <span>🏆</span>
-          <span id="playerXPDisplay">0 XP</span>
+        <div class="score-badge" title="Pontuação Total">
+          <span class="star-icon">⭐</span>
+          <span id="headerPlayerXP">0 XP</span>
         </div>
-
-        <div class="badge-count" id="btnAchievements" title="Ver Conquistas">
-          <span>🎖️</span>
-          <span id="playerBadgeCount">0/6</span>
+        <div class="badge-count" id="headerBadgeBtn" title="Ver Conquistas">
+          <span class="badge-icon">🏅</span>
+          <span id="headerBadgeCount">0/6</span>
         </div>
       </div>
 
-      <!-- Action Navigation Buttons -->
+      <!-- Action Nav Buttons -->
       <nav class="nav-actions">
-        <button class="btn btn-outline" id="btnOpenRanking">
-          📊 Ranking
+        <button id="btnRanking" class="btn btn-secondary">
+          <span class="icon">🏆</span> Ranking
         </button>
-        <button class="btn btn-accent" id="btnOpenTeacherArea">
-          🎓 Área do Professor
+        <button id="btnConquistas" class="btn btn-secondary">
+          <span class="icon">🎖️</span> Conquistas
         </button>
-        <button class="btn btn-secondary" id="btnChangeUser">
-          👤 Sair / Trocar
+        <button id="btnProfessor" class="btn btn-accent">
+          <span class="icon">👨‍🏫</span> Área do Professor
+        </button>
+        <button id="btnSwitchUser" class="btn btn-icon hidden" title="Trocar Aluno / Sair">
+          <span>🔄</span>
         </button>
       </nav>
     </div>
   </header>
 
-  <!-- ==========================================================================
-       HERO BANNER
-       ========================================================================== -->
+  <!-- Hero Banner -->
   <section class="hero-section">
     <div class="hero-overlay"></div>
     <div class="hero-content">
-      <span class="hero-tag">LITERATURA GAMIFICADA • RIO DE JANEIRO (1870)</span>
-      <h2 class="hero-title">Decifre as Tramas de Machado de Assis</h2>
+      <span class="hero-tag">PREPARAÇÃO PARA O VESTIBULAR & AVALIAÇÃO</span>
+      <h2 class="hero-title">Decifre o Rio Imperial de Machado de Assis</h2>
       <p class="hero-desc">
-        Assuma o papel de um investigador literário no Rio de Janeiro do Século XIX. 
-        Analise pistas textuais, ordene trechos originais e resolva enigmas das obras que moldaram o Realismo brasileiro.
+        Explore os 7 contos da obra clássica de 1870 através de enigmas, reconstrução de cartas, análise da ironia machadiana e simulados no estilo ENEM, FUVEST e UNICAMP.
       </p>
-
       <div class="hero-stats">
         <div class="stat-item">
-          <span class="stat-number">07</span>
-          <span class="stat-label">Contos Investigativos</span>
+          <span class="stat-number">7</span>
+          <span class="stat-label">Contos Emblemáticos</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">21+</span>
+          <span class="stat-label">Enigmas & Puzzles</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">6</span>
+          <span class="stat-label">Conquistas Literárias</span>
         </div>
         <div class="stat-item">
           <span class="stat-number">100%</span>
-          <span class="stat-label">Fidelidade aos Textos</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-number">ENEM</span>
-          <span class="stat-label">& Vestibulares</span>
+          <span class="stat-label">Foco no Vestibular</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ==========================================================================
-       MAIN CONTENT: STORY GRID & BOSS
-       ========================================================================== -->
+  <!-- Main Container -->
   <main class="main-content">
-    <div class="section-header">
-      <div>
-        <h3 class="section-title">Contos Disponíveis</h3>
-        <p class="section-subtitle">Escolha um caso para iniciar a investigação e coletar evidências textuais.</p>
+    
+    <!-- Map & Story Selector Section -->
+    <section class="stories-section">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">📍 Mapa dos Contos (Rio de Janeiro - 1870)</h2>
+          <p class="section-subtitle">Escolha um conto abaixo para iniciar a investigação e resolver os enigmas.</p>
+        </div>
+        <div class="progress-bar-container">
+          <span class="progress-label">Progresso da Obra: <strong id="overallPercentText">0%</strong></span>
+          <div class="progress-track">
+            <div id="overallProgressBar" class="progress-fill" style="width: 0%"></div>
+          </div>
+        </div>
       </div>
 
-      <div class="progress-bar-container">
-        <span class="progress-label">Progresso Geral das Investigações: <strong id="progressPercentageText">0%</strong></span>
-        <div class="progress-track">
-          <div class="progress-fill" id="overallProgressBar" style="width: 0%;"></div>
-        </div>
+      <!-- Grid of Story Cards -->
+      <div class="story-grid" id="storyGrid">
+        <!-- Story cards will be rendered dynamically via JS -->
       </div>
-    </div>
+    </section>
 
-    <!-- Grid de Contos (Dinâmico via JS ou estático para estrutura) -->
-    <div class="story-grid" id="storyGrid">
-      <!-- Exemplo de Card 1: Missa do Galo -->
-      <article class="story-card" data-story-id="missa-do-galo">
-        <div class="story-card-img-wrapper">
-          <img src="assets/missa_galo.jpg" alt="Missa do Galo" class="story-card-img" onerror="this.src='https://placehold.co/600x400/1c1815/d4af37?text=Missa+do+Galo'" />
-          <span class="story-num-badge">CASO I</span>
-          <span class="story-status-badge status-pending" id="status-missa-do-galo">Pendente</span>
-        </div>
-        <div class="story-card-body">
-          <span class="story-card-location">📍 Rua do Lavradio, Rio de Janeiro</span>
-          <h4 class="story-card-title">Missa do Galo</h4>
-          <p class="story-card-desc">
-            Sedução velada, conversas à meia-luz e expectativas da véspera de Natal. Investigue os subentendidos entre Nogueira e Conceição.
-          </p>
-          <div class="story-card-tags">
-            <span class="story-tag-pill">Sedução</span>
-            <span class="story-tag-pill">Ambiguidade</span>
-            <span class="story-tag-pill">Narrador Onisciente</span>
-          </div>
-          <div class="story-card-footer">
-            <span class="story-xp-info">+150 XP</span>
-            <button class="btn btn-primary btn-play-story" data-story="missa-do-galo">
-              Iniciar Caso
-            </button>
-          </div>
-        </div>
-      </article>
-
-      <!-- Exemplo de Card 2: O Alienista -->
-      <article class="story-card" data-story-id="o-alienista">
-        <div class="story-card-img-wrapper">
-          <img src="assets/alienista.jpg" alt="O Alienista" class="story-card-img" onerror="this.src='https://placehold.co/600x400/1c1815/d4af37?text=O+Alienista'" />
-          <span class="story-num-badge">CASO II</span>
-          <span class="story-status-badge status-pending" id="status-o-alienista">Pendente</span>
-        </div>
-        <div class="story-card-body">
-          <span class="story-card-location">📍 Vila de Itaguaí</span>
-          <h4 class="story-card-title">O Alienista</h4>
-          <p class="story-card-desc">
-            A linha tênue entre a razão e a loucura na Casa Verde. Analise as teorias do Dr. Simão Bacamarte e o impacto científico.
-          </p>
-          <div class="story-card-tags">
-            <span class="story-tag-pill">Sátira Científica</span>
-            <span class="story-tag-pill">Ironia</span>
-            <span class="story-tag-pill">Psiquiatria</span>
-          </div>
-          <div class="story-card-footer">
-            <span class="story-xp-info">+200 XP</span>
-            <button class="btn btn-primary btn-play-story" data-story="o-alienista">
-              Iniciar Caso
-            </button>
-          </div>
-        </div>
-      </article>
-
-      <!-- Exemplo de Card 3: A Cartomante -->
-      <article class="story-card" data-story-id="a-cartomante">
-        <div class="story-card-img-wrapper">
-          <img src="assets/cartomante.jpg" alt="A Cartomante" class="story-card-img" onerror="this.src='https://placehold.co/600x400/1c1815/d4af37?text=A+Cartomante'" />
-          <span class="story-num-badge">CASO III</span>
-          <span class="story-status-badge status-pending" id="status-a-cartomante">Pendente</span>
-        </div>
-        <div class="story-card-body">
-          <span class="story-card-location">📍 Rua dos Barbonos</span>
-          <h4 class="story-card-title">A Cartomante</h4>
-          <p class="story-card-desc">
-            Trígonos amorosos, superstição e um desfecho trágico imprevisível. Decifre os dilemas de Camilo, Rita e Vilela.
-          </p>
-          <div class="story-card-tags">
-            <span class="story-tag-pill">Triângulo Amoroso</span>
-            <span class="story-tag-pill">Destino</span>
-            <span class="story-tag-pill">Clímax</span>
-          </div>
-          <div class="story-card-footer">
-            <span class="story-xp-info">+180 XP</span>
-            <button class="btn btn-primary btn-play-story" data-story="a-cartomante">
-              Iniciar Caso
-            </button>
-          </div>
-        </div>
-      </article>
-    </div>
-
-    <!-- Seção Desafio Final / Boss -->
+    <!-- Final Vestibular Challenge Banner -->
     <section class="boss-section">
       <div class="boss-card">
-        <div class="boss-icon">🏛️</div>
+        <div class="boss-icon">🎓</div>
         <div class="boss-info">
-          <span class="boss-badge">EXAME SUPREMO</span>
-          <h3 class="boss-title">O Tribunal de Machado de Assis</h3>
+          <span class="boss-badge">DESAFIO SUPREMO</span>
+          <h3 class="boss-title">Simulado Integrado de Vestibular</h3>
           <p class="boss-desc">
-            Um simulado integrado com questões inéditas no estilo ENEM/FUVEST testando sua capacidade analítica, domínio da ironia machadiana e contexto social do Império.
+            Teste final multidisciplinar reunindo questões de exames da FUVEST, UNICAMP e ENEM sobre a obra *Contos Fluminenses*. Ganhe bônus de XP e o selo "Gabarito Machadiano"!
           </p>
         </div>
-        <button class="btn btn-accent btn-large" id="btnStartBoss">
-          ⚡ Enfrentar Tribunal (+300 XP)
+        <button id="btnStartBoss" class="btn btn-primary btn-large">
+          ⚡ Iniciar Simulado Final
         </button>
       </div>
     </section>
+
   </main>
 
-  <!-- ==========================================================================
-       MODAL 1: LOGIN / IDENTIFICAÇÃO DO JOGADOR
-       ========================================================================== -->
-  <div class="modal hidden" id="modalLogin">
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <p>© 1870–2026 O Enigma dos Contos Fluminenses — Projeto Educativo de Literatura Brasileira.</p>
+      <p class="footer-subtext">Desenvolvido para alunos do Ensino Médio, Cursinhos Pré-Vestibulares e Avaliação de Desempenho Escolar.</p>
+    </div>
+  </footer>
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- 1. LOGIN / IDENTIFICATION MODAL -->
+  <div id="modalLogin" class="modal hidden">
     <div class="modal-backdrop"></div>
     <div class="modal-card modal-login">
-      <div class="modal-header-decor">🎩</div>
-      <h2 class="modal-title">Identificação do Investigador</h2>
-      <p class="modal-subtitle">Informe seus dados para registrar sua pontuação e acompanhar seu progresso de aprendizagem.</p>
+      <div class="modal-header-decor">
+        <span class="decor-seal">📜</span>
+      </div>
+      <h2 class="modal-title">Identificação do Estudante</h2>
+      <p class="modal-subtitle">Digite seu nome e turma para iniciar a jornada pelos *Contos Fluminenses* e registrar seu desempenho para o professor.</p>
 
-      <form id="loginForm" class="login-form">
+      <form id="formLogin" class="login-form">
         <div class="form-group">
-          <label for="inputPlayerName">Seu Nome Completo / Apelido <span class="required">*</span></label>
-          <input type="text" id="inputPlayerName" class="form-input" placeholder="Ex: Machado de Alencar" required />
+          <label for="inputStudentName">Nome Completo do Aluno <span class="required">*</span></label>
+          <input type="text" id="inputStudentName" class="form-input" placeholder="Ex: Maria Clara da Silva" required autocomplete="name">
         </div>
 
         <div class="form-group">
-          <label for="selectPlayerClass">Turma / Série <span class="required">*</span></label>
-          <select id="selectPlayerClass" class="form-input" required>
-            <option value="">Selecione a turma...</option>
-            <option value="3º Ano EM A">3º Ano EM A</option>
-            <option value="3º Ano EM B">3º Ano EM B</option>
-            <option value="2º Ano EM A">2º Ano EM A</option>
-            <option value="Outro / Estudo Livre">Outro / Estudo Livre</option>
+          <label for="inputStudentClass">Turma / Ano Escolar <span class="required">*</span></label>
+          <select id="inputStudentClass" class="form-input" required>
+            <option value="" disabled selected>Selecione a sua turma...</option>
+            <option value="3º Ano A">3º Ano A - Ensino Médio</option>
+            <option value="3º Ano B">3º Ano B - Ensino Médio</option>
+            <option value="3º Ano C">3º Ano C - Ensino Médio</option>
+            <option value="1º/2º Ano">1º ou 2º Ano - Ensino Médio</option>
+            <option value="Pré-Vestibular">Extensivo / Pré-Vestibular</option>
           </select>
         </div>
 
-        <button type="submit" class="btn btn-primary btn-large btn-block">
-          Entrar no Jogo ➔
-        </button>
+        <div class="form-actions" style="display:flex; flex-direction:column; gap:10px;">
+          <button type="submit" class="btn btn-primary btn-block">
+            🚀 Entrar e Iniciar Enigmas
+          </button>
+          <button type="button" id="btnProfLoginShortcut" class="btn btn-accent btn-block">
+            👨‍🏫 Acesso Rápido do Professor
+          </button>
+        </div>
       </form>
     </div>
   </div>
 
-  <!-- ==========================================================================
-       MODAL 2: GAMEPLAY (INVESTIGAÇÃO DO CONTO / PUZZLE)
-       ========================================================================== -->
-  <div class="modal hidden" id="modalGame">
-    <div class="modal-backdrop"></div>
+  <!-- 2. GAMEPLAY MODAL (STORY ENIGMA PLAYER) -->
+  <div id="modalGame" class="modal hidden">
+    <div class="modal-backdrop" id="gameBackdrop"></div>
     <div class="modal-card modal-game-large">
       <button class="modal-close" id="btnCloseGame">&times;</button>
-
-      <header class="game-header">
+      
+      <!-- Story Header -->
+      <div class="game-header">
         <div class="game-header-title">
-          <span class="story-tag" id="gameStoryTag">CASO I</span>
-          <h3 class="game-title" id="gameStoryTitle">Missa do Galo</h3>
-          <span class="game-location" id="gameStoryLocation">📍 Rio de Janeiro, 1899</span>
+          <span id="gameStoryNumber" class="story-tag">Conto 1</span>
+          <h2 id="gameStoryTitle" class="game-title">Miss Dollar</h2>
+          <span id="gameStoryLocation" class="game-location">📍 Botafogo, Rio de Janeiro</span>
         </div>
-
         <div class="game-stepper" id="gameStepper">
-          <span class="step-pill active">1. Fragmentos</span>
-          <span class="step-pill">2. Análise Preditiva</span>
-          <span class="step-pill">3. Exame Literário</span>
+          <div class="step-pill active" id="stepPill1">1. Contexto</div>
+          <div class="step-pill" id="stepPill2">2. O Enigma</div>
+          <div class="step-pill" id="stepPill3">3. Análise Oculta</div>
+          <div class="step-pill" id="stepPill4">4. Vestibular</div>
         </div>
-      </header>
-
-      <div class="game-body" id="gameBodyContent">
-        <!-- O conteúdo das fases/slides é renderizado dinamicamente via JS -->
       </div>
 
-      <footer class="game-footer">
-        <button class="btn btn-secondary" id="btnPrevStep">⬅️ Voltar</button>
+      <!-- Game Body Content -->
+      <div class="game-body" id="gameBody">
+        <!-- Content will be rendered dynamically via script.js -->
+      </div>
+
+      <!-- Game Footer Controls -->
+      <div class="game-footer">
+        <button id="btnHintGame" class="btn btn-outline">
+          💡 Pedir Dica (-50 XP)
+        </button>
         <div class="game-footer-right">
-          <button class="btn btn-outline" id="btnHint">💡 Pedir Pista (-10 XP)</button>
-          <button class="btn btn-primary" id="btnNextStep">Avançar ➔</button>
+          <button id="btnPrevGame" class="btn btn-secondary hidden">Voltar</button>
+          <button id="btnNextGame" class="btn btn-primary">Avançar &rarr;</button>
         </div>
-      </footer>
+      </div>
     </div>
   </div>
 
-  <!-- ==========================================================================
-       MODAL 3: RANKING & LEADERBOARD
-       ========================================================================== -->
-  <div class="modal hidden" id="modalRanking">
-    <div class="modal-backdrop"></div>
-    <div class="modal-card modal-large">
+  <!-- 3. RANKING MODAL -->
+  <div id="modalRanking" class="modal hidden">
+    <div class="modal-backdrop" id="rankingBackdrop"></div>
+    <div class="modal-card modal-medium">
       <button class="modal-close" id="btnCloseRanking">&times;</button>
-
       <div class="modal-header">
-        <h2>📊 Quadro de Honra da Academia</h2>
-        <p>Ranking atualizado de investigadores baseado no acúmulo de XP e precisão dos enigmas.</p>
+        <h2>🏆 Ranking de Jogadores</h2>
+        <p>Classificação dos estudantes por pontuação acumulada e enigmas desvendados.</p>
       </div>
 
+      <!-- Ranking Filter -->
       <div class="ranking-filter-bar">
-        <label for="filterRankingClass">Filtrar por Turma:</label>
-        <select id="filterRankingClass" class="form-input form-input-sm">
+        <label for="selectFilterClass">Filtrar por Turma:</label>
+        <select id="selectFilterClass" class="form-input form-input-sm">
           <option value="ALL">Todas as Turmas</option>
-          <option value="3º Ano EM A">3º Ano EM A</option>
-          <option value="3º Ano EM B">3º Ano EM B</option>
+          <option value="3º Ano A">3º Ano A</option>
+          <option value="3º Ano B">3º Ano B</option>
+          <option value="3º Ano C">3º Ano C</option>
+          <option value="1º/2º Ano">1º/2º Ano</option>
+          <option value="Pré-Vestibular">Pré-Vestibular</option>
         </select>
       </div>
 
-      <!-- Pódio para os 3 primeiros -->
-      <div class="podium-container">
-        <div class="podium-item podium-item-2">
-          <span class="podium-avatar">🥈</span>
-          <span class="podium-name" id="podium2Name">-</span>
-          <span class="podium-score" id="podium2XP">0 XP</span>
-          <div class="podium-pillar pillar-2">2º</div>
-        </div>
-
-        <div class="podium-item podium-item-1">
-          <span class="podium-avatar">👑</span>
-          <span class="podium-name" id="podium1Name">-</span>
-          <span class="podium-score" id="podium1XP">0 XP</span>
-          <div class="podium-pillar pillar-1">1º</div>
-        </div>
-
-        <div class="podium-item podium-item-3">
-          <span class="podium-avatar">🥉</span>
-          <span class="podium-name" id="podium3Name">-</span>
-          <span class="podium-score" id="podium3XP">0 XP</span>
-          <div class="podium-pillar pillar-3">3º</div>
-        </div>
+      <!-- Podium Top 3 -->
+      <div class="podium-container" id="podiumContainer">
+        <!-- Top 3 dynamically built -->
       </div>
 
-      <!-- Tabela do Ranking -->
+      <!-- Ranking Table -->
       <div class="table-responsive">
         <table class="ranking-table">
           <thead>
             <tr>
-              <th>Posição</th>
-              <th>Investigador</th>
+              <th>Pos.</th>
+              <th>Estudante</th>
               <th>Turma</th>
-              <th>Casos Concluídos</th>
               <th>XP Total</th>
+              <th>Contos Concluídos</th>
+              <th>Desempenho</th>
             </tr>
           </thead>
           <tbody id="rankingTableBody">
-            <!-- Linhas geradas por script -->
+            <!-- Dynamic rows -->
           </tbody>
         </table>
       </div>
     </div>
   </div>
 
-  <!-- ==========================================================================
-       MODAL 4: MINHAS CONQUISTAS / MEDALHAS
-       ========================================================================== -->
-  <div class="modal hidden" id="modalAchievements">
-    <div class="modal-backdrop"></div>
+  <!-- 4. ACHIEVEMENTS (CONQUISTAS) MODAL -->
+  <div id="modalConquistas" class="modal hidden">
+    <div class="modal-backdrop" id="conquistasBackdrop"></div>
     <div class="modal-card modal-medium">
-      <button class="modal-close" id="btnCloseAchievements">&times;</button>
-
+      <button class="modal-close" id="btnCloseConquistas">&times;</button>
       <div class="modal-header">
-        <h2>🎖️ Suas Conquistas Literárias</h2>
-        <p>Desbloqueie insígnias explorando detalhadamente as nuances das obras machadianas.</p>
+        <h2>🎖️ Conquistas & Emblemas</h2>
+        <p>Alcance objetivos especiais durante a exploração dos *Contos Fluminenses* para desbloquear medalhas exclusivas.</p>
       </div>
 
       <div class="achievements-grid" id="achievementsGrid">
-        <div class="achievement-card unlocked">
-          <span class="achievement-icon">🔍</span>
-          <div class="achievement-info">
-            <h4>Primeiro Passo</h4>
-            <p>Completou a primeira investigação textual com sucesso.</p>
-            <span class="achievement-status">Desbloqueado</span>
-          </div>
-        </div>
-
-        <div class="achievement-card">
-          <span class="achievement-icon">🦅</span>
-          <div class="achievement-info">
-            <h4>Olho Crítico</h4>
-            <p>Respondeu corretamente a todas as análises preditivas na 1ª tentativa.</p>
-            <span class="achievement-status">Bloqueado</span>
-          </div>
-        </div>
-
-        <div class="achievement-card">
-          <span class="achievement-icon">🏛️</span>
-          <div class="achievement-info">
-            <h4>Membro da Academia</h4>
-            <p>Obteve aproveitamento superior a 80% no Tribunal de Machado de Assis.</p>
-            <span class="achievement-status">Bloqueado</span>
-          </div>
-        </div>
+        <!-- Achievements dynamically rendered -->
       </div>
     </div>
   </div>
 
-  <!-- ==========================================================================
-       MODAL 5: HISTÓRICO DE PROGRESSO E LINHA DO TEMPO
-       ========================================================================== -->
-  <div class="modal hidden" id="modalHistory">
-    <div class="modal-backdrop"></div>
+  <!-- 5. PROGRESS & XP HISTORY MODAL -->
+  <div id="modalHistory" class="modal hidden">
+    <div class="modal-backdrop" id="historyBackdrop"></div>
     <div class="modal-card modal-medium">
       <button class="modal-close" id="btnCloseHistory">&times;</button>
-
       <div class="modal-header">
-        <h2>📜 Registro de Atividades</h2>
-        <p>Linha do tempo das suas investigações e rendimento de XP.</p>
+        <h2>📜 Trilha de Progresso & XP</h2>
+        <p>Histórico detalhado de pontuações, conquistas e eventos de <strong id="historyStudentName" style="color: var(--primary-gold)"></strong>.</p>
       </div>
 
       <div class="history-summary-cards">
         <div class="history-summary-card">
-          <span class="history-summary-val" id="histTotalXP">0</span>
-          <span class="history-summary-lbl">XP Total Ganho</span>
+          <span class="history-summary-val" id="historyTotalXP">0 XP</span>
+          <span class="history-summary-lbl">XP Total Acumulado</span>
         </div>
         <div class="history-summary-card">
-          <span class="history-summary-val" id="histCompletedCount">0/3</span>
-          <span class="history-summary-lbl">Casos Solucionados</span>
+          <span class="history-summary-val" id="historyPerfectCount">0/7</span>
+          <span class="history-summary-lbl">Conquistas Perfeitas</span>
         </div>
       </div>
 
-      <div class="history-timeline" id="historyTimelineContainer">
-        <!-- Renderizado dinamicamente via JS -->
+      <div class="history-timeline" id="historyTimeline">
+        <!-- Timeline items dynamically rendered -->
       </div>
     </div>
   </div>
 
-  <!-- ==========================================================================
-       MODAL 6: PAINEL DO PROFESSOR (DASHBOARD & TURMAS)
-       ========================================================================== -->
-  <div class="modal hidden" id="modalTeacher">
-    <div class="modal-backdrop"></div>
+  <!-- 6. TEACHER DASHBOARD (ÁREA DO PROFESSOR) MODAL -->
+  <div id="modalProfessor" class="modal hidden">
+    <div class="modal-backdrop" id="professorBackdrop"></div>
     <div class="modal-card modal-large">
-      <button class="modal-close" id="btnCloseTeacher">&times;</button>
-
-      <!-- Bloqueio por senha -->
+      <button class="modal-close" id="btnCloseProfessor">&times;</button>
+      
+      <!-- Lock Screen view if not unlocked -->
       <div id="profLockScreen" class="prof-lock-screen">
         <span class="prof-lock-icon">🔒</span>
-        <h3>Acesso Restrito ao Docente</h3>
-        <p>Insira a senha cadastrada para acessar os relatórios pedagógicos e exportar os diários de classe.</p>
+        <h3>Área Restrita ao Professor</h3>
+        <p>Digite a senha de acesso pedagógico para visualizar as notas, gráficos e relatórios detalhados dos alunos.</p>
         <div class="prof-pass-group">
-          <input type="password" id="inputProfPassword" class="form-input" placeholder="Senha..." />
-          <button class="btn btn-primary" id="btnUnlockProf">Acessar</button>
+          <input type="password" id="inputProfPass" class="form-input" placeholder="Digite a senha de acesso">
+          <button id="btnUnlockProf" class="btn btn-primary">Acessar Painel</button>
         </div>
-        <span class="prof-hint-text">(Senha padrão de demonstração: <code>cotec2026</code>)</span>
       </div>
 
-      <!-- Conteúdo do Dashboard do Professor -->
-      <div id="profDashboardContent" class="hidden">
+      <!-- Dashboard View once unlocked -->
+      <div id="profDashboard" class="prof-dashboard hidden">
         <div class="prof-header">
           <div>
-            <h2>🎓 Painel Pedagógico & Diário de Classe</h2>
-            <p>Acompanhamento de desempenho, engajamento e métricas literárias dos alunos.</p>
+            <h2>📊 Painel Avaliativo do Professor</h2>
+            <p>Relatório completo do rendimento dos estudantes da obra *Contos Fluminenses*.</p>
           </div>
           <div class="prof-actions">
-            <button class="btn btn-outline" id="btnPrintProfReport">🖨️ Imprimir / PDF</button>
-            <button class="btn btn-secondary" id="btnExportCSV">📥 Exportar CSV</button>
+            <button id="btnConfigGoogleSheets" class="btn btn-outline" title="Configurar URL da Planilha do Google">
+              📊 Planilha Google
+            </button>
+            <button id="btnImportJSON" class="btn btn-outline" title="Importar arquivos de alunos coletados de outros computadores">
+              📂 Importar (Pendrive)
+            </button>
+            <button id="btnExportCSV" class="btn btn-secondary">
+              📥 Exportar Excel (CSV)
+            </button>
+            <button id="btnPrintReport" class="btn btn-primary">
+              🖨️ Imprimir Diário (PDF)
+            </button>
+            <button id="btnResetAllData" class="btn btn-outline" style="border-color:#dc3545; color:#dc3545;" title="Zerar todos os alunos e ranking local">
+              🗑️ Zerar Ranking
+            </button>
           </div>
         </div>
+        <!-- Hidden file input for import -->
+        <input type="file" id="inputImportJSON" accept=".json" class="hidden">
 
+        <!-- Metric Cards -->
         <div class="prof-metrics-grid">
           <div class="metric-card">
-            <span class="metric-label">Alunos Ativos</span>
-            <span class="metric-value" id="profMetricStudents">0</span>
+            <span class="metric-label">Total de Alunos Registrados</span>
+            <span class="metric-value" id="profMetricTotalStudents">0</span>
             <span class="metric-sub">Em todas as turmas</span>
           </div>
           <div class="metric-card">
-            <span class="metric-label">Média de XP</span>
-            <span class="metric-value" id="profMetricAvgXP">0</span>
-            <span class="metric-sub">Por estudante</span>
+            <span class="metric-label">Média Geral da Turma</span>
+            <span class="metric-value" id="profMetricAvgScore">0.0 / 10</span>
+            <span class="metric-sub">Conversão para nota pedagógica</span>
           </div>
           <div class="metric-card">
-            <span class="metric-label">Taxa de Conclusão</span>
+            <span class="metric-label">Contos Mais Desafiadores</span>
+            <span class="metric-value metric-sm" id="profMetricHardestStory">A Mulher de Preto</span>
+            <span class="metric-sub">Menor taxa de acerto no puzzle</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">Taxa de Conclusão Global</span>
             <span class="metric-value" id="profMetricCompletion">0%</span>
-            <span class="metric-sub">Contos solucionados</span>
+            <span class="metric-sub">Alunos com 7/7 contos</span>
           </div>
         </div>
 
-        <!-- Gerenciamento de Turmas -->
+        <!-- Student Performance Table -->
+        <div class="prof-table-section">
+          <h3>Detalhamento Individual dos Estudantes</h3>
+          <div class="table-responsive">
+            <table class="prof-table">
+              <thead>
+                <tr>
+                  <th>Nome do Aluno</th>
+                  <th>Turma</th>
+                  <th>Pontuação (XP)</th>
+                  <th>Nota Sugerida (0-10)</th>
+                  <th>Contos Concluídos</th>
+                  <th>Acerto Vestibular</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="profTableBody">
+                <!-- Rows populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Section: Gerenciamento de Turmas -->
         <div class="prof-classes-section">
-          <h3>Gestão de Turmas</h3>
+          <h3>🏫 Gerenciamento de Turmas</h3>
+          <p class="section-subtitle">Adicione ou remova as opções de turmas disponíveis no cadastro de alunos e nos filtros pedagógicos.</p>
           <div class="classes-mgmt-box">
-            <div class="add-class-form">
-              <input type="text" id="inputNewClassName" class="form-input form-input-sm" placeholder="Nome da nova turma (Ex: 3º B)..." />
-              <button class="btn btn-primary" id="btnAddClass">Adicionar Turma</button>
-            </div>
+            <form id="formAddClass" class="add-class-form">
+              <input type="text" id="inputNewClassName" class="form-input" placeholder="Ex: 3º Ano D ou Turma Extensiva 2026" required>
+              <button type="submit" class="btn btn-primary">➕ Adicionar Turma</button>
+            </form>
             <div class="classes-tags-list" id="classesTagsList">
-              <!-- Renderizado via JS -->
+              <!-- Active classes dynamically rendered via JS -->
             </div>
           </div>
-        </div>
-
-        <!-- Tabela do Professor -->
-        <div class="table-responsive" style="margin-top:24px;">
-          <table class="prof-table">
-            <thead>
-              <tr>
-                <th>Estudante</th>
-                <th>Turma</th>
-                <th>Casos Concluídos</th>
-                <th>Aproveitamento Nos Quizzes</th>
-                <th>XP Acumulado</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody id="profTableBody">
-              <!-- Renderizado via JS -->
-            </tbody>
-          </table>
         </div>
       </div>
+
     </div>
   </div>
 
-  <!-- Contêiner de Notificações / Toasts -->
-  <div class="toast-container" id="toastContainer"></div>
+  <!-- Toast Notification System -->
+  <div id="toastContainer" class="toast-container"></div>
 
-  <!-- Application Logic JS Script -->
-  <script src="app.js"></script>
+  <!-- Main JavaScript File -->
+  <script src="script.js"></script>
 </body>
 </html>
