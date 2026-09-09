@@ -162,70 +162,100 @@ code {
 .player-bar {
   display: flex;
   align-items: center;
-  gap: 12px;
-  background: rgba(0, 0, 0, 0.4);
-  padding: 6px 14px;
+  gap: 14px;
+  background: rgba(26, 22, 19, 0.85);
+  backdrop-filter: blur(8px);
+  padding: 6px 16px;
   border-radius: var(--radius-full);
   border: 1px solid var(--border-gold);
-  flex-shrink: 1;
-  min-width: 0;
+  box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .player-pill {
   display: flex;
   align-items: center;
-  gap: 8px;
-  min-width: 0;
+  gap: 10px;
+  flex-shrink: 0;
 }
 
 .player-avatar {
-  font-size: 1.2rem;
-  flex-shrink: 0;
+  font-size: 1.25rem;
+  line-height: 1;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
 }
 
 .player-details {
   display: flex;
   flex-direction: column;
-  max-width: 110px;
-  min-width: 0;
+  justify-content: center;
 }
 
 .player-name {
-  font-weight: 600;
-  font-size: 0.9rem;
+  font-weight: 700;
+  font-size: 0.95rem;
   color: var(--text-light);
-  line-height: 1.1;
+  line-height: 1.15;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  letter-spacing: 0.3px;
 }
 
 .player-class {
   font-size: 0.72rem;
   color: var(--primary-gold);
+  font-weight: 500;
+  line-height: 1.1;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-.score-badge, .badge-count {
+.player-divider {
+  display: inline-block;
+  width: 1px;
+  height: 20px;
+  background: rgba(212, 175, 55, 0.25);
+  flex-shrink: 0;
+}
+
+.player-stat-item {
   display: flex;
   align-items: center;
-  gap: 4px;
-  background: rgba(212, 175, 55, 0.15);
-  border: 1px solid var(--border-gold);
-  padding: 4px 10px;
-  border-radius: var(--radius-full);
+  gap: 6px;
+  font-size: 0.88rem;
   font-weight: 700;
-  font-size: 0.85rem;
   color: var(--primary-gold);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.player-stat-item .stat-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.player-clickable-stat {
   cursor: pointer;
+  padding: 3px 6px;
+  border-radius: var(--radius-sm);
   transition: var(--transition-fast);
 }
 
-.score-badge:hover, .badge-count:hover {
-  background: rgba(212, 175, 55, 0.25);
+.player-clickable-stat:hover {
+  background: rgba(212, 175, 55, 0.15);
+  color: var(--primary-gold-hover);
   transform: translateY(-1px);
+}
+
+/* Backwards compatibility for score-badge and badge-count */
+.score-badge, .badge-count {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: var(--primary-gold);
+  white-space: nowrap;
+  cursor: pointer;
 }
 
 /* Buttons */
@@ -1059,6 +1089,29 @@ select.form-input {
 .puzzle-fragment-item.selected {
   border-color: var(--primary-gold);
   background: rgba(212, 175, 55, 0.25);
+}
+
+.puzzle-fragment-item.puzzle-fragment-correct {
+  border-color: #28a745 !important;
+  background: rgba(40, 167, 69, 0.2) !important;
+  box-shadow: 0 0 14px rgba(40, 167, 69, 0.4);
+}
+
+.puzzle-fragment-item.puzzle-fragment-correct .fragment-text {
+  color: #e8f5e9;
+  font-weight: 500;
+}
+
+.puzzle-fragment-item.puzzle-fragment-incorrect {
+  border-color: #dc3545 !important;
+  background: rgba(220, 53, 69, 0.2) !important;
+  animation: puzzleShake 0.4s ease;
+}
+
+@keyframes puzzleShake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-4px); }
+  40%, 80% { transform: translateX(4px); }
 }
 
 .fragment-text {

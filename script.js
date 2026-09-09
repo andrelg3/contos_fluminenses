@@ -19,7 +19,7 @@
     activePuzzleState: null
   };
 
-  // Story Database (All 7 Stories + Images + Custom Puzzles + Vestibular Questions)
+  // Story Database (All 7 Stories + Dynamic Pools: 3 Puzzles, 3 Analyses, 3 Vestibular Questions each = 63 Challenges)
   const STORIES = [
     {
       id: "miss-dollar",
@@ -29,361 +29,1025 @@
       image: "assets/miss_dollar.jpg",
       tags: ["Ironia", "Interesse Social", "Narrador Dissimulado"],
       xpValue: 150,
-      summary: "Mendonça, um jovem cético de 36 anos, encontra a cadelinha 'Miss Dollar' perdida na rua. Ao devolvê-la à sua dona, a rica viúva Dona Margarida, tem início um jogo de sedução e segundas intenções.",
+      summary: "O Dr. Mendonça encontra na rua a cadelinha galga 'Miss Dollar' e a devolve sem aceitar recompensa à sua dona, D. Margarida. A viúva rica, traumatizada por um casamento anterior onde temia ser amada só por dinheiro, reluta diante da corte do médico, até que um episódio noturno com a tia D. Antônia sela o destino do casal.",
       
       step1Context: {
-        title: "O Cão Desaparecido e o Pugilismo Amoroso",
-        text: "Publicado em 1870, 'Miss Dollar' abre a coletânea apresentando um narrador machadiano extremamente consciente de seu leitor. O médico Dr. Mendonça jura não acreditar no amor por ter sido desiludido no passado. Porém, o destino coloca em seus braços a cadelinha de raça de Dona Margarida, desencadeando visitas frenéticas à casa da viúva rica. Seria afeição sincera ou interesse pecuniário?",
+        title: "O Cão Desaparecido e o Enigma do Amor Burguês",
+        text: "Publicado em 1870, 'Miss Dollar' abre a coletânea apresentando um narrador machadiano que desconstrói a expectativa romântica do leitor logo na abertura. O Dr. Mendonça devolve a cadelinha perdida à rica e reservada viúva D. Margarida sem exigir gratificação. Margarida, marcada pela desconfiança de que os homens só cobiçam sua fortuna, mantém-se esquiva, enquanto Mendonça tenta provar a pureza de seus sentimentos.",
         quote: "— Se esta cadela se chamasse de outro modo, não iria devolver. Mas 'Miss Dollar'... há um mistério nisso! E além do mais, a dona é viúva e rica!"
       },
 
-      step2Puzzle: {
-        instruction: "Reconstrua o anúncio de jornal e a ordem dos fatos que uniram Mendonça a Margarida:",
-        fragments: [
-          { id: "f1", text: "Mendonça encontra uma cadelinha perdida com coleira gravada 'Miss Dollar' e descobre o endereço da dona." },
-          { id: "f2", text: "Ele hesita em devolver, receoso de parecer caçador de dotes, mas decide entregar o animal pessoalmente." },
-          { id: "f3", text: "Dona Margarida o recebe com efusiva gratidão e o convida para tomar chá em sua residência em Botafogo." },
-          { id: "f4", text: "Mendonça passa a frequentar a casa diariamente sob o pretexto de perguntar pela saúde da cadela." }
-        ],
-        correctOrder: ["f1", "f2", "f3", "f4"],
-        hint: "Pense na progressão lógica: Encontro do cão -> Devolução hesitante -> Convite de agradecimento -> Frequência diária."
-      },
+      puzzlesPool: [
+        {
+          id: "puzzle_md_1",
+          variantLabel: "Variação A: O Encontro & Devolução",
+          instruction: "Reconstrua o encontro e a ordem dos fatos que uniram Mendonça a Margarida:",
+          fragments: [
+            { id: "f1", text: "Mendonça encontra uma cadelinha galga com coleira gravada 'Miss Dollar' e descobre o anúncio no jornal." },
+            { id: "f2", text: "Ele devolve o animal pessoalmente a Dona Margarida em Botafogo, recusando a recompensa oferecida." },
+            { id: "f3", text: "Margarida, traumatizada pelo primeiro marido, desconfia que Mendonça seja apenas outro caçador de dotes." },
+            { id: "f4", text: "Com o auxílio da tia D. Antônia e após visitas regulares, as barreiras de desconfiança dissolvem-se em matrimônio." }
+          ],
+          correctOrder: ["f1", "f2", "f3", "f4"],
+          hint: "Pense na progressão lógica: Encontro da cadela -> Devolução sem recompensa -> Desconfiança da viúva -> Matrimônio."
+        },
+        {
+          id: "puzzle_md_2",
+          variantLabel: "Variação B: O Ceticismo de Mendonça",
+          instruction: "Ordene as reflexões psicológicas de Dr. Mendonça ao longo de sua aproximação amorosa:",
+          fragments: [
+            { id: "f1", text: "Mendonça proclama-se imune ao amor após ter sofrido uma grande desilusão na juventude." },
+            { id: "f2", text: "Ao ver o luxo do palacete de Margarida, teme que a corte o julgue como homem interesseiro." },
+            { id: "f3", text: "Ele tenta se afastar de Botafogo para provar seu desinteresse pela fortuna da viúva." },
+            { id: "f4", text: "A ausência de Margarida provoca uma febre sentimental que desmonta todas as suas defesas racionais." }
+          ],
+          correctOrder: ["f1", "f2", "f3", "f4"],
+          hint: "Acompanhe a queda das defesas de Mendonça: Desilusão inicial -> Medo da opinião pública -> Tentativa de fuga -> Rendição afetiva."
+        },
+        {
+          id: "puzzle_md_3",
+          variantLabel: "Variação C: O Desfecho em Botafogo",
+          instruction: "Reconstitua os passos finais que selaram o enlace matrimonial entre Mendonça e Margarida:",
+          fragments: [
+            { id: "f1", text: "Mendonça entra na casa à noite para declarar-se e é surpreendido pela tia D. Antônia." },
+            { id: "f2", text: "Para evitar o escândalo e admitindo a sinceridade do médico, Margarida escreve que o casamento é inevitável." },
+            { id: "f3", text: "O enlace realiza-se e a desconfiança cede lugar a uma genuína e madura afeição conjugal." },
+            { id: "f4", text: "A cadela Miss Dollar é mais tarde atropelada por um veículo e sepultada com honras no jardim." }
+          ],
+          correctOrder: ["f1", "f2", "f3", "f4"],
+          hint: "Observe o desfecho: Entrada noturna -> Carta da inevitabilidade -> Casamento sincero -> Destino final da cadelinha."
+        }
+      ],
 
-      step3Analysis: {
-        title: "Desvendando a Máscara Social de Mendonça",
-        question: "Qual recurso o narrador usa para expor a ambiguidade moral das atitudes de Mendonça perante a fortuna de Margarida?",
-        options: [
-          { letter: "A", text: "Apresenta Mendonça como um herói romântico puro e desinteressado que ignora o dinheiro da viúva.", correct: false },
-          { letter: "B", text: "Usa a ironia ao mostrar que Mendonça busca convencer a si mesmo de sua pureza, enquanto suas ações visam ao prestígio social.", correct: true },
-          { letter: "C", text: "Demonstra que Margarida enganou Mendonça usando o cão para roubar seus pertences.", correct: false },
-          { letter: "D", text: "Revela no final que a cadela Miss Dollar era uma espiã treinada pela polícia da época.", correct: false }
-        ],
-        feedbackCorrect: "Exato! Machado de Assis utiliza o narrador onisciente e irônico para evidenciar o fosso entre o discurso virtuoso e o cálculo social inconsciente do personagem.",
-        feedbackIncorrect: "Atenção: Na literatura de Machado de Assis, a ironia desmonta a idealização romântica, mostrando como o interesse social molda os afetos."
-      },
+      analysesPool: [
+        {
+          id: "analysis_md_1",
+          variantLabel: "Análise 1: A Máscara Moral",
+          title: "Desvendando a Máscara Social de Mendonça",
+          question: "Qual recurso o narrador usa para expor a ambiguidade moral das atitudes de Mendonça perante a fortuna de Margarida?",
+          options: [
+            { letter: "A", text: "Apresenta Mendonça como um herói romântico puro e desinteressado que ignora o dinheiro da viúva.", correct: false },
+            { letter: "B", text: "Usa a ironia ao mostrar que Mendonça busca convencer a si mesmo de sua pureza, enquanto suas ações visam ao prestígio social.", correct: true },
+            { letter: "C", text: "Demonstra que Margarida enganou Mendonça usando o cão para roubar seus pertences.", correct: false },
+            { letter: "D", text: "Revela no final que a cadela Miss Dollar era uma espiã treinada pela polícia da época.", correct: false }
+          ],
+          feedbackCorrect: "Exato! Machado de Assis utiliza o narrador onisciente e irônico para evidenciar o fosso entre o discurso virtuoso e o cálculo social inconsciente do personagem.",
+          feedbackIncorrect: "Atenção: Na literatura de Machado de Assis, a ironia desmonta a idealização romântica, mostrando como o interesse social molda os afetos."
+        },
+        {
+          id: "analysis_md_2",
+          variantLabel: "Análise 2: A Metalinguagem Machadiana",
+          title: "A Construção do Narrador e o Diálogo com o Leitor",
+          question: "No primeiro capítulo de 'Miss Dollar', como o narrador quebra as convenções do romance romântico tradicional?",
+          options: [
+            { letter: "A", text: "Conversa diretamente com o leitor, ironizando a expectativa de que 'Miss Dollar' seja uma bela heroína inglesa quando é apenas uma cadela.", correct: true },
+            { letter: "B", text: "Usa versos rimados de cordel para narrar a vida dos escravizados no campo.", correct: false },
+            { letter: "C", text: "Recusa-se a dar nomes aos personagens para manter o mistério policial.", correct: false },
+            { letter: "D", text: "Afirma que a história foi ditada por um espírito do além em uma sessão espírita.", correct: false }
+          ],
+          feedbackCorrect: "Perfeito! A abertura metalinguística desconstrói a fantasia romântica dos leitores de folhetim, marca registrada da genialidade machadiana.",
+          feedbackIncorrect: "Revise o início do conto: o narrador brinca com a suposição do leitor sobre quem seria Miss Dollar, revelando ser um galgo de caça."
+        },
+        {
+          id: "analysis_md_3",
+          variantLabel: "Análise 3: O Jogo do Desinteresse",
+          title: "O Paradoxo do Orgulho Burguês",
+          question: "Por que Mendonça se desespera tanto ao ser chamado de 'caçador de dotes' pelos seus contemporâneos?",
+          options: [
+            { letter: "A", text: "Porque na sociedade imperial, a respeitabilidade pública dependia da aparência de independência moral e decoro.", correct: true },
+            { letter: "B", text: "Porque ele não tinha dinheiro sequer para pagar o aluguel do seu consultório.", correct: false },
+            { letter: "C", text: "Porque pretendia fugir do país para lutar na Guerra do Paraguai.", correct: false },
+            { letter: "D", text: "Porque acreditava que a nobreza de sangue proibia o casamento com viúvas ricas.", correct: false }
+          ],
+          feedbackCorrect: "Excelente! Para o burguês carioca, manter a fachada de honradez e altruísmo era essencial para validar sua posição de elite.",
+          feedbackIncorrect: "Atenção: O conflito de Mendonça é de ordem psicológica e de imagem pública: ele quer o casamento rico sem carregar o estigma de interesseiro."
+        }
+      ],
 
-      step4Vestibular: {
-        examTag: "FUVEST / UNICAMP - Análise Textual",
-        question: "No conto 'Miss Dollar', o nome da cadelinha possui um papel simbólico fundamental na narrativa. Assinale a alternativa correta sobre esse simbolismo:",
-        options: [
-          { letter: "A", text: "Ironiza a influência estrangeira no Brasil Imperial e sintetiza o interesse financeiro subjacente às relações amorosas da elite.", correct: true },
-          { letter: "B", text: "Trata-se de uma mera coincidência sem relevância para a crítica social machadiana.", correct: false },
-          { letter: "C", text: "Representa a devoção incondicional dos personagens à causa abolicionista do século XIX.", correct: false },
-          { letter: "D", text: "Simboliza a decadência das tradições religiosas no Rio de Janeiro vitoriano.", correct: false }
-        ],
-        explanation: "O nome 'Miss Dollar' (Senhorita Dólar) condensa a crítica machadiana ao casamento como transação comercial na sociedade burguesa carioca."
-      }
+      vestibularPool: [
+        {
+          id: "vest_md_1",
+          examTag: "FUVEST / UNICAMP - Simbolismo & Enredo",
+          question: "No conto 'Miss Dollar', o nome da cadelinha possui um papel simbólico fundamental na narrativa. Assinale a alternativa correta sobre esse simbolismo:",
+          options: [
+            { letter: "A", text: "Ironiza a influência estrangeira no Brasil Imperial e sintetiza o interesse financeiro subjacente às relações amorosas da elite.", correct: true },
+            { letter: "B", text: "Trata-se de uma mera coincidência sem relevância para a crítica social machadiana.", correct: false },
+            { letter: "C", text: "Representa a devoção incondicional dos personagens à causa abolicionista do século XIX.", correct: false },
+            { letter: "D", text: "Simboliza a decadência das tradições religiosas no Rio de Janeiro vitoriano.", correct: false }
+          ],
+          explanation: "O nome 'Miss Dollar' (Senhorita Dólar) condensa a crítica machadiana ao casamento como transação comercial na sociedade burguesa carioca."
+        },
+        {
+          id: "vest_md_2",
+          examTag: "ENEM - Metalinguagem e Foco Narrativo",
+          question: "Ao iniciar o conto interrogando o leitor sobre a identidade de 'Miss Dollar', o narrador machadiano manifesta um procedimento estético que:",
+          options: [
+            { letter: "A", text: "Desnuda os artifícios da ficção, convidando o leitor a uma postura crítica e participativa diante do texto.", correct: true },
+            { letter: "B", text: "Demonstra a inexperiência técnica do jovem autor em estruturar um enredo contínuo.", correct: false },
+            { letter: "C", text: "Imita as crônicas medievais portuguesas para resgatar o lirismo trovadoresco.", correct: false },
+            { letter: "D", text: "Busca ocultar a falta de criatividade literária através de digressões sem nexo.", correct: false }
+          ],
+          explanation: "A interlocução com o leitor é um recurso de modernidade em Machado, quebrando a ilusão de realidade e exigindo reflexão crítica."
+        },
+        {
+          id: "vest_md_3",
+          examTag: "UERJ - Sociologia da Literatura",
+          question: "Em relação ao ambiente social retratado em 'Miss Dollar', é correto afirmar que Machado de Assis:",
+          options: [
+            { letter: "A", text: "Mapeia a nascente burguesia do Rio de Janeiro, evidenciando o contraste entre os bairros nobres e a vida boêmia.", correct: true },
+            { letter: "B", text: "Ignora completamente a geografia do Rio de Janeiro, ambientando o conto em uma cidade imaginária.", correct: false },
+            { letter: "C", text: "Centra sua narrativa na dura rotina de operários das fábricas têxteis suburbanas.", correct: false },
+            { letter: "D", text: "Retrata exclusivamente as tribos indígenas do litoral fluminense.", correct: false }
+          ],
+          explanation: "Machado utiliza Botafogo, o Passeio Público e o Centro do Rio como cenários geográficos do poder e da circulação da elite imperial."
+        }
+      ],
+
+      get step2Puzzle() { return this.puzzlesPool[0]; },
+      get step3Analysis() { return this.analysesPool[0]; },
+      get step4Vestibular() { return this.vestibularPool[0]; }
     },
 
     {
       id: "luiz-soares",
-      title: "Luiz Soares",
+      title: "Luís Soares",
       numberText: "Conto II",
       location: "📍 Rua do Ouvidor, Rio de Janeiro",
       image: "assets/luiz_soares.jpg",
-      tags: ["Dândi", "Parasitismo Burguês", "Moralismo"],
+      tags: ["Dândi", "Parasitismo Burguês", "Casamento por Interesse"],
       xpValue: 150,
-      summary: "Luiz Soares torrou toda a sua herança com extravagâncias na Rua do Ouvidor. Falido, tenta recuperar o status casando-se com a prima Rita, mas descobre que a virtude não se compra.",
+      summary: "Luís Soares dissipa sua herança vivendo como dândi e tenta garantir seu sustento com a herança do tio, o Major Vilela. Para demonstrar regeneração, aceita um emprego público arranjado pelo major. Quando descobre que a prima Adelaide herdará trezentos contos de réis se casar com ele, simula paixão súbita, mas é desmascarado e rejeitado pela jovem.",
 
       step1Context: {
         title: "O Declínio do Dândi Carioca",
-        text: "Luiz Soares representa o típico jovem libertino do Rio de Janeiro Imperial: esbanjador, egoísta e fascinado pelo luxo da Rua do Ouvidor. Após gastar até o último tostão de sua fortuna, recorre ao tio respeitável pedindo a mão da prima Rita, pretendendo cobrir suas dívidas com o dote.",
-        quote: "— Devo duzentos contos de réis... O casamento com Rita é o único remédio capaz de estancar a sangria das minhas finanças!"
+        text: "Luís Soares personifica o dândi esbanjador da corte imperial: após dilapidar quase toda a fortuna paterna na Rua do Ouvidor, restando-lhe apenas seis contos em sua modesta habitação, passa a frequentar assiduamente a casa do tio, o Major Luís da Cunha Vilela, visando tornar-se seu herdeiro. Para simular regeneração moral, aceita um emprego público arranjado pelo tio. O plano sofre uma reviravolta quando é revelado que a prima Adelaide herdará trezentos contos de réis sob a condição de casar-se com ele.",
+        quote: "— Trezentos contos! É muito dinheiro para comprar um miserável."
       },
 
-      step2Puzzle: {
-        instruction: "Organize as cartas e promessas de Luiz Soares para desmascarar sua estratégia financeira:",
-        fragments: [
-          { id: "f1", text: "Luiz Soares esgota sua herança em orgias, roupas de alta costura e jogos na corte." },
-          { id: "f2", text: "Com a falência iminente, reaproxime-se da família sob o disfarce de parente regenerado." },
-          { id: "f3", text: "Pede a mão da prima Rita, que inicialmente o admira por sua elegância e civilidade." },
-          { id: "f4", text: "O tio descobre suas verdadeiras motivações escusas e o expulsa sumariamente de casa." }
-        ],
-        correctOrder: ["f1", "f2", "f3", "f4"],
-        hint: "A sequência mostra o ciclo do parasitismo: Gastança -> Disfarce de regeneração -> Proposta interesseira -> Desmascaramento."
-      },
+      puzzlesPool: [
+        {
+          id: "puzzle_ls_1",
+          variantLabel: "Variação A: O Cálculo do Parasita",
+          instruction: "Organize os passos da manobra interesseira de Luís Soares diante da fortuna de Adelaide:",
+          fragments: [
+            { id: "f1", text: "Luís Soares dissipa sua fortuna na Rua do Ouvidor e, com seis contos restantes em sua habitação, passa a cortejar a herança do tio Major Vilela." },
+            { id: "f2", text: "Mesmo sabendo do afeto sincero da prima Adelaide, Luís inicialmente desdenha o casamento, preferindo herdar tudo sozinho do tio." },
+            { id: "f3", text: "Revela-se a cláusula testamentária que lega trezentos contos a Adelaide sob a condição de desposar Luís, despertando nele súbito fervor amoroso." },
+            { id: "f4", text: "Adelaide percebe o mercantilismo vil do primo e o repele categoricamente antes de partir com a família para a Europa." }
+          ],
+          correctOrder: ["f1", "f2", "f3", "f4"],
+          hint: "A sequência mostra o cálculo: Gastança e aproximação do tio -> Desdém inicial por Adelaide -> Paixão repentina pelos 300 contos -> Rejeição humilhante por Adelaide."
+        },
+        {
+          id: "puzzle_ls_2",
+          variantLabel: "Variação B: A Dissimulação e a Ruptura",
+          instruction: "Ordene os momentos do confronto entre a farsa de Luís Soares e a dignidade de Adelaide:",
+          fragments: [
+            { id: "f1", text: "Para agradar ao Major Vilela e simular juízo, Luís Soares aceita o emprego público que o tio lhe consegue." },
+            { id: "f2", text: "Ao saber dos trezentos contos estipulados no testamento, Luís transforma sua indiferença em declarações inflamadas de amor." },
+            { id: "f3", text: "Adelaide descobre que a mudança repentina de comportamento do primo é movida unicamente pelo cálculo financeiro." },
+            { id: "f4", text: "Adelaide pronuncia a célebre recusa: 'Trezentos contos! É muito dinheiro para comprar um miserável.'" }
+          ],
+          correctOrder: ["f1", "f2", "f3", "f4"],
+          hint: "Siga o enredo: Emprego aceito por dissimulação -> Falsa paixão interesseira -> Descoberta da farsa por Adelaide -> Sentença e rompimento definitivo."
+        },
+        {
+          id: "puzzle_ls_3",
+          variantLabel: "Variação C: O Desfecho Trágico do Dândi",
+          instruction: "Reconstitua a derrocada definitiva e o fim trágico de Luís Soares após a rejeição da família:",
+          fragments: [
+            { id: "f1", text: "Adelaide e o Major Vilela partem para a Europa, deixando Luís Soares isolado e sem recursos no Rio de Janeiro." },
+            { id: "f2", text: "Com seus últimos seis contos esgotados e as portas fechadas na alta sociedade, Luís vê desmoronar sua farsa de dândi." },
+            { id: "f3", text: "Incapaz de aceitar a pobreza, o trabalho ou o vexame público da decadência social, Luís sucumbe ao desespero." },
+            { id: "f4", text: "Sozinho em seu quarto, Luís Soares põe fim à própria vida com um tiro de pistola." }
+          ],
+          correctOrder: ["f1", "f2", "f3", "f4"],
+          hint: "A derrocada fatal: Partida da família para a Europa -> Insolvência e isolamento -> Desespero moral -> Suicídio por arma de fogo."
+        }
+      ],
 
-      step3Analysis: {
-        title: "Análise da Hipocrisia e Parasitismo Social",
-        question: "Qual o traço de caráter que Machado de Assis mais evidencia e critica na figura de Luiz Soares?",
-        options: [
-          { letter: "A", text: "A ingenuidade diante dos golpes de comerciantes da Rua do Ouvidor.", correct: false },
-          { letter: "B", text: "O parasitismo e a instrumentalização dos laços afetivos em prol da subsistência fútil.", correct: true },
-          { letter: "C", text: "O fervor religioso reprimido pelo ambiente laico da capital.", correct: false },
-          { letter: "D", text: "O patriotismo exagerado durante os conflitos de fronteira.", correct: false }
-        ],
-        feedbackCorrect: "Perfeito! Machado ridiculariza o jovem aristocrata improdutivo que enxerga o casamento e a família apenas como tábua de salvação financeira.",
-        feedbackIncorrect: "Revise a obra: Luiz Soares não é ingênuo; ele tenta conscientemente usar a prima e o tio para financiar seu estilo de vida esbanjador."
-      },
+      analysesPool: [
+        {
+          id: "analysis_ls_1",
+          variantLabel: "Análise 1: O Parasitismo Social",
+          title: "Análise da Hipocrisia e Parasitismo Social",
+          question: "Qual o traço de caráter que Machado de Assis mais evidencia e critica na figura de Luís Soares?",
+          options: [
+            { letter: "A", text: "A ingenuidade diante dos golpes de comerciantes da Rua do Ouvidor.", correct: false },
+            { letter: "B", text: "O parasitismo e a instrumentalização dos laços afetivos e familiares em prol da subsistência fútil.", correct: true },
+            { letter: "C", text: "O fervor religioso reprimido pelo ambiente laico da capital.", correct: false },
+            { letter: "D", text: "O patriotismo exagerado durante os conflitos de fronteira.", correct: false }
+          ],
+          feedbackCorrect: "Perfeito! Machado ridiculariza o jovem aristocrata improdutivo que enxerga o casamento e a família apenas como tábua de salvação financeira.",
+          feedbackIncorrect: "Revise a obra: Luís Soares não é ingênuo; ele tenta conscientemente usar a prima Adelaide e o tio para financiar seu estilo de vida esbanjador."
+        },
+        {
+          id: "analysis_ls_2",
+          variantLabel: "Análise 2: A Rua do Ouvidor como Vitrine",
+          title: "O Dândi Carioca e a Sociedade de Aparências",
+          question: "O que a Rua do Ouvidor representa na construção psicológica e social de Luís Soares?",
+          options: [
+            { letter: "A", text: "O epicentro da vaidade, do consumo conspícuo e da alienação da elite jovem do Segundo Reinado.", correct: true },
+            { letter: "B", text: "Um centro acadêmico dedicado exclusivamente à pesquisa científica e filosófica.", correct: false },
+            { letter: "C", text: "Um retiro espiritual para intelectuais reclusos.", correct: false },
+            { letter: "D", text: "A sede do poder judiciário encarregada da cobrança de impostos.", correct: false }
+          ],
+          feedbackCorrect: "Exato! A Rua do Ouvidor era o coração do luxo importado de Paris no Rio Imperial, onde os dândis gastavam fortunas para serem vistos.",
+          feedbackIncorrect: "Atenção: A Rua do Ouvidor funcionava como grande passarela de vaidades e modismos da burguesia carioca da época."
+        },
+        {
+          id: "analysis_ls_3",
+          variantLabel: "Análise 3: O Papel de Adelaide",
+          title: "A Dignidade Moral vs. O Cálculo Cínico",
+          question: "Na famosa frase de Adelaide ('Trezentos contos! É muito dinheiro para comprar um miserável'), a personagem manifesta:",
+          options: [
+            { letter: "A", text: "A recusa em submeter sua dignidade moral e seus sentimentos à lógica mercantil e interesseira do casamento de conveniência.", correct: true },
+            { letter: "B", text: "O desejo de aumentar a quantia exigida pelo dote antes de aceitar a proposta de casamento.", correct: false },
+            { letter: "C", text: "A intenção de doar toda a herança para obras de caridade na Europa.", correct: false },
+            { letter: "D", text: "A submissão incondicional às ordens patriarcais do Major Vilela.", correct: false }
+          ],
+          feedbackCorrect: "Correto! Adelaide desmascara o mercantilismo do primo e recusa-se a servir de instrumento financeiro para resgatar um homem moralmente falido.",
+          feedbackIncorrect: "Observe: Adelaide profere a frase ao perceber que o suposto amor de Luís Soares nasceu apenas após a revelação da herança de trezentos contos."
+        }
+      ],
 
-      step4Vestibular: {
-        examTag: "ENEM / UERJ - Crítica Social",
-        question: "A trajetória de Luiz Soares reflete uma característica marcante da prosa machadiana inicial. Trata-se de:",
-        options: [
-          { letter: "A", text: "A desmistificação do herói aristocrático, revelando o vazio moral por trás das aparências elegantes.", correct: true },
-          { letter: "B", text: "A exaltação da natureza tropical brasileira em contraste com a corrupção da cidade.", correct: false },
-          { letter: "C", text: "A defesa do determinismo biológico absoluto sobre o destino humano.", correct: false },
-          { letter: "D", text: "O resgate de valores medievais e de cavalaria no cenário carioca.", correct: false }
-        ],
-        explanation: "Machado desconstrói o mito do jovem romântico urbano, mostrando como a futilidade da elite imperial escondia profunda degradação ética."
-      }
+      vestibularPool: [
+        {
+          id: "vest_ls_1",
+          examTag: "ENEM / UERJ - Crítica Social",
+          question: "A trajetória de Luís Soares reflete uma característica marcante da prosa machadiana inicial. Trata-se de:",
+          options: [
+            { letter: "A", text: "A desmistificação do herói aristocrático, revelando o vazio moral e o parasitismo por trás das aparências elegantes.", correct: true },
+            { letter: "B", text: "A exaltação da natureza tropical brasileira em contraste com a corrupção da cidade.", correct: false },
+            { letter: "C", text: "A defesa do determinismo biológico absoluto sobre o destino humano.", correct: false },
+            { letter: "D", text: "O resgate de valores medievais e de cavalaria no cenário carioca.", correct: false }
+          ],
+          explanation: "Machado desconstrói o mito do jovem romântico urbano, mostrando como a futilidade da elite imperial escondia profunda degradação ética e desespero."
+        },
+        {
+          id: "vest_ls_2",
+          examTag: "FUVEST - A Dissimulação e o Parasitismo",
+          question: "No conto 'Luís Soares', a aceitação temporária de um emprego público arranjado pelo tio Major Vilela enquanto corteja a herança familiar revela:",
+          options: [
+            { letter: "A", text: "A dissimulação utilitária do dândi, que se sujeita formalmente ao emprego para encenar juízo e assegurar o patrimônio e a simpatia da família.", correct: true },
+            { letter: "B", text: "A vocação genuína para a burocracia estatal e o abandono definitivo da vaidade mundana.", correct: false },
+            { letter: "C", text: "A rebeldia aberta e a recusa frontal a qualquer tipo de compromisso com a família.", correct: false },
+            { letter: "D", text: "O desejo altruísta de servir aos interesses patrióticos do Segundo Reinado.", correct: false }
+          ],
+          explanation: "Luís Soares aceita o emprego público não por apreço ao trabalho, mas como cálculo de sobrevivência e encenação perante o Major Vilela, comprovando que a regeneração moral era mera máscara social."
+        },
+        {
+          id: "vest_ls_3",
+          examTag: "UNICAMP - O Desfecho Trágico e a Máscara Social",
+          question: "O desfecho trágico de Luís Soares (o suicídio com pistola após a partida da família para a Europa) evidencia na obra machadiana:",
+          options: [
+            { letter: "A", text: "A incapacidade do dândi parasitário de sobreviver quando desprovido de recursos e desmascarado em sua farsa social perante a corte.", correct: true },
+            { letter: "B", text: "Uma conversão religiosa milagrosa de última hora.", correct: false },
+            { letter: "C", text: "A vitória triunfante dos planos de enriquecimento fácil no Segundo Reinado.", correct: false },
+            { letter: "D", text: "A reconciliação amorosa entre os primos antes do embarque marítimo.", correct: false }
+          ],
+          explanation: "Luís Soares prefere a morte à perda da máscara de homem rico e elegante, demonstrando a tirania das aparências e a ruína inevitável do parasita social."
+        }
+      ],
+
+      get step2Puzzle() { return this.puzzlesPool[0]; },
+      get step3Analysis() { return this.analysesPool[0]; },
+      get step4Vestibular() { return this.vestibularPool[0]; }
     },
 
     {
       id: "mulher-de-preto",
       title: "A Mulher de Preto",
       numberText: "Conto III",
-      location: "📍 Baile da Sociedade, Rio de Janeiro",
+      location: "📍 Salões da Corte, Rio de Janeiro",
       image: "assets/mulher_de_preto.jpg",
-      tags: ["Ciúme", "Segredo", "Luto Social"],
+      tags: ["Honra", "Mediação Moral", "Aparência de Culpa"],
       xpValue: 150,
-      summary: "Estevão apaixona-se por uma misteriosa mulher vestida de luto em um baile. O que parece um mistério romântico revela-se uma complexa teia de honra, ciúmes e segredos de família com seu amigo Meneses.",
+      summary: "O jovem médico Dr. Estêvão Soares apaixona-se por Madalena, mulher elegante vestida de preto que ele supõe equivocadamente ser viúva. Na verdade, ela é a esposa legítima de seu grande amigo, o deputado Meneses, de quem vivia separada por um falso e injusto ciúme. Ao saber que ela nunca o traiu e anseia pela restauração do lar, Estêvão sacrifica seu sentimento e atua como nobre mediador para reconciliar o casal.",
 
       step1Context: {
-        title: "O Mistério no Baile da Corte",
-        text: "Estevão, jovem romântico e sonhador, fica fascinado por Magdalena, uma belíssima mulher vestida inteiramente de preto que se recusa a dançar nos bailes cariocas. Ao investigar seu passado, descobre que ela está ligada a Meneses, seu amigo e conselheiro.",
-        quote: "— Aquele luto não era dor de finados... era o disfarce de um coração ferido pelo preconceito!"
+        title: "O Enigma da Mulher de Preto",
+        text: "Dr. Estêvão Soares, jovem médico idealista de vinte e quatro anos, torna-se amigo íntimo do influente deputado Meneses. Ao avistar no teatro e depois num baile uma formosa mulher vestida inteiramente de preto (Madalena), Estêvão apaixona-se julgando-a viúva. Na verdade, ela não é viúva nem guarda luto de morte: é a esposa legítima de Meneses, de quem vivia separada por uma infundada suspeita de infidelidade que jamais cometeu. Sabendo da forte amizade entre Estêvão e seu marido, Madalena recorre ao jovem médico para desfazer o mal-entendido e restabelecer a verdade e a paz conjugal.",
+        quote: "— Não sou viúva, doutor; sou casada com o deputado Meneses, seu amigo; e preciso do senhor para restabelecer a verdade e a minha paz."
       },
 
-      step2Puzzle: {
-        instruction: "Decifre o segredo da Mulher de Preto alinhando os fragmentos da revelação:",
-        fragments: [
-          { id: "f1", text: "Estevão avista Magdalena vestida de preto e apaixona-se perdidamente pela figura enigmática." },
-          { id: "f2", text: "Meneses desestimula o amigo, afirmando que a mulher esconde um passado deshonroso." },
-          { id: "f3", text: "Estevão descobre que Magdalena é cunhada de Meneses e vive isolada devido a calúnias morais." },
-          { id: "f4", text: "Ao esclarecer os fatos, o amor triunfa sobre o julgamento apressado da sociedade." }
-        ],
-        correctOrder: ["f1", "f2", "f3", "f4"],
-        hint: "Acompanhe o mistério: Fascínio inicial -> Alerta do amigo -> Descoberta da verdade -> Superação das calúnias."
-      },
+      puzzlesPool: [
+        {
+          id: "puzzle_mp_1",
+          variantLabel: "Variação A: O Encontro & A Revelação",
+          instruction: "Decifre o segredo da Mulher de Preto organizando os fatos na ordem autêntica:",
+          fragments: [
+            { id: "f1", text: "Estêvão avista Madalena vestida de preto no teatro e apaixona-se, supondo equivocadamente que ela seja viúva." },
+            { id: "f2", text: "Ao declarar sua afeição no baile, descobre com assombro que ela é a esposa legítima de seu amigo, o deputado Meneses, de quem vivia separada." },
+            { id: "f3", text: "Madalena esclarece que nunca foi infiel ao marido e que a separação decorrera de um infundado mal-entendido de ciúme." },
+            { id: "f4", text: "Ciente da amizade entre Estêvão e Meneses, ela pede sua intercessão para desfazer o engano e reconciliar os esposos." }
+          ],
+          correctOrder: ["f1", "f2", "f3", "f4"],
+          hint: "Acompanhe a revelação: Encanto no teatro -> Descoberta do casamento com o amigo -> Certeza da inocência de Madalena -> Pedido de mediação."
+        },
+        {
+          id: "puzzle_mp_2",
+          variantLabel: "Variação B: O Ciúme Injusto e a Reconciliação",
+          instruction: "Ordene os passos do drama do ciúme e da honra conjugal entre Meneses e Madalena:",
+          fragments: [
+            { id: "f1", text: "Meneses desconfia injustamente da fidelidade de Madalena e promove a separação conjugal, movido pelo ciúme." },
+            { id: "f2", text: "Madalena, inocente de qualquer traição, sofre com o afastamento e veste-se de preto pela tristeza de seu lar desfeito." },
+            { id: "f3", text: "A prova definitiva da inocência de Madalena vem à tona, desfazendo completamente a suspeita infundada de adultério." },
+            { id: "f4", text: "Com a intervenção sincera e mediadora de Estêvão, Meneses arrepende-se de sua precipitação e acolhe Madalena com ternura." }
+          ],
+          correctOrder: ["f1", "f2", "f3", "f4"],
+          hint: "Acompanhe o drama da honra: Desconfiança infundada de Meneses -> Tristeza de Madalena vestida de preto -> Prova da inocência -> Reconciliação do casal."
+        },
+        {
+          id: "puzzle_mp_3",
+          variantLabel: "Variação C: A Renúncia e a Nobreza de Estêvão",
+          instruction: "Reconstitua a nobre atitude de Dr. Estêvão Soares no desfecho da narrativa:",
+          fragments: [
+            { id: "f1", text: "Estêvão compreende que sua paixão por Madalena não pode concorrer com a lealdade devida à amizade de Meneses." },
+            { id: "f2", text: "Superando o sentimento pessoal, ele emprega toda a sua influência e respeito para unir novamente o casal desavindo." },
+            { id: "f3", text: "Consumada a reconciliação dos esposos, Estêvão opta por afastar-se para silenciar seu próprio coração ferido." },
+            { id: "f4", text: "Deixa uma carta carinhosa aos amigos e parte discretamente para o interior de Minas Gerais." }
+          ],
+          correctOrder: ["f1", "f2", "f3", "f4"],
+          hint: "A marcha ética: Dilema moral de Estêvão -> Opção pela amizade e honra -> Mediação bem-sucedida -> Renúncia e partida para Minas Gerais."
+        }
+      ],
 
-      step3Analysis: {
-        title: "Máscaras Sociais e a Falsa Moralidade",
-        question: "Qual o papel das fofocas e das aparências na narrativa de 'A Mulher de Preto'?",
-        options: [
-          { letter: "A", text: "Não têm impacto, pois os personagens resolvem tudo com duelos de espadas.", correct: false },
-          { letter: "B", text: "Funcionam como julgamento social precipitado que condena inocentes com base no decoro superficial.", correct: true },
-          { letter: "C", text: "Ajudam Magdalena a enriquecer vendendo joias de luto.", correct: false },
-          { letter: "D", text: "Fazem com que Estevão abandone a carreira de advogado para virar poeta solitário.", correct: false }
-        ],
-        feedbackCorrect: "Exato! Machado expõe como a opinião pública da corte carioca criava estigmas injustos, forçando mulheres a carregarem o 'luto social'.",
-        feedbackIncorrect: "Atenção: A maledicência social é o motor da discórdia no conto, demonstrando a rigidez dos códigos morais da elite."
-      },
+      analysesPool: [
+        {
+          id: "analysis_mp_1",
+          variantLabel: "Análise 1: A Aparência e o Pré-julgamento",
+          title: "O Falso Juízo e as Aparências Enganosas",
+          question: "O fato de Estêvão julgar Madalena viúva pela cor de suas roupas e a separação precipitada imposta por Meneses evidenciam que:",
+          options: [
+            { letter: "A", text: "Na sociedade da corte, os julgamentos eram frequentemente precipitados, baseados em falsas aparências e suspeitas infundadas.", correct: true },
+            { letter: "B", text: "Demonstra que as leis civis do Império obrigavam as mulheres a usarem preto após qualquer discussão conjugal.", correct: false },
+            { letter: "C", text: "Prova que Meneses queria expulsar a esposa para casar-se com a herdeira da coroa britânica.", correct: false },
+            { letter: "D", text: "Indica que Madalena era uma criminosa procurada pela polícia internacional.", correct: false }
+          ],
+          feedbackCorrect: "Exato! Machado critica como a sociedade e os indivíduos se deixavam guiar por aparências e pré-julgamentos que condenavam injustamente a mulher.",
+          feedbackIncorrect: "Atenção: Madalena foi repudiada unicamente por uma suspeita precipitada e sem fundamento de Meneses, sem que houvesse traição real."
+        },
+        {
+          id: "analysis_mp_2",
+          variantLabel: "Análise 2: A Nobreza de Estêvão",
+          title: "O Sacrifício Moral e a Vitória da Amizade",
+          question: "Qual o significado da decisão de Estêvão ao aceitar mediar a reconciliação de Madalena e Meneses?",
+          options: [
+            { letter: "A", text: "O triunfo do dever moral e da lealdade fraterna sobre o egoísmo da paixão individual e a posse amorosa.", correct: true },
+            { letter: "B", text: "O medo covarde de enfrentar Meneses em um duelo de pistolas na praia.", correct: false },
+            { letter: "C", text: "A tentativa de extorquir dinheiro do casal para financiar sua viagem a Minas Gerais.", correct: false },
+            { letter: "D", text: "A indiferença absoluta pelos sentimentos de ambos os amigos.", correct: false }
+          ],
+          feedbackCorrect: "Perfeito! Estêvão encarna uma nobreza de caráter que prefere restaurar a felicidade dos outros à custa de sua própria renúncia afetiva.",
+          feedbackIncorrect: "Reflita: Estêvão ama Madalena, mas coloca a verdade, a honra da mulher e a amizade fraterna de Meneses acima de seus próprios anseios."
+        },
+        {
+          id: "analysis_mp_3",
+          variantLabel: "Análise 3: O Signo do Vestido Negro",
+          title: "O Vestido Preto como Metáfora de Separação",
+          question: "O que o traje negro de Madalena expressa simbolicamente na narrativa, dado que ela não é viúva?",
+          options: [
+            { letter: "A", text: "A tristeza pelo lar desfeito e o sofrimento moral decorrente do afastamento injusto imposto pelo ciúme do marido.", correct: true },
+            { letter: "B", text: "Uma fantasia para participar do baile de máscaras municipal.", correct: false },
+            { letter: "C", text: "A devoção a uma ordem religiosa de freiras penitentes.", correct: false },
+            { letter: "D", text: "Apenas uma obrigação imposta pela alfândega portuária do Rio de Janeiro.", correct: false }
+          ],
+          feedbackCorrect: "Excelente! O vestido preto externaliza a condição de mulher afastada da convivência conjugal e ferida na sua dignidade.",
+          feedbackIncorrect: "Atenção: O traje não decorre de viuvez real, mas do pesar íntimo pelo casamento rompido por infundada desconfiança."
+        }
+      ],
 
-      step4Vestibular: {
-        examTag: "FUVEST - Transição Literária",
-        question: "Em 'A Mulher de Preto', percebe-se a transição da prosa romântica para a fase realista de Machado de Assis porque:",
-        options: [
-          { letter: "A", text: "Embora haja um enredo de paixão à primeira vista, o autor disseca a psicologia do ciúme e a hipocrisia das convenções sociais.", correct: true },
-          { letter: "B", text: "O livro utiliza elementos sobrenaturais e monstros folclóricos brasileiros.", correct: false },
-          { letter: "C", text: "O autor abandona a língua portuguesa e escreve em latim arcaico.", correct: false },
-          { letter: "D", text: "A história se passa inteiramente no meio rural do interior de Goiás.", correct: false }
-        ],
-        explanation: "Machado mantém a fachada do mistério romântico, mas introduz a agudeza analítica sobre as convenções e preconceitos da burguesia."
-      }
+      vestibularPool: [
+        {
+          id: "vest_mp_1",
+          examTag: "FUVEST - Transição e Dilema Moral",
+          question: "Em 'A Mulher de Preto', Machado de Assis articula elementos do melodrama romântico com traços de sua futura maturidade analítica ao:",
+          options: [
+            { letter: "A", text: "Explorar o dilema íntimo entre a paixão individual e a lealdade fraternal ao amigo, resolvido pela renúncia abnegada do protagonista.", correct: true },
+            { letter: "B", text: "Narrar uma aventura de pirataria e duelos marítimos na baía de Guanabara.", correct: false },
+            { letter: "C", text: "Defender o divórcio obrigatório para todos os casamentos do Segundo Reinado.", correct: false },
+            { letter: "D", text: "Substituir a prosa de ficção por crônicas jornalísticas de economia.", correct: false }
+          ],
+          explanation: "Estêvão ama Madalena, mas coloca a honra dela e a fidelidade ao amigo Meneses acima de seus sentimentos, atuando como pacificador altruísta."
+        },
+        {
+          id: "vest_mp_2",
+          examTag: "UNICAMP - O Ciúme Patriarcal e o Casamento Oitocentista",
+          question: "O drama vivido por Madalena em 'A Mulher de Preto', separada sumariamente de Meneses por uma suspeita infundada de infidelidade, evidencia na sociedade carioca do século XIX:",
+          options: [
+            { letter: "A", text: "A vulnerabilidade da mulher casada perante o arbítrio e o ciúme masculino, em que meras conjecturas bastavam para afastar a esposa inocente do lar.", correct: true },
+            { letter: "B", text: "A existência de plena igualdade jurídica e patrimonial entre homens e mulheres sob o Código Criminal do Império.", correct: false },
+            { letter: "C", text: "O costume social segundo o qual os maridos eram punidos com exílio forçado em caso de discussão doméstica.", correct: false },
+            { letter: "D", text: "A preferência das famílias da corte pela vida monástica feminina em detrimento do casamento.", correct: false }
+          ],
+          explanation: "Machado desnuda a assimetria de poder patriarcal: bastava uma suspeita sem provas para que Meneses rompesse a convivência com Madalena, que só recupera o lar após a intervenção de Estêvão."
+        },
+        {
+          id: "vest_mp_3",
+          examTag: "ENEM - Foco Narrativo & Ética da Renúncia",
+          question: "A partida de Dr. Estêvão Soares para Minas Gerais, ao término da narrativa de 'A Mulher de Preto', traduz:",
+          options: [
+            { letter: "A", text: "A sublimação ética do sentimento amoroso, consolidando sua condição de amigo leal que renuncia à posse para preservar a paz reconquistada pelo casal.", correct: true },
+            { letter: "B", text: "A fuga covarde de um médico desempregado e sem recursos.", correct: false },
+            { letter: "C", text: "O desejo de vingar-se de Meneses criando uma clínica rival no interior.", correct: false },
+            { letter: "D", text: "A expulsão forçada de Estêvão por ordem judicial do gabinete ministerial.", correct: false }
+          ],
+          explanation: "A retirada discreta de Estêvão coroa sua atitude abnegada, encerrando o conto sob uma aura de admirável grandeza moral e lealdade."
+        }
+      ],
+
+      get step2Puzzle() { return this.puzzlesPool[0]; },
+      get step3Analysis() { return this.analysesPool[0]; },
+      get step4Vestibular() { return this.vestibularPool[0]; }
     },
 
     {
       id: "segredo-augusta",
       title: "O Segredo de Augusta",
       numberText: "Conto IV",
-      location: "📍 Salão das Laranjeiras, Rio de Janeiro",
+      location: "📍 Residência da Família, Botafogo (Rio de Janeiro)",
       image: "assets/segredo_augusta.jpg",
-      tags: ["Vaidade", "Falência Oculta", "Dote"],
+      tags: ["Vaidade Feminina", "Terror de Ser Avó", "Conflito Doméstico"],
       xpValue: 150,
-      summary: "Gomes e Augusta mantêm a ilusão de opulência na sociedade carioca enquanto escondem a falência total. O casamento da filha torna-se o palco onde a vaidade vence o desespero.",
+      summary: "Vasconcelos, arruinado por gastos e dívidas, pressiona para casar sua filha Adelaide (de apenas quinze anos) com o amigo Gomes, julgando-o rico e capaz de salvar a família da falência. A esposa Augusta, porém, opõe-se veementemente: alega publicamente que a moça é jovem demais, mas seu segredo inconfessável é o terror patológico de envelhecer e ser chamada de avó nos círculos da corte.",
 
       step1Context: {
-        title: "A Opulência de Fachada",
-        text: "Vasconcelos e sua esposa Augusta vivem em um palacete suntuoso nas Laranjeiras, promovendo bailes faustosos. No entanto, o patrimônio da família está em ruínas. Para não perder a pose diante da aristocracia, ocultam as dívidas até o limite extremo.",
-        quote: "— Prefiro a bancarrota secreta ao vexame público de vender as carruagens!"
+        title: "O Terror de Ser Avó e o Arranjo Doméstico",
+        text: "Em um drama estritamente doméstico e sem qualquer grande baile, Vasconcelos — dilapidado por despesas descontroladas — vê no casamento da filha Adelaide, de quinze anos, com o amigo Gomes a salvação para suas dívidas. No entanto, Augusta opõe uma resistência feroz ao matrimônio. O motivo declarado é a juventude da filha; o motivo real e inconfessável ('o segredo de Augusta') é a sua vaidade exacerbada: aos trinta e poucos anos e ainda bela, Augusta tem pavor absoluto de que a filha tenha filhos e a transforme em avó perante a sociedade carioca. Para completar a ironia machadiana, Adelaide recusa o pretendente e descobre-se que Gomes também estava arruinado, cortejando Adelaide na ilusão de que ela era uma herdeira rica.",
+        quote: "— Casar a Adelaide já? Mas ela é uma criança de quinze anos!... (E no íntimo: ser avó aos trinta anos? Nunca!)"
       },
 
-      step2Puzzle: {
-        instruction: "Decifre o vocabulário e a sequência da ruína velada em 'O Segredo de Augusta':",
-        fragments: [
-          { id: "f1", text: "O casal ostenta luxo desmedido em bailes para manter o prestígio social perante os pares." },
-          { id: "f2", text: "Em segredo, as dívidas acumuladas com credores ameaçam o confisco dos bens do lar." },
-          { id: "f3", text: "Planejam o casamento da filha com um pretendente abastado para liquidar os débitos." },
-          { id: "f4", text: "O segredo da penúria é mantido até o fim, mostrando a tirania da vaidade sobre a razão." }
-        ],
-        correctOrder: ["f1", "f2", "f3", "f4"],
-        hint: "A sequência reflete a tragédia da vaidade: Ostentação -> Ruína secreta -> Arranjo matrimonial -> Ocultação obstinada."
-      },
+      puzzlesPool: [
+        {
+          id: "puzzle_sa_1",
+          variantLabel: "Variação A: A Oposição ao Casamento",
+          instruction: "Decifre o conflito doméstico e a ordem dos fatos em 'O Segredo de Augusta':",
+          fragments: [
+            { id: "f1", text: "Vasconcelos, arruinado por dívidas, pressiona o casamento de sua filha Adelaide com Gomes, julgando-o abastado." },
+            { id: "f2", text: "Augusta insurge-se furiosamente contra o noivado, alegando publicamente que a filha de quinze anos é jovem demais." },
+            { id: "f3", text: "Vasconcelos desespera-se diante da recusa obstinada da esposa perante um arranjo que salvaria a família da falência." },
+            { id: "f4", text: "Revela-se o segredo de Augusta: sua vaidade narcísica recusa terminantemente ter netos e virar avó aos trinta anos." }
+          ],
+          correctOrder: ["f1", "f2", "f3", "f4"],
+          hint: "Acompanhe o conflito: Pressão de Vasconcelos -> Pretexto de Augusta -> Desespero do pai -> Revelação do pavor de ser avó."
+        },
+        {
+          id: "puzzle_sa_2",
+          variantLabel: "Variação B: A Máscara da Juventude",
+          instruction: "Ordene as revelações sobre a psicologia vaidosa de Augusta na sociedade fluminense:",
+          fragments: [
+            { id: "f1", text: "Augusta cultiva com esmero a aparência de jovem donzela e sua vaidade perante a corte." },
+            { id: "f2", text: "O crescimento e a beleza de sua filha Adelaide tornam-se uma ameaça secreta à sua autoimagem." },
+            { id: "f3", text: "A perspectiva do casamento da jovem traz consigo a possibilidade fatal de netos e do envelhecimento público." },
+            { id: "f4", text: "A tirania estética da mãe sobrepõe-se à própria salvação econômica e ao futuro da filha." }
+          ],
+          correctOrder: ["f1", "f2", "f3", "f4"],
+          hint: "A psicologia de Augusta: Culto da juventude -> Ameaça da filha adolescente -> Pavor de ser avó -> Prevalência da vaidade."
+        },
+        {
+          id: "puzzle_sa_3",
+          variantLabel: "Variação C: O Desfecho e a Ironia Machadiana",
+          instruction: "Reconstitua o desfecho irônico do casamento arranjado por Vasconcelos:",
+          fragments: [
+            { id: "f1", text: "Vasconcelos insiste no casamento de Adelaide com Gomes para obter alívio financeiro imediato." },
+            { id: "f2", text: "Augusta segue sabotando a união nas conversas domésticas por puro medo de parecer velha e ser chamada de avó." },
+            { id: "f3", text: "A jovem Adelaide opõe sua própria vontade e recusa terminantemente casar-se com Gomes por não amá-lo." },
+            { id: "f4", text: "Descobre-se a ironia final: Gomes também estava arruinado e pretendia casar-se na ilusão de que Adelaide possuía dote." }
+          ],
+          correctOrder: ["f1", "f2", "f3", "f4"],
+          hint: "A ironia do desfecho: Insistência de Vasconcelos -> Resistência de Augusta -> Recusa de Adelaide -> Descoberta da ruína de Gomes."
+        }
+      ],
 
-      step3Analysis: {
-        title: "A Tirania das Aparências",
-        question: "O que o 'Segredo de Augusta' revela sobre o comportamento da burguesia imperial?",
-        options: [
-          { letter: "A", text: "A preferência pela vida simples e rural longe dos luxos da capital.", correct: false },
-          { letter: "B", text: "A obsessão em parecer próspero, onde a aprovação alheia vale mais do que a segurança financeira real.", correct: true },
-          { letter: "C", text: "O desejo de doar todos os bens para a construção de hospitais públicos.", correct: false },
-          { letter: "D", text: "A escolha das cores das vestimentas militares dos oficiais da guarda.", correct: false }
-        ],
-        explanation: "Machado ridiculariza a teatralidade do cotidiano burguês, no qual viver bem significa apenas representar um papel para a plateia social."
-      }
+      analysesPool: [
+        {
+          id: "analysis_sa_1",
+          variantLabel: "Análise 1: A Tirania da Vaidade",
+          title: "O Terror da Idade e o Narcisismo Social",
+          question: "O que o 'Segredo de Augusta' expõe sobre os valores que regiam a autoimagem feminina na corte imperial?",
+          options: [
+            { letter: "A", text: "A obsessão pela juventude e pela sedução social, na qual a maternidade madura e o papel de avó eram vistos como decadência insuportável.", correct: true },
+            { letter: "B", text: "O desejo das mulheres da época de abandonarem a cidade para viverem como eremitas.", correct: false },
+            { letter: "C", text: "A preferência de Augusta por casar a filha com um general estrangeiro.", correct: false },
+            { letter: "D", text: "A obrigação legal de as mães se tornarem monjas após os trinta anos de idade.", correct: false }
+          ],
+          feedbackCorrect: "Exato! Machado de Assis desnuda com fina ironia o narcisismo de Augusta, cujo segredo inconfessável era o terror de envelhecer e tornar-se avó.",
+          feedbackIncorrect: "Atenção: O verdadeiro segredo de Augusta é a recusa em aceitar a passagem do tempo e o pavor de ser chamada de avó aos trinta anos."
+        },
+        {
+          id: "analysis_sa_2",
+          variantLabel: "Análise 2: A Mercantilização dos Afetos",
+          title: "O Casamento como Transação de Alívio Financeiro",
+          question: "Como a conduta de Vasconcelos ao pressionar pelo casamento de Adelaide com Gomes ilustra os costumes patriarcais da época?",
+          options: [
+            { letter: "A", text: "Trata a filha adolescente de quinze anos como moeda de troca para saldar dívidas financeiras e escapar da ruína material.", correct: true },
+            { letter: "B", text: "Recusa qualquer acordo financeiro por defender a liberdade romântica irrestrita da jovem.", correct: false },
+            { letter: "C", text: "Exige que a filha permaneça solteira para cuidar das propriedades da família.", correct: false },
+            { letter: "D", text: "Subordina a decisão à autoridade de um tribunal eclesiástico.", correct: false }
+          ],
+          feedbackCorrect: "Perfeito! Vasconcelos é quem comanda a pressão pelo casamento, instrumentalizando a filha para salvar as finanças dilapidadas do lar.",
+          feedbackIncorrect: "Reflita: Vasconcelos pressiona pelo casamento de Adelaide para salvar sua própria bancarrota, sem atentar para a vontade da jovem."
+        },
+        {
+          id: "analysis_sa_3",
+          variantLabel: "Análise 3: A Dupla Falência e a Ironia do Desfecho",
+          title: "O Desmascaramento das Ilusões Financeiras",
+          question: "Qual o efeito crítico e irônico gerado pela revelação sobre a real situação de Gomes e a recusa de Adelaide?",
+          options: [
+            { letter: "A", text: "Desmascara a mútua ilusão utilitária: o pai tentava negociar a filha com um pretendente supostamente rico que, na verdade, também estava falido.", correct: true },
+            { letter: "B", text: "Demonstra que a família Vasconcelos resolveu seus problemas ganhando uma loteria clandestina.", correct: false },
+            { letter: "C", text: "Mostra que Gomes comprou um palacete imperial para presentear a noiva.", correct: false },
+            { letter: "D", text: "Comprova que Adelaide fugiu com um capitão da marinha para a Europa.", correct: false }
+          ],
+          feedbackCorrect: "Excelente! A ironia machadiana expõe que ambos os homens estavam falidos tentando usar o casamento como golpe de salvação financeira.",
+          feedbackIncorrect: "Atenção: A ironia do desfecho reside no fato de Gomes também estar arruinado e Adelaide recusar a imposição do pai."
+        }
+      ],
+
+      vestibularPool: [
+        {
+          id: "vest_sa_1",
+          examTag: "FUVEST - Desconstrução do Ideal Materno",
+          question: "Em 'O Segredo de Augusta', a caracterização da protagonista feminina distancia-se do modelo romântico tradicional de maternidade ao:",
+          options: [
+            { letter: "A", text: "Subordinar o destino da própria filha ao seu egoísmo estético e ao terror inconfessável de tornar-se avó aos trinta anos.", correct: true },
+            { letter: "B", text: "Apresentar uma mãe que se sacrifica heroicamente no trabalho fabril para sustentar o lar.", correct: false },
+            { letter: "C", text: "Retratar uma matriarca devota que abre mão de todas as joias em favor dos necessitados.", correct: false },
+            { letter: "D", text: "Substituir o afeto maternal pela devoção militar nas guerras cisplatinas.", correct: false }
+          ],
+          explanation: "Machado desconstrói o mito romântico da mãe abnegada: a oposição de Augusta ao casamento de Adelaide nasce unicamente do pavor de virar avó e perder a aura de juventude."
+        },
+        {
+          id: "vest_sa_2",
+          examTag: "UNICAMP - O Embate entre Interesses no Casamento",
+          question: "No conto 'O Segredo de Augusta', o conflito doméstico em torno do casamento precoce de Adelaide (15 anos) caracteriza-se pelo choque entre:",
+          options: [
+            { letter: "A", text: "O pragmatismo financeiro do pai (Vasconcelos), que tenta negociar a filha para salvar-se da falência, e a vaidade narcísica da mãe (Augusta), que rejeita ser avó.", correct: true },
+            { letter: "B", text: "A exigência da mãe em realizar um baile suntuoso e a recusa do pai em gastar com festas.", correct: false },
+            { letter: "C", text: "A recusa conjunta dos pais em permitir que a filha se case antes de completar vinte e cinco anos.", correct: false },
+            { letter: "D", text: "A imposição de Gomes para que a noiva assumisse a gestão de uma empresa comercial.", correct: false }
+          ],
+          explanation: "O pai arruinado pressiona pelo casamento para quitar dívidas; a mãe opõe-se por vaidade pessoal, temendo o estigma do envelhecimento precoce."
+        },
+        {
+          id: "vest_sa_3",
+          examTag: "ENEM - Aparência Social e Desengano",
+          question: "O desfecho de 'O Segredo de Augusta', no qual Adelaide recusa o pretendente e revela-se que Gomes também estava arruinado, evidencia na prosa de Machado de Assis:",
+          options: [
+            { letter: "A", text: "A farsa dos arranjos matrimoniais burgueses, em que o cálculo utilitário e a encenação social de prosperidade mascaram a mútua decadência material.", correct: true },
+            { letter: "B", text: "A celebração do amor romântico triunfando sobre todas as barreiras econômicas da corte.", correct: false },
+            { letter: "C", text: "A punição judicial de Gomes por fraude contratual perante os tribunais civis do Império.", correct: false },
+            { letter: "D", text: "A pacificação do conflito através de um empréstimo concedido pelo Ministério da Fazenda.", correct: false }
+          ],
+          explanation: "Machado ridiculariza as pretensões da corte: Vasconcelos tentava salvar-se com Gomes, e Gomes pretendia salvar-se com Adelaide; o fracasso do arranjo expõe a vaidade e a hipocrisia de ambos."
+        }
+      ],
+
+      get step2Puzzle() { return this.puzzlesPool[0]; },
+      get step3Analysis() { return this.analysesPool[0]; },
+      get step4Vestibular() { return this.vestibularPool[0]; }
     },
 
     {
       id: "confissoes-viuva",
       title: "Confissões de uma Viúva Moça",
       numberText: "Conto V",
-      location: "📍 Sobrado de Santa Teresa, Rio de Janeiro",
+      location: "📍 Petrópolis & Rio de Janeiro",
       image: "assets/confissoes_viuva.jpg",
-      tags: ["Narrativa Epistolar", "Dilema Moral", "Subjetividade"],
+      tags: ["Narrativa Epistolar", "Cinismo Amoroso", "Desilusão"],
       xpValue: 150,
-      summary: "Em forma de cartas confidenciais à amiga Eugênia, Carolina relata a viuvez, a tentação de um novo amor por Jorge e a descoberta cruel sobre as intenções dos homens.",
+      summary: "Em cartas confessionais enviadas de Petrópolis à amiga Carlota, a jovem viúva Eugênia revela como resistiu às investidas de Emílio durante seu casamento sem amor, apenas para descobrir, após ficar viúva, o cinismo do pretendente, que só a desejava como amante proibida.",
 
       step1Context: {
-        title: "As Cartas Íntimas de Carolina",
-        text: "Após a morte de um marido com quem se casara por conveniência, a jovem Carolina refugia-se em Santa Teresa. Em correspondências secretas enviadas à amiga Eugênia, ela analisa com lucidez implacável os sentimentos contraditórios entre o duelo, o desejo e a desconfiança moral.",
-        quote: "— A viuvez me deu a liberdade de pensar, mas também me revelou o egoísmo que habita nos corações masculinos..."
+        title: "As Cartas de Eugênia a Carlota",
+        text: "Narrado em forma epistolar através de cartas íntimas enviadas por Eugênia de Petrópolis para sua confidente Carlota, o conto disseca as contradições do desejo e da moral burguesa. Casada por imposição familiar com um homem a quem não amava, Eugênia resistiu estoicamente às juras de paixão de Emílio. Com a morte súbita do marido, ela esperava consagrar o amor no matrimônio, mas depara-se com o recuo cínico do sedutor, cuja atração residia apenas na proibição do adultério.",
+        quote: "— Ele me amava enquanto o adultério era proibido; livre e viúva, o casamento lhe pareceu um fardo intolerável..."
       },
 
-      step2Puzzle: {
-        instruction: "Ordene os trechos epistolares das confissões de Carolina:",
-        fragments: [
-          { id: "f1", text: "Carolina fica viúva de um casamento sem paixão e experimenta uma mistura de alívio e solidão." },
-          { id: "f2", text: "Surge o jovem Jorge, que declara amor fervoroso, despertando esperanças românticas em Carolina." },
-          { id: "f3", text: "Ela descobre que Jorge já a cobiçava quando o ex-marido ainda era vivo, revelando falta de ética." },
-          { id: "f4", text: "Desiludida, Carolina decide preservar sua autonomia e rejeita a ilusão do amor perfeito." }
-        ],
-        correctOrder: ["f1", "f2", "f3", "f4"],
-        hint: "Acompanhe o amadurecimento psicológico: Viuvez -> Encanto por Jorge -> Descoberta da traição -> Escolha pela autonomia."
-      },
+      puzzlesPool: [
+        {
+          id: "puzzle_cv_1",
+          variantLabel: "Variação A: As Confissões de Eugênia",
+          instruction: "Reconstitua a ordem das confidências epistolares de Eugênia à amiga Carlota:",
+          fragments: [
+            { id: "f1", text: "Eugênia casa-se por conveniência e resiste moralmente às investidas apaixonadas do galanteador Emílio." },
+            { id: "f2", text: "O falecimento repentino do marido encerra o matrimônio sem amor e liberta Eugênia para uma nova união." },
+            { id: "f3", text: "Livre para o casamento legítimo, Eugênia descobre o esfriamento e o desinteresse súbito de Emílio." },
+            { id: "f4", text: "Compreendendo que o pretendente só cobiçava a transgressão mundana, Eugênia isola-se com altivez em Petrópolis." }
+          ],
+          correctOrder: ["f1", "f2", "f3", "f4"],
+          hint: "Acompanhe a revelação nas cartas: Casamento por conveniência -> Viuvez inesperada -> Esfriamento de Emílio -> Isolamento digno."
+        },
+        {
+          id: "puzzle_cv_2",
+          variantLabel: "Variação B: O Confronto com o Cinismo",
+          instruction: "Ordene os passos da desilusão amorosa e psicológica vivida por Eugênia:",
+          fragments: [
+            { id: "f1", text: "Durante a vida do marido, Emílio cerca Eugênia de cartas ardentes e protestos de adoração eterna." },
+            { id: "f2", text: "Eugênia reprime seu afeto recíproco para zelar pela honra conjugal e pelo dever de esposa." },
+            { id: "f3", text: "Com a viuvez, a visita de Emílio revela-se formal, polida e desprovida do menor compromisso matrimonial." },
+            { id: "f4", text: "A jovem compreende a hipocrisia do sedutor de salão, que buscava apenas um capricho vaidoso." }
+          ],
+          correctOrder: ["f1", "f2", "f3", "f4"],
+          hint: "A marcha da desilusão: Sedução clandestina -> Repressão moral -> Reencontro frio -> Compreensão do cinismo."
+        },
+        {
+          id: "puzzle_cv_3",
+          variantLabel: "Variação C: A Sabedoria da Renúncia",
+          instruction: "Reconstitua o desfecho ético da protagonista em sua correspondência com Carlota:",
+          fragments: [
+            { id: "f1", text: "Emílio recua diante da possibilidade real de um casamento público e respeitável." },
+            { id: "f2", text: "Eugênia recusa-se a implorar afeto ou a transformar-se em mera amante descartável nos salões." },
+            { id: "f3", text: "Ela decide registrar suas memórias em cartas para instruir e alertar a amiga Carlota sobre as ilusões da corte." },
+            { id: "f4", text: "A solidão em Petrópolis consolida-se como um ato de preservação de sua lucidez e dignidade feminina." }
+          ],
+          correctOrder: ["f1", "f2", "f3", "f4"],
+          hint: "A postura ética: Recuo de Emílio -> Rejeição da subserviência -> Cartas a Carlota -> Paz interior em Petrópolis."
+        }
+      ],
 
-      step3Analysis: {
-        title: "A Voz Feminina e a Análise Psicológica",
-        question: "Qual o diferencial da técnica narrativa adotada em 'Confissões de uma Viúva Moça'?",
-        options: [
-          { letter: "A", text: "A narrativa em primeira pessoa através de cartas dá acesso direto à introspecção e à desilusão da mulher do século XIX.", correct: true },
-          { letter: "B", text: "É uma peça de teatro escrita inteiramente em rimas cômicas.", correct: false },
-          { letter: "C", text: "O narrador é um fantasma que observa a casa do telhado.", correct: false },
-          { letter: "D", text: "O conto não possui texto, apenas desenhos de paisagens cariocas.", correct: false }
-        ],
-        feedbackCorrect: "Excelente! O formato epistolar permite a Machado construir uma voz feminina densa, analítica e contestadora da ingenuidade romântica.",
-        feedbackIncorrect: "Atenção: Trata-se de uma narrativa epistolar (em cartas) de primeira pessoa com altíssimo valor psicológico."
-      },
+      analysesPool: [
+        {
+          id: "analysis_cv_1",
+          variantLabel: "Análise 1: A Estrutura Epistolar",
+          title: "A Voz Feminina e a Introspecção Epistolar",
+          question: "Qual a importância do gênero epistolar (cartas de Eugênia a Carlota) para a profundidade do conto?",
+          options: [
+            { letter: "A", text: "Permite a expressão direta da intimidade e da lucidez feminina sem a interferência moralizadora de um narrador masculino externo.", correct: true },
+            { letter: "B", text: "Serve apenas como comprovante de dívidas bancárias entre duas famílias ricas.", correct: false },
+            { letter: "C", text: "Tem o objetivo de ensinar culinária e bordado às leitoras da corte.", correct: false },
+            { letter: "D", text: "Substitui os diálogos por versos épicos inspirados na mitologia grega.", correct: false }
+          ],
+          feedbackCorrect: "Excelente! O formato epistolar confere verossimilhança psicológica e dá voz autêntica aos dilemas íntimos da mulher oitocentista.",
+          feedbackIncorrect: "Atenção: As cartas de Eugênia funcionam como canal de refinada autoanálise e desconstrução das ilusões românticas."
+        },
+        {
+          id: "analysis_cv_2",
+          variantLabel: "Análise 2: A Psicologia do Sedutor",
+          title: "O Desejo pela Transgressão e o Medo do Compromisso",
+          question: "O que explica o esfriamento repentino de Emílio assim que Eugênia fica viúva e livre para casar?",
+          options: [
+            { letter: "A", text: "O cinismo do sedutor que se alimentava do perigo da transgressão do adultério, mas repudiava os deveres do casamento legítimo.", correct: true },
+            { letter: "B", text: "A perda repentina de memória causada por um acidente de carruagem em Botafogo.", correct: false },
+            { letter: "C", text: "A falência bancária da família de Carlota.", correct: false },
+            { letter: "D", text: "A ordem do bispo do Rio de Janeiro proibindo o noivado.", correct: false }
+          ],
+          feedbackCorrect: "Perfeito! Machado disseca a vaidade masculina dos salões: para homens como Emílio, o prazer residia no troféu da conquista proibida, não na união conjugal.",
+          feedbackIncorrect: "Reflita sobre a psicologia de Emílio: livre o caminho do altar, o encanto do fruto proibido desfaz-se e dá lugar ao desinteresse covarde."
+        },
+        {
+          id: "analysis_cv_3",
+          variantLabel: "Análise 3: A Dignidade da Protagonista",
+          title: "A Recusa à Condição de Vítima Passiva",
+          question: "De que maneira Eugênia rompe com o estereótipo da heroína frágil do romantismo sentimental?",
+          options: [
+            { letter: "A", text: "Ao encarar a realidade com lucidez analítica, recusando-se a mendigar carinho e escolhendo o autoexílio digno em Petrópolis.", correct: true },
+            { letter: "B", text: "Ao cometer suicídio melodramático no Passeio Público.", correct: false },
+            { letter: "C", text: "Ao desafiar Emílio para um duelo de pistolas no largo do Paço.", correct: false },
+            { letter: "D", text: "Ao aceitar tornar-se amante secreta e submissa de Emílio.", correct: false }
+          ],
+          feedbackCorrect: "Excelente! Eugênia não sucumbe ao desespero romântico; ela analisa o ocorrido com rigor ético e preserva sua soberania moral.",
+          feedbackIncorrect: "Atenção: A força de Eugênia está na sua maturidade reflexiva e na recusa absoluta de submeter-se ao capricho de um homem egoísta."
+        }
+      ],
 
-      step4Vestibular: {
-        examTag: "ENEM - Foco Narrativo & Gênero Epistolar",
-        question: "A escolha da forma epistolar (cartas) em 'Confissões de uma Viúva Moça' permite ao leitor:",
-        options: [
-          { letter: "A", text: "Compreender a psicologia da protagonista sem o filtro moralizador de um narrador masculino da época.", correct: true },
-          { letter: "B", text: "Observar dados numéricos detalhados sobre a economia do café no Império.", correct: false },
-          { letter: "C", text: "Confirmar que todas as cartas de amor do século XIX terminavam em duelos fatais.", correct: false },
-          { letter: "D", text: "Identificar o autor Machado de Assis como personagem ativo da história de amor.", correct: false }
-        ],
-        explanation: "As cartas conferem intimidade e verossimilhança psicológica, mostrando a desconstrução da heroína ingênua em prol de uma mulher consciente dos limites sociais."
-      }
+      vestibularPool: [
+        {
+          id: "vest_cv_1",
+          examTag: "ENEM - Gênero Epistolar & Subjetividade",
+          question: "No conto 'Confissões de uma Viúva Moça', as cartas enviadas por Eugênia a Carlota constituem um procedimento literário que:",
+          options: [
+            { letter: "A", text: "Possibilita a sondagem psicológica das contradições morais da elite a partir da perspectiva crítica da própria mulher.", correct: true },
+            { letter: "B", text: "Imita os documentos burocráticos dos ministérios do Império para conferir tom oficial à história.", correct: false },
+            { letter: "C", text: "Elimina qualquer reflexão moral para priorizar o suspense de mistério policial.", correct: false },
+            { letter: "D", text: "Condena o uso da escrita por mulheres no contexto da sociedade patriarcal.", correct: false }
+          ],
+          explanation: "O gênero epistolar machadiano transforma o desabafo íntimo em instrumento agudo de radiografia social e autoconhecimento."
+        },
+        {
+          id: "vest_cv_2",
+          examTag: "FUVEST - Crítica à Hipocrisia Amorosa",
+          question: "A reação de Emílio à viuvez de Eugênia exemplifica um traço marcante da visão machadiana sobre as relações humanas:",
+          options: [
+            { letter: "A", text: "A hipocrisia dos galanteadores burgueses, cujo ardor sentimental esconde a busca por vaidade e a aversão a compromissos sérios.", correct: true },
+            { letter: "B", text: "A pureza inabalável das intenções românticas dos jovens cavalheiros da corte.", correct: false },
+            { letter: "C", text: "A determinação incondicional dos homens em honrar suas juras de amor na juventude.", correct: false },
+            { letter: "D", text: "A submissão voluntária dos solteirões aos preceitos mais rígidos da moral católica.", correct: false }
+          ],
+          explanation: "Machado ironiza a retórica apaixonada dos salões, revelando que muitos protestos amorosos eram meros artifícios de vaidade social."
+        },
+        {
+          id: "vest_cv_3",
+          examTag: "UNICAMP - Desencanto e Autonomia",
+          question: "Ao encerrar suas confidências em Petrópolis, Eugênia demonstra:",
+          options: [
+            { letter: "A", text: "Um desencanto maduro perante os códigos mundanos, convertendo sua frustração afetiva em autonomia e independência moral.", correct: true },
+            { letter: "B", text: "A total subordinação aos caprichos de Emílio, aceitando qualquer condição para reavê-lo.", correct: false },
+            { letter: "C", text: "O arrependimento por não ter fugido com o pretendente durante o casamento anterior.", correct: false },
+            { letter: "D", text: "A adesão fanática a uma ordem religiosa de penitência física.", correct: false }
+          ],
+          explanation: "O conto recusa o sentimentalismo vazio e exalta a lucidez da personagem, que prefere a solidão reflexiva à farsa dos afetos mundanos."
+        }
+      ],
+
+      get step2Puzzle() { return this.puzzlesPool[0]; },
+      get step3Analysis() { return this.analysesPool[0]; },
+      get step4Vestibular() { return this.vestibularPool[0]; }
     },
 
     {
       id: "linha-reta-curva",
       title: "Linha Reta e Linha Curva",
       numberText: "Conto VI",
-      location: "📍 Estrada da Gávea, Rio de Janeiro",
+      location: "📍 Petrópolis, Rio de Janeiro",
       image: "assets/cover.jpg",
-      tags: ["Dissimulação", "Geometria Amorosa", "Estratégia"],
+      tags: ["Dissimulação", "Geometria do Desejo", "Vaidade Feminina"],
       xpValue: 150,
-      summary: "Tito prefere a 'linha reta' (a conquista direta e franca), enquanto Diogo usa a 'linha curva' (estratégia indireta e dissimulada). Quem vencerá a disputa pela atenção de Viúva Isaura?",
+      summary: "Em Petrópolis, na casa de Ernesto Azevedo e Adelaide, Tito finge indiferença absoluta ao amor para despertar o orgulho da viúva rica D. Emília, que é cortejada pelo idoso Diogo. No final, Tito revela que utilizou a 'linha curva' (estratégia indireta) para conquistá-la após ter falhado no passado com a 'linha reta' (declaração direta).",
 
       step1Context: {
-        title: "A Geometria da Sedução",
-        text: "Em um passeio de carruagem pela Gávea, dois amigos discutem a melhor tática para seduzir a cobiçada Viúva Isaura. Tito defende a franqueza direta (linha reta), ao passo que Diogo aposta nos arrodeios, noites de dúvida e ciúmes calculados (linha curva).",
-        quote: "— Na amor como na política, a linha reta é o caminho mais longo! A linha curva encurta as distâncias da vaidade!"
+        title: "A Geometria da Conquista nos Salões",
+        text: "Hospedado em Petrópolis na residência do amigo recém-casado Ernesto Azevedo e de Adelaide, o jovem Tito proclama-se imune às seduções femininas. A bela e caprichosa viúva D. Emília, habituada aos galanteios diretos e obsequiosos do maduro Diogo, sente sua vaidade ferida pelo desdém de Tito e empenha-se em conquistá-lo. Ao final, Tito revela o seu cálculo: rejeitado no passado pela 'linha reta' da confissão sincera, triunfou agora pela 'linha curva' da fingida indiferença.",
+        quote: "— A linha reta vai direto ao alvo e falha pela pressa; a linha curva faz a volta da vaidade e atinge o coração com certeza!"
       },
 
-      step2Puzzle: {
-        instruction: "Associe as estratégias de sedução aos seus respectivos caminhos geométricos:",
-        fragments: [
-          { id: "f1", text: "Tito declara-se abertamente a Isaura, acreditando que a sinceridade imediata é infalível." },
-          { id: "f2", text: "Diogo aparenta indiferença e elogia outras damas para despertar o ciúme de Isaura." },
-          { id: "f3", text: "Isaura ignora a proposta direta de Tito por achá-la previsível e sem graça." },
-          { id: "f4", text: "A 'linha curva' de Diogo triunfa, provando que a alma humana aprecia o jogo da dissimulação." }
-        ],
-        correctOrder: ["f1", "f2", "f3", "f4"],
-        hint: "Pense na tese do conto: Declaração direta (falha) -> Dissimulação (estratégia) -> Rejeição da reta -> Vitória da curva."
-      },
+      puzzlesPool: [
+        {
+          id: "puzzle_lrc_1",
+          variantLabel: "Variação A: O Jogo de Petrópolis",
+          instruction: "Reconstitua a estratégia de Tito e o enredo em Petrópolis:",
+          fragments: [
+            { id: "f1", text: "Tito hospeda-se na casa de Ernesto e Adelaide e ostenta completa frieza e desinteresse pelas mulheres." },
+            { id: "f2", text: "A bela viúva D. Emília sente sua vaidade ferida pela indiferença de Tito e decide dobrar seu orgulho." },
+            { id: "f3", text: "Diogo, pretendente idoso e formal de Emília, cerca a viúva de galanteios diretos, sendo solenemente ignorado." },
+            { id: "f4", text: "Tito e Emília anunciam o casamento, coroando a vitória da estratégia indireta concebida por Tito." }
+          ],
+          correctOrder: ["f1", "f2", "f3", "f4"],
+          hint: "A dinâmica em Petrópolis: Frieza ostensiva -> Vaidade ferida de Emília -> Fracasso de Diogo -> Anúncio do matrimônio."
+        },
+        {
+          id: "puzzle_lrc_2",
+          variantLabel: "Variação B: A Revelação da Linha Curva",
+          instruction: "Ordene os passos da comparação geométrica formulada por Tito:",
+          fragments: [
+            { id: "f1", text: "No passado, Tito declarara-se a Emília com paixão direta ('linha reta') e fora zombado e recusado pela viúva." },
+            { id: "f2", text: "Ele compreende que a facilidade e a sinceridade desarmada entorpecem o interesse da mulher cortejada." },
+            { id: "f3", text: "Adota a 'linha curva', fingindo total imunidade amorosa para transformar a conquista em um desafio de vaidade." },
+            { id: "f4", text: "A viúva cai no ardil e persegue obstinadamente o coração daquele que aparentava desprezá-la." }
+          ],
+          correctOrder: ["f1", "f2", "f3", "f4"],
+          hint: "A tese geométrica: Rejeição da linha reta -> Reflexão sobre a vaidade -> Adoção da linha curva -> Triunfo sobre o orgulho."
+        },
+        {
+          id: "puzzle_lrc_3",
+          variantLabel: "Variação C: O Contraste entre Diogo e Tito",
+          instruction: "Reconstitua a oposição de métodos entre os dois pretendentes da viúva:",
+          fragments: [
+            { id: "f1", text: "Diogo gasta seus dias cobrindo D. Emília de elogios banais e mesuras previsíveis." },
+            { id: "f2", text: "Emília desdenha a corte fácil de Diogo e concentra todas as atenções na pose esquiva de Tito." },
+            { id: "f3", text: "Diogo queixa-se amargurado a Ernesto, sem entender por que a dedicação não comove a dama." },
+            { id: "f4", text: "O sucesso de Tito consagra a regra machadiana de que a resistência calculada aguça o desejo nos salões." }
+          ],
+          correctOrder: ["f1", "f2", "f3", "f4"],
+          hint: "O confronto de condutas: Galanteio insistente de Diogo -> Desprezo de Emília -> Queixa a Ernesto -> Vitória do desdém calculado."
+        }
+      ],
 
-      step3Analysis: {
-        title: "A Vitória da Dissimulação",
-        question: "Qual a lição moralista e irônica que Machado transmite neste conto?",
-        options: [
-          { letter: "A", text: "Que a verdade nua e crua sempre vence os jogos de manipulação.", correct: false },
-          { letter: "B", text: "Que o coração humano na sociedade burguesa prefere a intriga e o mistério à transparência direta.", correct: true },
-          { letter: "C", text: "Que a matemática e a geometria são matérias obrigatórias no casamento.", correct: false },
-          { letter: "D", text: "Que passear de carruagem na Gávea é perigoso em dias de chuva.", correct: false }
-        ],
-        feedbackCorrect: "Exato! Machado de Assis usa a metáfora geométrica para mostrar como o jogo social e o amor exigem estratégias de aparente desinteresse.",
-        feedbackIncorrect: "Reflita: O conto demonstra a vitória da 'linha curva' (dissimulação) sobre a 'linha reta' (sinceridade direta)."
-      },
+      analysesPool: [
+        {
+          id: "analysis_lrc_1",
+          variantLabel: "Análise 1: A Geometria do Comportamento",
+          title: "A Metáfora Geométrica e a Psicologia Social",
+          question: "Qual o significado da distinção entre 'Linha Reta' e 'Linha Curva' nas relações afetivas da corte?",
+          options: [
+            { letter: "A", text: "A linha reta simboliza a franqueza que fracassa por matar o suspense, enquanto a linha curva representa a dissimulação estratégica que manipula a vaidade alheia.", correct: true },
+            { letter: "B", text: "Indica o traçado topográfico das estradas de ferro imperiais de Petrópolis.", correct: false },
+            { letter: "C", text: "Representa a preferência estética dos personagens por móveis e carruagens barrocas.", correct: false },
+            { letter: "D", text: "Trata-se de uma regra de esgrima militar praticada pelos jovens oficiais.", correct: false }
+          ],
+          feedbackCorrect: "Exato! Machado usa a metáfora espacial para dissecar como a dissimulação e o cálculo psicológico regem o jogo social da elite.",
+          feedbackIncorrect: "Atenção: A linha reta representa a declaração direta ineficaz; a linha curva é a estratégia de fingir indiferença para despertar a cobiça."
+        },
+        {
+          id: "analysis_lrc_2",
+          variantLabel: "Análise 2: A Psicologia da Coqueteria",
+          title: "O Desejo Humano e a Provocação da Vaidade",
+          question: "Por que D. Emília ignora as homenagens servis de Diogo e concentra seus esforços em dobrar a frieza de Tito?",
+          options: [
+            { letter: "A", text: "Porque a adulação constante entedia o amor-próprio, enquanto o desdém aparente é interpretado como um desafio intolerável à sua vaidade.", correct: true },
+            { letter: "B", text: "Porque Diogo não tinha dinheiro para pagar os passeios a cavalo.", correct: false },
+            { letter: "C", text: "Porque Ernesto e Adelaide a obrigaram a assinar um contrato com Tito.", correct: false },
+            { letter: "D", text: "Porque Tito era médico particular do imperador Dom Pedro II.", correct: false }
+          ],
+          feedbackCorrect: "Perfeito! Machado demonstra com precisão que a conquista nos salões é movida pelo amor-próprio e pelo desejo de dominar o que parece inalcançável.",
+          feedbackIncorrect: "Reflita: A viúva já tinha Diogo aos seus pés; sua atenção foi capturada justamente pelo homem que simulava não se render a seus encantos."
+        },
+        {
+          id: "analysis_lrc_3",
+          variantLabel: "Análise 3: A Ironia sobre a Sinceridade",
+          title: "A Fragilidade da Franqueza nos Salões",
+          question: "Que visão de mundo a vitória de Tito expressa no contexto da prosa machadiana?",
+          options: [
+            { letter: "A", text: "A visão cética de que a sinceridade ingênua é ineficaz no teatro social burguês, onde o sucesso exige o domínio das máscaras e da representação.", correct: true },
+            { letter: "B", text: "A convicção romântica de que os amores predestinados acontecem sem nenhum esforço humano.", correct: false },
+            { letter: "C", text: "A defesa de que o celibato perpétuo é a única solução moral para a mocidade.", correct: false },
+            { letter: "D", text: "A crença de que os astros determinam a compatibilidade dos casais da corte.", correct: false }
+          ],
+          feedbackCorrect: "Excelente! Para Machado de Assis, as relações mundanas operam sob leis de convenção e fingimento em que o afeto sincero precisa da máscara para vingar.",
+          feedbackIncorrect: "Atenção: A experiência de Tito prova que a verdade nua foi rejeitada, triunfando apenas quando vestida com a armadura da dissimulação."
+        }
+      ],
 
-      step4Vestibular: {
-        examTag: "FUVEST / UNICAMP - Metáfora e Enredo",
-        question: "A oposição entre 'Linha Reta' e 'Linha Curva' no conto machadiano serve para ilustrar:",
-        options: [
-          { letter: "A", text: "Dois modos opostos de comportamento social: a ingenuidade direta contra a astúcia manipuladora.", correct: true },
-          { letter: "B", text: "O trazado das primeiras linhas de bonde elétrico no Rio de Janeiro.", correct: false },
-          { letter: "C", text: "A disputa entre engenheiros e arquitetos durante a reforma da capital.", correct: false },
-          { letter: "D", text: "A diferença entre o estilo poético barroco e o arcádico.", correct: false }
-        ],
-        explanation: "A metáfora espacial revela a profundidade com que Machado analisa os jogos de interesse e a psicologia das relações interpessoais."
-      }
+      vestibularPool: [
+        {
+          id: "vest_lrc_1",
+          examTag: "FUVEST / UNICAMP - Teoria das Aparências",
+          question: "Em 'Linha Reta e Linha Curva', o comportamento de Tito em Petrópolis exemplifica:",
+          options: [
+            { letter: "A", text: "A manipulação deliberada dos códigos de conduta e da vaidade mundana como método infalível de conquista social.", correct: true },
+            { letter: "B", text: "A submissão irracional de um jovem doente às ordens de sua família abastada.", correct: false },
+            { letter: "C", text: "O choque entre a moralidade religiosa do clero e as festas carnavalescas.", correct: false },
+            { letter: "D", text: "A impossibilidade total de relacionamento amoroso entre membros da mesma classe social.", correct: false }
+          ],
+          explanation: "Tito compreende os resortes da psicologia mundana e arquiteta uma encenação fria para dobrar o orgulho da viúva."
+        },
+        {
+          id: "vest_lrc_2",
+          examTag: "ENEM - Recursos Linguísticos & Metáforas",
+          question: "O recurso à terminologia geométrica para qualificar as atitudes de Tito e Diogo reflete um traço de estilo machadiano voltado a:",
+          options: [
+            { letter: "A", text: "Analisar as paixões humanas com distanciamento crítico, elegância irônica e precisão quase científica.", correct: true },
+            { letter: "B", text: "Dificultar a compreensão dos leitores através de termos matemáticos incompreensíveis.", correct: false },
+            { letter: "C", text: "Substituir a literatura de costumes por manuais de engenharia de estradas.", correct: false },
+            { letter: "D", text: "Elogiar os estudos de agrimensura promovidos pelo Ministério da Agricultura.", correct: false }
+          ],
+          explanation: "Machado utiliza conceitos da geometria como metáfora irônica para dissecar a dinâmica dos sentimentos e o teatro social."
+        },
+        {
+          id: "vest_lrc_3",
+          examTag: "UERJ - Sociabilidade e Veraneio Imperial",
+          question: "O cenário de Petrópolis no conto 'Linha Reta e Linha Curva' desempenha a função de:",
+          options: [
+            { letter: "A", text: "Espaço privilegiado de sociabilidade e ócio da elite carioca, onde a intriga mundana e as disputas de salão ganham ritmo livre.", correct: true },
+            { letter: "B", text: "Território de conflito armado entre tropas legalistas e rebeldes monarquistas.", correct: false },
+            { letter: "C", text: "Senzala coletiva que denuncia a exploração escravista nas lavouras do café.", correct: false },
+            { letter: "D", text: "Comunidade religiosa isolada sob rígida disciplina monástica.", correct: false }
+          ],
+          explanation: "Petrópolis era o refúgio de veraneio da corte imperial, ambiente propício para os refinados jogos de cortejo, vaidade e entretenimento da burguesia."
+        }
+      ],
+
+      get step2Puzzle() { return this.puzzlesPool[0]; },
+      get step3Analysis() { return this.analysesPool[0]; },
+      get step4Vestibular() { return this.vestibularPool[0]; }
     },
 
     {
       id: "frei-simao",
       title: "Frei Simão",
       numberText: "Conto VII",
-      location: "📍 Convento de Santa Teresa, Rio de Janeiro",
+      location: "📍 Convento de São Bento, Rio de Janeiro",
       image: "assets/frei_simao.jpg",
-      tags: ["Tragédia", "Amor Impossível", "Loucura Psicológica"],
+      tags: ["Tragédia", "Tirania Familiar", "Desencanto Absoluto"],
       xpValue: 150,
-      summary: "Simão refugia-se no claustro religioso após acreditar que sua amada Helena o traíra. Anos mais tarde, a descoberta do engano o leva ao colapso mental e à morte na cela do convento.",
+      summary: "Simão e a órfã Helena cresceram juntos e apaixonaram-se, mas os pais de Simão opuseram-se ao enlace, mandando o rapaz para longe e mentindo que Helena havia morrido. Desolado, Simão professou votos no convento beneditino. Anos depois, ao reencontrar Helena viva e casada por imposição, o choque causa a morte da moça e mergulha Frei Simão na loucura, culminando em sua célebre frase final no leito de morte: 'Morro odiando a humanidade!'.",
 
       step1Context: {
-        title: "A Tragédia do Monge e a Perda de Helena",
-        text: "Encerrando a coletânea, 'Frei Simão' apresenta o tom mais sombrio do livro. O jovem Simão, desenganado ao crer que Helena se casara com outro por ganância, professa votos perpétuos como monge. Contudo, uma carta revelará que tudo não passara de um plano cruel de terceiros.",
-        quote: "— A cela do convento sepultou meu corpo, mas a dúvida destruiu minha razão..."
+        title: "A Tirania dos Pais e o Destino de Simão",
+        text: "Encerrando a coletânea com um tom de profunda tragédia moral, 'Frei Simão' narra a destruição da vida de dois jovens pela autoridade despótica dos pais. Simão fora criado com a órfã Helena e planejava desposá-la, mas sua família repudia a união e inventa a pérfida mentira de que a jovem falecera. Desesperado, Simão busca refúgio no claustro beneditino. Anos depois, descobre a farsa ao vê-la viva em uma missa; a dor do reencontro mata Helena e arrasta o frade para a loucura e para o desencanto total com a humanidade.",
+        quote: "— Morro odiando a humanidade!"
       },
 
-      step2Puzzle: {
-        instruction: "Recompunha os fatos trágicos da vida de Frei Simão:",
-        fragments: [
-          { id: "f1", text: "Simão apaixona-se por Helena, mas mentiras de familiares fazem-no crer em sua infidelidade." },
-          { id: "f2", text: "Em desespero e desilusão com o mundo, ele abandona a vida civil e toma o hábito de frei." },
-          { id: "f3", text: "Anos depois, descobre que Helena sempre fora fiel e morrera chamando por seu nome." },
-          { id: "f4", text: "O impacto da revelação destrói a sanidade de Simão, que sucumbe à loucura na cela." }
-        ],
-        correctOrder: ["f1", "f2", "f3", "f4"],
-        hint: "Acompanhe a tragédia: Engano cruel -> Reclusão religiosa -> Descoberta da verdade -> Colapso fatal."
-      },
+      puzzlesPool: [
+        {
+          id: "puzzle_fs_1",
+          variantLabel: "Variação A: A Mentira dos Pais",
+          instruction: "Reconstitua os passos da tragédia que conduziu Simão ao claustro religioso:",
+          fragments: [
+            { id: "f1", text: "Simão e a órfã Helena crescem sob o mesmo teto e juram amor eterno na juventude." },
+            { id: "f2", text: "Os pais de Simão desaprovam a união por orgulho social e afastam o filho para outra cidade." },
+            { id: "f3", text: "O pai comunica falsamente a Simão que Helena falecera repentinamente de grave enfermidade." },
+            { id: "f4", text: "Arrasado pela perda da amada, Simão abandona a vida civil e professa votos no convento beneditino." }
+          ],
+          correctOrder: ["f1", "f2", "f3", "f4"],
+          hint: "A marcha do engano: Amor de infância -> Oposição dos pais -> Mentira da morte -> Ingresso na ordem religiosa."
+        },
+        {
+          id: "puzzle_fs_2",
+          variantLabel: "Variação B: O Reencontro Fatal",
+          instruction: "Ordene os acontecimentos após a descoberta da mentira no convento:",
+          fragments: [
+            { id: "f1", text: "Anos após professar votos solenes, Frei Simão reconhece Helena viva assistindo a uma cerimônia na igreja." },
+            { id: "f2", text: "Ele descobre estarrecido que Helena fora forçada pela família dele a desposar outro homem contra a vontade." },
+            { id: "f3", text: "O abalo psíquico do reencontro e a dor da traição ceifam a vida de Helena dois meses depois." },
+            { id: "f4", text: "Frei Simão perde completamente a razão, mergulhando no isolamento e no delírio dentro de sua cela." }
+          ],
+          correctOrder: ["f1", "f2", "f3", "f4"],
+          hint: "Acompanhe o choque: Visão na igreja -> Descoberta do casamento forçado -> Morte de Helena -> Loucura do monge."
+        },
+        {
+          id: "puzzle_fs_3",
+          variantLabel: "Variação C: Os Manuscritos e a Morte",
+          instruction: "Reconstitua os momentos finais de Frei Simão e o conteúdo de suas memórias:",
+          fragments: [
+            { id: "f1", text: "Confinado à cela, Frei Simão redige secretamente suas memórias, expondo a torpeza humana que arruinou sua vida." },
+            { id: "f2", text: "Acometido de enfermidade fatal, recebe a extrema-unção cercado pelos membros da irmandade religiosa." },
+            { id: "f3", text: "Em seu último suspiro no leito de morte, pronuncia a sentença indelével: 'Morro odiando a humanidade!'." },
+            { id: "f4", text: "Os papéis encontrados em sua cela revelam ao Prior a nobreza e a tragédia injusta de sua existência." }
+          ],
+          correctOrder: ["f1", "f2", "f3", "f4"],
+          hint: "O epílogo: Escrita das memórias -> Agonia no leito -> Frase final -> Leitura dos manuscritos."
+        }
+      ],
 
-      step3Analysis: {
-        title: "Análise do Absurdo e do Sofrimento Psíquico",
-        question: "Diferente dos outros contos mais cômicos e irônicos da obra, 'Frei Simão' se destaca por:",
-        options: [
-          { letter: "A", text: "Apresentar um desfecho tragicômico com final feliz em um circo.", correct: false },
-          { letter: "B", text: "Mergulhar na patologia da dor, na desilusão devastadora e na impotência do indivíduo perante o erro indescritível.", correct: true },
-          { letter: "C", text: "Defender a expulsão de todos os monges do Brasil Imperial.", correct: false },
-          { letter: "D", text: "Focar em negociações de compra e venda de escravos no porto.", correct: false }
-        ],
-        feedbackCorrect: "Perfeito! Frei Simão antecipa os grandes dramas psicológicos da fase madura de Machado, explorando o ciúme destrutivo e o colapso moral.",
-        feedbackIncorrect: "Atenção: O conto encerra a obra em tom grave e trágico, abordando o trauma irreversível provocado pela mentira."
-      },
+      analysesPool: [
+        {
+          id: "analysis_fs_1",
+          variantLabel: "Análise 1: A Tirania Familiar",
+          title: "O Despotismo Patriarcal e o Sacrifício dos Filhos",
+          question: "Como a conduta dos pais de Simão ilustra a autoridade patriarcal da elite brasileira do século XIX?",
+          options: [
+            { letter: "A", text: "Mostra o arbítrio absoluto de pais que não hesitavam em recorrer à mentira e à destruição psíquica dos filhos para preservar seus preconceitos de classe.", correct: true },
+            { letter: "B", text: "Demonstra que as famílias imperiais incentivavam os jovens a escolherem livremente suas vocações sem interferência.", correct: false },
+            { letter: "C", text: "Indica que os pais de Simão queriam apenas que ele se tornasse oficial da marinha mercante.", correct: false },
+            { letter: "D", text: "Comprova que todas as decisões familiares eram mediadas pelo imperador Dom Pedro II.", correct: false }
+          ],
+          feedbackCorrect: "Exato! Machado denuncia a crueldade fria das convenções burguesas, nas quais o interesse e a vaidade familiar sobrepunham-se aos sentimentos mais sagrados.",
+          feedbackIncorrect: "Atenção: A tragédia de Simão nasce exclusivamente do preconceito social dos pais, que forjaram a morte de Helena para impedir o casamento."
+        },
+        {
+          id: "analysis_fs_2",
+          variantLabel: "Análise 2: A Ilusão do Claustro",
+          title: "O Claustro Religioso e a Impossibilidade de Esquecer",
+          question: "O que a vida de Frei Simão no convento revela sobre o isolamento religioso como tentativa de fuga?",
+          options: [
+            { letter: "A", text: "Que as paredes do convento e os votos solenes não têm o poder de apagar a memória da injustiça nem de curar o trauma afetivo.", correct: true },
+            { letter: "B", text: "Que os monges tinham permissão para casar-se em segredo dentro da capela.", correct: false },
+            { letter: "C", text: "Que a vida no mosteiro transformava automaticamente qualquer pessoa em um sábio imune a dores.", correct: false },
+            { letter: "D", text: "Que o mosteiro era usado apenas como esconderijo para criminosos políticos foragidos.", correct: false }
+          ],
+          feedbackCorrect: "Perfeito! Machado demonstra que o hábito não confere paz espiritual quando a mente está dilacerada pela violência moral sofrida no mundo.",
+          feedbackIncorrect: "Reflita: O refúgio no mosteiro foi uma fuga desesperada, mas a dor do passado permaneceu intacta e explodiu com a revelação da verdade."
+        },
+        {
+          id: "analysis_fs_3",
+          variantLabel: "Análise 3: A Sentença Final",
+          title: "O Clímax do Desencanto Machadiano",
+          question: "Qual o significado da célebre exclamação final de Frei Simão: 'Morro odiando a humanidade!'?",
+          options: [
+            { letter: "A", text: "Sintetiza o julgamento ético definitivo contra a hipocrisia, o egoísmo e a perfídia que regem as relações sociais dos homens.", correct: true },
+            { letter: "B", text: "Representa um surto sem relação com a história narrada nos manuscritos.", correct: false },
+            { letter: "C", text: "Uma brincadeira final de Machado para ironizar a literatura de terror gótico.", correct: false },
+            { letter: "D", text: "Uma citação extraída diretamente dos manuais de liturgia beneditina.", correct: false }
+          ],
+          feedbackCorrect: "Excelente! Essa sentença condensa o profundo pessimismo e a denúncia moral que encerram *Contos Fluminenses*, distanciando-se de qualquer conciliação romântica.",
+          feedbackIncorrect: "Atenção: A frase é o veredito de quem foi vítima de uma crueldade irreparável perpetrada pelos próprios pais e pela sociedade."
+        }
+      ],
 
-      step4Vestibular: {
-        examTag: "ENEM / FUVEST - Visão Trágica",
-        question: "No conto 'Frei Simão', a instituição religiosa (o convento) funciona como:",
-        options: [
-          { letter: "A", text: "Um refúgio ilusório que não consegue apagar o trauma e a dor do mundo exterior.", correct: true },
-          { letter: "B", text: "Um local de festas e alegrias constantes para a juventude carioca.", correct: false },
-          { letter: "C", text: "Uma escola de negócios financeiros para a elite comercial.", correct: false },
-          { letter: "D", text: "Um tribunal militar encarregado de julgar réus da guerra.", correct: false }
-        ],
-        explanation: "Para Machado, os muros do convento são impotentes para aplacar a tempestade interna da mente humana devastada pelo engano."
-      }
+      vestibularPool: [
+        {
+          id: "vest_fs_1",
+          examTag: "FUVEST / UNICAMP - Ruptura com o Romantismo",
+          question: "Em 'Frei Simão', a recusa de um final consolador e a ênfase na destruição irreversível dos amantes marcam:",
+          options: [
+            { letter: "A", text: "A superação definitiva da fábula romântica da providência divina em favor de uma visão trágica e determinista da sociedade dos homens.", correct: true },
+            { letter: "B", text: "A cópia servil dos contos de fadas medievais alemães.", correct: false },
+            { letter: "C", text: "A exaltação do sentimentalismo ingênuo dos folhetins de época.", correct: false },
+            { letter: "D", text: "O abandono do realismo psicológico em prol de lendas do folclore amazônico.", correct: false }
+          ],
+          explanation: "Machado recusa a redenção mística e o final feliz, apresentando a tragédia como consequência direta da vileza e do egoísmo social."
+        },
+        {
+          id: "vest_fs_2",
+          examTag: "ENEM - Recursos Narrativos e Memória",
+          question: "O recurso aos manuscritos autobiográficos deixados por Frei Simão na cela tem como efeito:",
+          options: [
+            { letter: "A", text: "Conferir autoridade testemunhal à dor do protagonista, revelando postumamente a verdade oculta sob as aparências do silêncio monástico.", correct: true },
+            { letter: "B", text: "Comprovar que o frei não sabia escrever em língua portuguesa.", correct: false },
+            { letter: "C", text: "Eximir os pais de Simão de qualquer responsabilidade moral sobre o destino dos jovens.", correct: false },
+            { letter: "D", text: "Divertir os monges com histórias cômicas do carnaval fluminense.", correct: false }
+          ],
+          explanation: "Os manuscritos funcionam como documento de denúncia moral póstuma, desvendando o segredo que a sociedade fingia ignorar."
+        },
+        {
+          id: "vest_fs_3",
+          examTag: "UERJ - Sociologia das Emoções Oitocentistas",
+          question: "A trajetória de Simão e Helena em 'Frei Simão' demonstra que, na ordem patriarcal do Segundo Reinado:",
+          options: [
+            { letter: "A", text: "A felicidade individual e o afeto sincero dos jovens eram sistematicamente sacrificados em nome de interesses de casta e alianças de prestígio.", correct: true },
+            { letter: "B", text: "As leis imperiais protegiam irrestritamente a livre união de jovens órfãos com membros da elite.", correct: false },
+            { letter: "C", text: "A autoridade dos pais cessava compulsoriamente aos doze anos de idade.", correct: false },
+            { letter: "D", text: "O clero católico proibia qualquer casamento entre pessoas da mesma cidade.", correct: false }
+          ],
+          explanation: "O conto é uma das mais contundentes críticas machadianas à violência simbólica exercida pelas famílias de elite sobre a autonomia afetiva dos jovens."
+        }
+      ],
+
+      get step2Puzzle() { return this.puzzlesPool[0]; },
+      get step3Analysis() { return this.analysesPool[0]; },
+      get step4Vestibular() { return this.vestibularPool[0]; }
     }
   ];
 
@@ -417,7 +1081,7 @@
     },
     {
       id: "bq3",
-      storyRef: "Luiz Soares & O Segredo de Augusta",
+      storyRef: "Luís Soares & O Segredo de Augusta",
       examTag: "ENEM / Adaptada",
       question: "O conceito de 'máscara social' na prosa machadiana de *Contos Fluminenses* diz respeito:",
       options: [
@@ -427,6 +1091,32 @@
         { letter: "D", text: "Às artes plásticas importadas da Europa no século XIX.", correct: false }
       ],
       explanation: "A máscara social é o artifício com o qual a elite carioca esconde suas misérias morais e econômicas para manter o status."
+    },
+    {
+      id: "bq4",
+      storyRef: "Linha Reta e Linha Curva & Confissões de uma Viúva Moça",
+      examTag: "FUVEST / UNICAMP Adaptada",
+      question: "Nos contos ambientados no cenário de veraneio de Petrópolis ('Linha Reta e Linha Curva' e 'Confissões de uma Viúva Moça'), a dinâmica das relações amorosas revela que:",
+      options: [
+        { letter: "A", text: "O isolamento da serra permitia aos jovens viver paixões puras e imunes à malícia da corte.", correct: false },
+        { letter: "B", text: "A conquista amorosa funciona como jogo estratégico de vaidade e dissimulação, no qual a franqueza é punida e o fingimento é valorizado.", correct: true },
+        { letter: "C", text: "As leis da corte proibiam qualquer tipo de galanteio fora dos limites do município neutro do Rio de Janeiro.", correct: false },
+        { letter: "D", text: "As viúvas eram legalmente impedidas de receber visitas ou manter correspondências privadas.", correct: false }
+      ],
+      explanation: "Petrópolis serve como palco para o refinamento dos jogos de dissimulação, nos quais a vaidade e o cálculo regem os afetos da elite fluminense."
+    },
+    {
+      id: "bq5",
+      storyRef: "Frei Simão & O Segredo de Augusta",
+      examTag: "ENEM / UERJ Adaptada",
+      question: "Comparando os destinos de Simão ('Frei Simão') e de Adelaide ('O Segredo de Augusta'), constata-se uma denúncia contundente de Machado contra:",
+      options: [
+        { letter: "A", text: "O despotismo patriarcal que instrumentaliza e sacrifica a felicidade dos filhos para preservar o patrimônio ou o orgulho de classe.", correct: true },
+        { letter: "B", text: "A falta de colégios públicos de ensino secundário na cidade do Rio de Janeiro.", correct: false },
+        { letter: "C", text: "A recusa da juventude imperial em aprender idiomas estrangeiros como francês e inglês.", correct: false },
+        { letter: "D", text: "A cobrança compulsória de impostos alfandegários sobre heranças familiares.", correct: false }
+      ],
+      explanation: "Tanto Simão quanto Adelaide têm suas vidas afetivas destruídas pela imposição tirânica de pais que colocam o dinheiro e as convenções acima da integridade humana."
     }
   ];
 
@@ -441,9 +1131,9 @@
     },
     {
       id: "ach-luiz-soares",
-      title: "Desmascarador de Luiz Soares",
+      title: "Desmascarador de Luís Soares",
       icon: "🎩",
-      desc: "Desvendou 'Luiz Soares' com 150 XP (sem errar e sem pedir dicas).",
+      desc: "Desvendou 'Luís Soares' com 150 XP (sem errar e sem pedir dicas).",
       condition: (u) => u.perfectStories && u.perfectStories.includes("luiz-soares")
     },
     {
@@ -462,7 +1152,7 @@
     },
     {
       id: "ach-confissoes-viuva",
-      title: "Lucidez de Carolina",
+      title: "Lucidez de Eugênia",
       icon: "✉️",
       desc: "Desvendou 'Confissões de uma Viúva Moça' com 150 XP (sem errar e sem pedir dicas).",
       condition: (u) => u.perfectStories && u.perfectStories.includes("confissoes-viuva")
@@ -814,23 +1504,105 @@
     );
   }
 
+  /* ==========================================================================
+     PEDAGOGICAL EVALUATION & DATA NORMALIZATION HELPERS
+     ========================================================================== */
+  function getStudentCompletedCount(student) {
+    if (!student) return 0;
+    if (Array.isArray(student.completedStories) && student.completedStories.length > 0) {
+      return Math.min(STORIES.length, student.completedStories.length);
+    }
+    if (typeof student.completedStoriesCount === 'number' && student.completedStoriesCount > 0) {
+      return Math.min(STORIES.length, student.completedStoriesCount);
+    }
+    const xp = Number(student.xp) || 0;
+    if (xp >= 1050) {
+      return STORIES.length; // 7 contos
+    }
+    if (xp > 0) {
+      return Math.min(STORIES.length, Math.max(1, Math.round(xp / 150)));
+    }
+    return 0;
+  }
+
+  function calculateStudentGrade(student) {
+    if (!student) return '0.0';
+    const xp = Number(student.xp) || 0;
+    const completedCount = getStudentCompletedCount(student);
+
+    // Aluno que concluiu todos os contos e boss, ou alcançou 1050+ XP: nota máxima 10.0
+    if (xp >= 1050 || (completedCount >= STORIES.length && student.bossPassed)) {
+      return '10.0';
+    }
+
+    // Componente 1: Contos concluídos (7 contos -> até 7.0 pontos)
+    const storiesScore = (completedCount / STORIES.length) * 7.0;
+
+    // Componente 2: Simulado Final / Desafio dos Mestres (até 3.0 pontos)
+    let bossScore = 0;
+    if (student.bossPassed) {
+      bossScore = 3.0;
+    } else if (typeof student.bossScore === 'number' && student.bossScore > 0) {
+      bossScore = (student.bossScore / 5) * 3.0;
+    }
+
+    let gradeNum = storiesScore + bossScore;
+
+    // Se o aluno tem pontuação de XP significativa mas contos isolados não sincronizaram
+    if (xp > 0) {
+      const xpProportional = Math.min(10.0, (xp / 1050) * 10.0);
+      gradeNum = Math.max(gradeNum, xpProportional);
+    }
+
+    // Trava estritamente entre 0.0 e 10.0
+    const clamped = Math.min(10.0, Math.max(0.0, gradeNum));
+    return clamped.toFixed(1);
+  }
+
+  function normalizeStudentData(student) {
+    if (!student || typeof student !== 'object') return student;
+    if (!Array.isArray(student.completedStories)) {
+      student.completedStories = [];
+    }
+    if (!Array.isArray(student.perfectStories)) {
+      student.perfectStories = [];
+    }
+    if (!Array.isArray(student.xpHistory)) {
+      student.xpHistory = [];
+    }
+    student.xp = Number(student.xp) || 0;
+
+    const count = getStudentCompletedCount(student);
+    if (student.completedStories.length === 0 && count > 0) {
+      const allIds = STORIES.map(s => s.id);
+      student.completedStories = allIds.slice(0, count);
+    }
+    student.completedStoriesCount = student.completedStories.length;
+
+    if (student.xp >= 1050 || student.completedStoriesCount >= STORIES.length) {
+      student.bossPassed = true;
+    }
+
+    student.grade = calculateStudentGrade(student);
+    return student;
+  }
+
   function loadStudentsFromStorage() {
     try {
       const data = localStorage.getItem('CF_STUDENTS_LIST');
       if (data) {
         const parsed = JSON.parse(data);
         if (Array.isArray(parsed)) {
-          STATE.studentsList = parsed.filter(s => s && typeof s === 'object' && s.name);
+          STATE.studentsList = parsed
+            .filter(s => s && typeof s === 'object' && s.name)
+            .map(normalizeStudentData);
         }
       }
       const activeId = localStorage.getItem('CF_ACTIVE_STUDENT_ID');
       if (activeId && STATE.studentsList.length > 0) {
         const found = STATE.studentsList.find(s => s && s.id === activeId);
         if (found && found.name) {
-          if (!found.completedStories) found.completedStories = [];
-          if (!found.perfectStories) found.perfectStories = [];
-          if (!found.xpHistory) found.xpHistory = [];
-          STATE.currentUser = found;
+          STATE.currentUser = normalizeStudentData(found);
         } else {
           STATE.currentUser = null;
         }
@@ -853,16 +1625,21 @@
     const scriptUrl = getGoogleSheetsURL();
     if (!scriptUrl) return Promise.resolve(false);
 
+    normalizeStudentData(student);
+    const completedCount = getStudentCompletedCount(student);
+    const notaCalculada = calculateStudentGrade(student);
+
     const payload = {
       action: 'saveStudent',
       id: student.id,
       name: student.name,
       studentClass: student.studentClass,
       xp: student.xp,
-      completedStoriesCount: student.completedStories ? student.completedStories.length : 0,
+      completedStoriesCount: completedCount,
       completedStories: (student.completedStories || []).join(', '),
       bossPassed: student.bossPassed ? 'Aprovado' : 'Pendente',
-      score10: ((student.completedStories ? student.completedStories.length : 0) / STORIES.length * 10).toFixed(1),
+      grade: notaCalculada,
+      score10: notaCalculada,
       timestamp: new Date().toLocaleString('pt-BR')
     };
 
@@ -923,22 +1700,18 @@
     if (!Array.isArray(data)) return;
     data.forEach(remoteStd => {
       if (!remoteStd || !remoteStd.name) return;
-      const idx = STATE.studentsList.findIndex(s => s && (s.id === remoteStd.id || (s.name && s.name.toLowerCase() === remoteStd.name.toLowerCase() && s.studentClass === remoteStd.studentClass)));
+      const normalizedRemote = normalizeStudentData({ ...remoteStd });
+      const idx = STATE.studentsList.findIndex(s => s && (s.id === normalizedRemote.id || (s.name && s.name.toLowerCase() === normalizedRemote.name.toLowerCase() && s.studentClass === normalizedRemote.studentClass)));
       if (idx !== -1) {
-        if ((remoteStd.xp || 0) > (STATE.studentsList[idx].xp || 0)) {
-          STATE.studentsList[idx] = { ...STATE.studentsList[idx], ...remoteStd };
+        if ((normalizedRemote.xp || 0) >= (STATE.studentsList[idx].xp || 0)) {
+          STATE.studentsList[idx] = { 
+            ...STATE.studentsList[idx], 
+            ...normalizedRemote,
+            completedStories: normalizedRemote.completedStories.length > 0 ? normalizedRemote.completedStories : (STATE.studentsList[idx].completedStories || [])
+          };
         }
       } else {
-        STATE.studentsList.push({
-          id: remoteStd.id || ('std_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5)),
-          name: remoteStd.name,
-          studentClass: remoteStd.studentClass || 'Sem Turma',
-          xp: Number(remoteStd.xp) || 0,
-          completedStories: Array.isArray(remoteStd.completedStories) ? remoteStd.completedStories : [],
-          perfectStories: Array.isArray(remoteStd.perfectStories) ? remoteStd.perfectStories : [],
-          bossPassed: !!remoteStd.bossPassed,
-          xpHistory: Array.isArray(remoteStd.xpHistory) ? remoteStd.xpHistory : []
-        });
+        STATE.studentsList.push(normalizedRemote);
       }
     });
     saveToStorage(false); // não re-sincroniza em loop
@@ -949,6 +1722,7 @@
   function saveToStorage(shouldSync = true) {
     try {
       if (STATE.currentUser && STATE.currentUser.name) {
+        normalizeStudentData(STATE.currentUser);
         const idx = STATE.studentsList.findIndex(s => s && s.id === STATE.currentUser.id);
         if (idx !== -1) {
           STATE.studentsList[idx] = STATE.currentUser;
@@ -1020,12 +1794,16 @@
       return;
     }
 
+    normalizeStudentData(STATE.currentUser);
+
     DOM.playerBar.classList.remove('hidden');
     DOM.btnSwitchUser.classList.remove('hidden');
     
-    const firstName = STATE.currentUser.name.trim().split(' ')[0] || 'Aluno';
+    // Mostra estritamente apenas o primeiro nome do jogador atual
+    const fullName = (STATE.currentUser.name || '').trim();
+    const firstName = fullName.split(' ')[0] || 'Aluno';
     DOM.headerPlayerName.textContent = firstName;
-    DOM.headerPlayerName.title = STATE.currentUser.name;
+    DOM.headerPlayerName.title = `Estudante: ${fullName} (${STATE.currentUser.studentClass || 'Sem Turma'})`;
     DOM.headerPlayerClass.textContent = STATE.currentUser.studentClass || '';
     DOM.headerPlayerXP.textContent = `${STATE.currentUser.xp || 0} XP`;
 
@@ -1089,10 +1867,8 @@
       DOM.overallPercentText.textContent = `0% (0/${STORIES.length} contos)`;
       return;
     }
-    if (!Array.isArray(STATE.currentUser.completedStories)) {
-      STATE.currentUser.completedStories = [];
-    }
-    const completedCount = STATE.currentUser.completedStories.length;
+    normalizeStudentData(STATE.currentUser);
+    const completedCount = getStudentCompletedCount(STATE.currentUser);
     const total = STORIES.length;
     const percent = Math.round((completedCount / total) * 100);
 
@@ -1123,6 +1899,7 @@
     STATE.currentStep = 1;
     STATE.usedHintInCurrentStory = false;
     STATE.madeErrorInCurrentStory = false;
+    STATE.step2Passed = false;
     STATE.step3Passed = false;
     STATE.step4Passed = false;
 
@@ -1131,24 +1908,49 @@
     DOM.gameStoryTitle.textContent = story.title;
     DOM.gameStoryLocation.textContent = story.location;
 
-    // 1. Randomize Puzzle Fragments (Ensure it doesn't start already correctly ordered)
-    let shuffledPuzzle = shuffleArray(story.step2Puzzle.fragments);
-    const isAlreadyCorrect = shuffledPuzzle.every((f, idx) => f.id === story.step2Puzzle.correctOrder[idx]);
+    // 1. Dynamic selection from Pools (Random variant for replayability)
+    const puzzlePool = story.puzzlesPool && story.puzzlesPool.length ? story.puzzlesPool : [story.step2Puzzle];
+    const selectedPuzzleIdx = Math.floor(Math.random() * puzzlePool.length);
+    const activePuzzleData = puzzlePool[selectedPuzzleIdx];
+
+    const analysisPool = story.analysesPool && story.analysesPool.length ? story.analysesPool : [story.step3Analysis];
+    const selectedAnalysisIdx = Math.floor(Math.random() * analysisPool.length);
+    const activeAnalysisData = analysisPool[selectedAnalysisIdx];
+
+    const vestPool = story.vestibularPool && story.vestibularPool.length ? story.vestibularPool : [story.step4Vestibular];
+    const selectedVestIdx = Math.floor(Math.random() * vestPool.length);
+    const activeVestData = vestPool[selectedVestIdx];
+
+    STATE.activeStoryChallenge = {
+      puzzle: activePuzzleData,
+      puzzleIndex: selectedPuzzleIdx + 1,
+      puzzleTotal: puzzlePool.length,
+      analysis: activeAnalysisData,
+      analysisIndex: selectedAnalysisIdx + 1,
+      analysisTotal: analysisPool.length,
+      vestibular: activeVestData,
+      vestibularIndex: selectedVestIdx + 1,
+      vestibularTotal: vestPool.length
+    };
+
+    // 2. Randomize Puzzle Fragments (Ensure it doesn't start already correctly ordered)
+    let shuffledPuzzle = shuffleArray(activePuzzleData.fragments);
+    const isAlreadyCorrect = shuffledPuzzle.every((f, idx) => f.id === activePuzzleData.correctOrder[idx]);
     if (isAlreadyCorrect && shuffledPuzzle.length > 1) {
       [shuffledPuzzle[0], shuffledPuzzle[1]] = [shuffledPuzzle[1], shuffledPuzzle[0]];
     }
     STATE.activePuzzleOrder = shuffledPuzzle;
 
-    // 2. Randomize Step 3 Analysis Options and re-assign A, B, C, D letters dynamically
-    const shuffledStep3 = shuffleArray(story.step3Analysis.options);
+    // 3. Randomize Step 3 Analysis Options and re-assign A, B, C, D letters dynamically
+    const shuffledStep3 = shuffleArray(activeAnalysisData.options);
     const letters = ["A", "B", "C", "D"];
     STATE.activeStep3Options = shuffledStep3.map((opt, i) => ({
       ...opt,
       letter: letters[i]
     }));
 
-    // 3. Randomize Step 4 Vestibular Options and re-assign A, B, C, D letters dynamically
-    const shuffledStep4 = shuffleArray(story.step4Vestibular.options);
+    // 4. Randomize Step 4 Vestibular Options and re-assign A, B, C, D letters dynamically
+    const shuffledStep4 = shuffleArray(activeVestData.options);
     STATE.activeStep4Options = shuffledStep4.map((opt, i) => ({
       ...opt,
       letter: letters[i]
@@ -1188,24 +1990,32 @@
     // Step 2: Puzzle de Sequência Lógica
     else if (STATE.currentStep === 2) {
       DOM.btnHintGame.classList.remove('hidden');
-      DOM.btnNextGame.textContent = 'Verificar Sequência →';
+      DOM.btnNextGame.textContent = STATE.step2Passed ? 'Ir para Análise Psicológica →' : 'Verificar Sequência →';
+
+      const activePuzzle = STATE.activeStoryChallenge ? STATE.activeStoryChallenge.puzzle : story.step2Puzzle;
 
       DOM.gameBody.innerHTML = `
         <div class="slide-container">
-          <p class="puzzle-instruction">🧩 ${story.step2Puzzle.instruction}</p>
+          <p class="puzzle-instruction">🧩 ${activePuzzle.instruction}</p>
           <div class="puzzle-sequence-box" id="puzzleContainer">
             ${STATE.activePuzzleOrder.map((frag, idx) => `
               <div class="puzzle-slot-item" data-slot="${idx}" id="puzzleSlot_${idx}">
                 <span class="slot-num-badge">${idx + 1}º</span>
-                <div class="puzzle-fragment-item" data-id="${frag.id}">
+                <div class="puzzle-fragment-item ${STATE.step2Passed ? 'puzzle-fragment-correct' : ''}" data-id="${frag.id}">
                   <span class="fragment-text">${frag.text}</span>
                   <div class="fragment-controls">
-                    <button class="btn-move" onclick="window.CF_GAME.moveFragment(${idx}, -1)" ${idx === 0 ? 'disabled' : ''}>▲</button>
-                    <button class="btn-move" onclick="window.CF_GAME.moveFragment(${idx}, 1)" ${idx === STATE.activePuzzleOrder.length - 1 ? 'disabled' : ''}>▼</button>
+                    <button class="btn-move" onclick="window.CF_GAME.moveFragment(${idx}, -1)" ${idx === 0 || STATE.step2Passed ? 'disabled' : ''}>▲</button>
+                    <button class="btn-move" onclick="window.CF_GAME.moveFragment(${idx}, 1)" ${idx === STATE.activePuzzleOrder.length - 1 || STATE.step2Passed ? 'disabled' : ''}>▼</button>
                   </div>
                 </div>
               </div>
             `).join('')}
+          </div>
+          <div id="step2Feedback" class="feedback-box ${STATE.step2Passed ? 'feedback-correct' : 'hidden'}">
+            ${STATE.step2Passed ? `
+              <div class="feedback-title">✓ Sequência Cronológica Decifrada!</div>
+              <p>Excelente dedução! A linha temporal dos acontecimentos foi reconstituída com fidelidade à narrativa machadiana.</p>
+            ` : ''}
           </div>
         </div>
       `;
@@ -1216,12 +2026,13 @@
       DOM.btnHintGame.classList.add('hidden');
       DOM.btnNextGame.textContent = 'Ir para Vestibular →';
 
-      const optionsToRender = STATE.activeStep3Options || story.step3Analysis.options;
+      const activeAnalysis = STATE.activeStoryChallenge ? STATE.activeStoryChallenge.analysis : story.step3Analysis;
+      const optionsToRender = STATE.activeStep3Options || activeAnalysis.options;
 
       DOM.gameBody.innerHTML = `
         <div class="slide-container">
-          <h3>🎭 ${story.step3Analysis.title}</h3>
-          <p class="puzzle-instruction">${story.step3Analysis.question}</p>
+          <h3>🎭 ${activeAnalysis.title}</h3>
+          <p class="puzzle-instruction">${activeAnalysis.question}</p>
 
           <div class="quiz-options" id="step3Options">
             ${optionsToRender.map(opt => `
@@ -1241,12 +2052,13 @@
       DOM.btnHintGame.classList.add('hidden');
       DOM.btnNextGame.textContent = 'Concluir Investigação ✨';
 
-      const optionsToRender = STATE.activeStep4Options || story.step4Vestibular.options;
+      const activeVest = STATE.activeStoryChallenge ? STATE.activeStoryChallenge.vestibular : story.step4Vestibular;
+      const optionsToRender = STATE.activeStep4Options || activeVest.options;
 
       DOM.gameBody.innerHTML = `
         <div class="slide-container">
-          <span class="boss-badge">${story.step4Vestibular.examTag}</span>
-          <p class="puzzle-instruction" style="margin-top: 10px;">${story.step4Vestibular.question}</p>
+          <span class="boss-badge">${activeVest.examTag}</span>
+          <p class="puzzle-instruction" style="margin-top: 10px;">${activeVest.question}</p>
 
           <div class="quiz-options" id="step4Options">
             ${optionsToRender.map(opt => `
@@ -1263,7 +2075,7 @@
   }
 
   function moveFragment(index, direction) {
-    if (STATE.isAnimatingPuzzle) return;
+    if (STATE.isAnimatingPuzzle || STATE.step2Passed) return;
     const targetIdx = index + direction;
     if (targetIdx < 0 || targetIdx >= STATE.activePuzzleOrder.length) return;
 
@@ -1310,7 +2122,10 @@
     if (selectedCard) selectedCard.classList.add('selected');
 
     const story = STORIES[STATE.currentStoryIndex];
-    const data = stepId === 'step3' ? story.step3Analysis : story.step4Vestibular;
+    const data = stepId === 'step3' 
+      ? (STATE.activeStoryChallenge ? STATE.activeStoryChallenge.analysis : story.step3Analysis)
+      : (STATE.activeStoryChallenge ? STATE.activeStoryChallenge.vestibular : story.step4Vestibular);
+
     const activeOptions = stepId === 'step3' ? STATE.activeStep3Options : STATE.activeStep4Options;
     const optionsList = activeOptions || data.options;
     const selectedOpt = optionsList.find(o => o.letter === letter);
@@ -1347,16 +2162,62 @@
     }
 
     const story = STORIES[STATE.currentStoryIndex];
+    const activePuzzle = STATE.activeStoryChallenge ? STATE.activeStoryChallenge.puzzle : story.step2Puzzle;
 
     // Validate Step 2 Puzzle
     if (STATE.currentStep === 2) {
       const currentIds = STATE.activePuzzleOrder.map(f => f.id);
-      const isCorrect = currentIds.every((id, idx) => id === story.step2Puzzle.correctOrder[idx]);
+      const isCorrect = currentIds.every((id, idx) => id === activePuzzle.correctOrder[idx]);
+      const feedbackBox = document.getElementById('step2Feedback');
+      const fragmentEls = document.querySelectorAll('.puzzle-fragment-item');
 
       if (!isCorrect) {
         STATE.madeErrorInCurrentStory = true;
+        STATE.step2Passed = false;
+
+        fragmentEls.forEach(el => {
+          el.classList.remove('puzzle-fragment-correct');
+          el.classList.add('puzzle-fragment-incorrect');
+          setTimeout(() => el.classList.remove('puzzle-fragment-incorrect'), 600);
+        });
+
+        if (feedbackBox) {
+          feedbackBox.classList.remove('hidden', 'feedback-correct');
+          feedbackBox.classList.add('feedback-incorrect');
+          feedbackBox.innerHTML = `
+            <div class="feedback-title">✗ Sequência Incorreta!</div>
+            <p>A ordem cronológica dos fatos ainda contém incoerências em relação ao conto. Use as setas ▲ e ▼ para reordenar os acontecimentos antes de prosseguir.</p>
+          `;
+        }
         showToast("A sequência ainda não está correta! Reordene os fatos antes de avançar.", "warning");
         return;
+      }
+
+      // Se a sequência está correta e ainda não havia sido confirmada:
+      if (!STATE.step2Passed) {
+        STATE.step2Passed = true;
+
+        fragmentEls.forEach(el => {
+          el.classList.remove('puzzle-fragment-incorrect');
+          el.classList.add('puzzle-fragment-correct');
+        });
+
+        // Desabilita botões de movimento após decifrar
+        const moveBtns = document.querySelectorAll('.btn-move');
+        moveBtns.forEach(btn => btn.disabled = true);
+
+        if (feedbackBox) {
+          feedbackBox.classList.remove('hidden', 'feedback-incorrect');
+          feedbackBox.classList.add('feedback-correct');
+          feedbackBox.innerHTML = `
+            <div class="feedback-title">✓ Sequência Cronológica Decifrada!</div>
+            <p>Excelente dedução! A linha temporal dos acontecimentos foi reconstituída com fidelidade à narrativa machadiana.</p>
+          `;
+        }
+
+        DOM.btnNextGame.textContent = 'Ir para Análise Psicológica →';
+        showToast("✓ Enigma resolvido! Sequência cronológica correta!", "success");
+        return; // Permite ao aluno visualizar e ler a confirmação de acerto antes de avançar
       }
     }
     // Validate Step 3 Analysis Quiz
@@ -1432,14 +2293,14 @@
 
   function giveHint() {
     const story = STORIES[STATE.currentStoryIndex];
-    if (STATE.currentStep === 2 && story.step2Puzzle.hint) {
+    const activePuzzle = STATE.activeStoryChallenge ? STATE.activeStoryChallenge.puzzle : story.step2Puzzle;
+    if (STATE.currentStep === 2 && activePuzzle && activePuzzle.hint) {
       if (STATE.usedHintInCurrentStory) {
-        alert(`💡 DICA DO NARRADOR (Já Solicitada):\n\n${story.step2Puzzle.hint}`);
+        showToast(`💡 DICA DO NARRADOR: ${activePuzzle.hint}`, "warning");
         return;
       }
       STATE.usedHintInCurrentStory = true;
-      showToast("💡 Dica solicitada! (-50 XP do valor deste conto)", "warning");
-      alert(`💡 DICA DO NARRADOR:\n\n${story.step2Puzzle.hint}`);
+      showToast(`💡 DICA: ${activePuzzle.hint} (-50 XP de bônus limpo)`, "warning");
     }
   }
 
@@ -1694,7 +2555,7 @@
      ========================================================================== */
   function renderRankingModal() {
     const filterClass = DOM.selectFilterClass.value;
-    let list = (STATE.studentsList || []).filter(s => s && s.name);
+    let list = (STATE.studentsList || []).filter(s => s && s.name).map(normalizeStudentData);
 
     if (filterClass !== 'ALL') {
       list = list.filter(s => s.studentClass === filterClass);
@@ -1724,7 +2585,7 @@
     DOM.rankingTableBody.innerHTML = '';
     list.forEach((std, idx) => {
       const tr = document.createElement('tr');
-      const completedCount = std.completedStories ? std.completedStories.length : 0;
+      const completedCount = getStudentCompletedCount(std);
       const completionPercent = Math.round((completedCount / STORIES.length) * 100);
 
       tr.innerHTML = `
@@ -1829,18 +2690,19 @@
      STUDENT DETAILS MODAL
      ========================================================================== */
   function showStudentDetails(studentId) {
-    const student = STATE.studentsList.find(s => s && s.id === studentId);
+    let student = STATE.studentsList.find(s => s && s.id === studentId);
     if (!student || !student.name) {
       showToast("Aluno não encontrado!", "error");
       return;
     }
+    student = normalizeStudentData(student);
 
     DOM.detailStudentName.textContent = student.name;
     DOM.detailStudentClass.textContent = `🏫 Turma: ${student.studentClass || 'Não informada'}`;
     DOM.detailStudentXP.textContent = `${student.xp || 0} XP`;
 
-    const completedCount = student.completedStories ? student.completedStories.length : 0;
-    const grade = ((completedCount / STORIES.length) * 10).toFixed(1);
+    const completedCount = getStudentCompletedCount(student);
+    const grade = calculateStudentGrade(student);
     DOM.detailStudentGrade.textContent = `${grade} / 10`;
     DOM.detailStudentStoriesCount.textContent = `${completedCount} / 7`;
     DOM.detailStudentBossStatus.textContent = student.bossPassed ? '✓ Aprovado' : 'Pendente';
@@ -1882,38 +2744,42 @@
   }
 
   function renderProfAnalytics() {
-    const list = (STATE.studentsList || []).filter(s => s && s.name);
+    const list = (STATE.studentsList || []).filter(s => s && s.name).map(normalizeStudentData);
     DOM.profMetricTotalStudents.textContent = list.length;
 
-    // Calc Average Score (0 to 10 scale)
+    // Calc Average Score (0 to 10 scale) e Taxa de Conclusão Global real
     let totalScoreSum = 0;
-    let completedAllCount = 0;
+    let totalStoriesCompletedSum = 0;
 
     list.forEach(s => {
-      const completedCount = s.completedStories ? s.completedStories.length : 0;
-      const score10 = (completedCount / STORIES.length) * 10;
-      totalScoreSum += score10;
-      if (completedCount >= STORIES.length) completedAllCount++;
+      const completedCount = getStudentCompletedCount(s);
+      totalStoriesCompletedSum += completedCount;
+      const score10 = parseFloat(calculateStudentGrade(s));
+      totalScoreSum += isNaN(score10) ? 0 : score10;
     });
 
     const avgScore = list.length > 0 ? (totalScoreSum / list.length).toFixed(1) : '0.0';
     DOM.profMetricAvgScore.textContent = `${avgScore} / 10`;
 
-    const completionRate = list.length > 0 ? Math.round((completedAllCount / list.length) * 100) : 0;
+    const totalPossibleStories = list.length * STORIES.length;
+    const completionRate = totalPossibleStories > 0 
+      ? Math.round((totalStoriesCompletedSum / totalPossibleStories) * 100) 
+      : 0;
     DOM.profMetricCompletion.textContent = `${completionRate}%`;
 
     // Table
     DOM.profTableBody.innerHTML = '';
     list.forEach(std => {
-      const completedCount = std.completedStories ? std.completedStories.length : 0;
-      const nota10 = ((completedCount / STORIES.length) * 10).toFixed(1);
+      const completedCount = getStudentCompletedCount(std);
+      const nota10 = calculateStudentGrade(std);
       const tr = document.createElement('tr');
+      const scoreNum = parseFloat(nota10);
 
       tr.innerHTML = `
         <td><strong>${std.name}</strong></td>
         <td>${std.studentClass || 'Sem Turma'}</td>
         <td>${std.xp || 0} XP</td>
-        <td><strong style="color:${nota10 >= 7 ? '#28a745' : '#ffc107'}">${nota10}</strong></td>
+        <td><strong style="color:${scoreNum >= 7.0 ? '#28a745' : scoreNum >= 5.0 ? '#ffc107' : '#dc3545'}">${nota10}</strong></td>
         <td>${completedCount} / 7 Contos</td>
         <td>${std.bossPassed ? '✓ Aprovado' : 'Pendente'}</td>
         <td>
@@ -1927,7 +2793,7 @@
   }
 
   function exportCSV() {
-    const list = (STATE.studentsList || []).filter(s => s && s.name);
+    const list = (STATE.studentsList || []).filter(s => s && s.name).map(normalizeStudentData);
     if (list.length === 0) {
       showToast("Não há dados de alunos para exportar!", "warning");
       return;
@@ -1937,8 +2803,8 @@
     csvContent += "ID,Nome do Aluno,Turma,Pontuacao (XP),Nota Sugerida (0-10),Contos Concluidos,Simulado Final\n";
 
     list.forEach(s => {
-      const completedCount = s.completedStories ? s.completedStories.length : 0;
-      const nota10 = ((completedCount / STORIES.length) * 10).toFixed(1);
+      const completedCount = getStudentCompletedCount(s);
+      const nota10 = calculateStudentGrade(s);
       csvContent += `"${s.id}","${s.name}","${s.studentClass || ''}",${s.xp || 0},${nota10},"${completedCount}/7","${s.bossPassed ? 'Aprovado' : 'Pendente'}"\n`;
     });
 

@@ -36,13 +36,15 @@
             <span id="headerPlayerClass" class="player-class">Turma --</span>
           </div>
         </div>
-        <div class="score-badge" title="Pontuação Total">
-          <span class="star-icon">⭐</span>
+        <span class="player-divider"></span>
+        <div class="player-stat-item" id="headerPlayerXPContainer" title="Pontuação Total (Clique para ver histórico)">
+          <span class="stat-icon">⭐</span>
           <span id="headerPlayerXP">0 XP</span>
         </div>
-        <div class="badge-count" id="headerBadgeBtn" title="Ver Conquistas">
-          <span class="badge-icon">🏅</span>
-          <span id="headerBadgeCount">0/6</span>
+        <span class="player-divider"></span>
+        <div class="player-stat-item player-clickable-stat" id="headerBadgeBtn" title="Ver Conquistas e Histórico">
+          <span class="stat-icon">🏅</span>
+          <span id="headerBadgeCount">0/8</span>
         </div>
       </div>
 
@@ -343,6 +345,9 @@
             <p>Relatório completo do rendimento dos estudantes da obra <em>Contos Fluminenses</em>.</p>
           </div>
           <div class="prof-actions">
+            <a href="/api/gabarito-pdf" download="Gabarito_Pedagogico_Contos_Fluminenses.pdf" class="btn btn-secondary btn-sm" title="Baixar Caderno Completo de Questões e Gabarito em PDF">
+              📄 Baixar Gabarito (PDF)
+            </a>
             <a href="https://docs.google.com/spreadsheets/d/1R4f6Oottbca3KVYBnS7h6V1S1ZUvphUCFM142Hgzb5w/edit?gid=0#gid=0" target="_blank" rel="noopener noreferrer" id="btnOpenGoogleSheets" class="btn btn-secondary btn-sm" title="Abrir a planilha do Google no navegador">
               📊 Planilha Google ↗
             </a>

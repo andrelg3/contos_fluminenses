@@ -73,6 +73,14 @@ app.get('/api/fetch-sheets', async (req, res) => {
 // Serve static assets from root directory
 app.use(express.static(__dirname));
 
+// PDF Download endpoint for teachers
+app.get('/api/gabarito-pdf', (req, res) => {
+  const filePath = path.join(__dirname, 'gabarito_professor_contos_fluminenses.pdf');
+  res.setHeader('Content-Type', 'application/pdf');
+  res.setHeader('Content-Disposition', 'attachment; filename="Gabarito_Pedagogico_Contos_Fluminenses.pdf"');
+  res.sendFile(filePath);
+});
+
 // SPA / static fallback
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
