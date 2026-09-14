@@ -761,7 +761,7 @@
       title: "Linha Reta e Linha Curva",
       numberText: "Conto VI",
       location: "📍 Petrópolis, Rio de Janeiro",
-      image: "assets/cover.jpg",
+      image: "assets/cover_.jpg",
       tags: ["Dissimulação", "Geometria do Desejo", "Vaidade Feminina"],
       xpValue: 150,
       summary: "Em Petrópolis, na casa de Ernesto Azevedo e Adelaide, Tito finge indiferença absoluta ao amor para despertar o orgulho da viúva rica D. Emília, que é cortejada pelo idoso Diogo. No final, Tito revela que utilizou a 'linha curva' (estratégia indireta) para conquistá-la após ter falhado no passado com a 'linha reta' (declaração direta).",
