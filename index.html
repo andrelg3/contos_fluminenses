@@ -128,11 +128,11 @@
       <div class="boss-card">
         <div class="boss-icon">🎓</div>
         <div class="boss-info">
-          <span class="boss-badge">DESAFIO SUPREMO • VALE ATÉ +100 XP (+1,0 PONTO NA NOTA)</span>
+          <span class="boss-badge">COMPLEMENTO PEDAGÓGICO • ATÉ +100 XP (+1,0 PONTO NA NOTA)</span>
           <h3 class="boss-title">Simulado Integrado de Vestibular</h3>
           <p class="boss-desc">
             Teste multidisciplinar com 5 questões de exames (FUVEST, UNICAMP, ENEM) sobre <em>Contos Fluminenses</em>. 
-            <strong>Cada acerto vale +20 XP (+0,2 na nota)</strong>, somando até <strong>+100 XP (+1,0 ponto cheio)</strong> para quem gabaritar!
+            <strong>Cada acerto vale +20 XP (+0,2 na nota)</strong> como recuperação/complemento para quem perdeu pontos nos contos (não ultrapassa o teto máximo de 1.000 XP / Nota 10,0).
           </p>
         </div>
         <button id="btnStartBoss" class="btn btn-primary btn-large">
@@ -394,7 +394,7 @@
         <!-- Critério Pedagógico Banner -->
         <div style="background: rgba(212, 175, 55, 0.08); border: 1px solid var(--border-gold); padding: 12px 18px; border-radius: 8px; margin-bottom: 20px; font-size: 0.92rem; line-height: 1.5;">
           <strong>🎯 Critério de Avaliação Fixado:</strong> 
-          <span><strong>1.000 XP = Nota 10,0</strong> (Nota = XP ÷ 100). Os <strong>7 Contos</strong> somam até <strong>900 XP</strong> (128~132 XP por conto de primeira sem ajuda; 45 XP por persistência c/ dica ou erro). O <strong>Simulado Final (Boss)</strong> soma até <strong>100 XP</strong> (5 questões × 20 XP cada = +0,2 por acerto).</span>
+          <span><strong>1.000 XP = Nota 10,0</strong> (Nota = XP ÷ 100). Cada um dos <strong>7 Contos</strong> concluído perfeitamente concede até <strong>143 XP</strong> (totalizando 1.001 XP, arredondado para <strong>1.000 XP = Nota 10,0</strong>). O <strong>Simulado Final (Boss)</strong> vale <strong>20 XP (+0,2)</strong> por acerto, servindo de complemento pedagógico de recuperação para quem perdeu pontos, sem ultrapassar o teto de 1.000 XP.</span>
         </div>
 
         <!-- Student Performance Table -->
@@ -513,13 +513,13 @@
             <span style="font-size: 1.5rem;">📖</span>
             <div>
               <h4 style="margin: 0; font-size: 1.05rem;">Os 7 Contos da Obra</h4>
-              <span style="font-size: 0.82rem; color: #28a745; font-weight: 600;">Até 900 XP (= até 9,0 pontos na nota)</span>
+              <span style="font-size: 0.82rem; color: #28a745; font-weight: 600;">Até 143 XP cada (= 1.000 XP / Nota 10,0)</span>
             </div>
           </div>
           <ul style="margin: 0; padding-left: 18px; font-size: 0.9rem; line-height: 1.6; color: var(--text-main);">
-            <li><strong>Acerto de Primeira sem Dicas (Impecável):</strong> até <strong>128 a 132 XP</strong> por conto (somando exatamente <strong>900 XP</strong> ao concluir os 7 contos sem errar).</li>
-            <li><strong>Com Auxílio de Dica ou Erro Prévio:</strong> ganha <strong>45 XP</strong> por conto como incentivo pedagógico por persistência na leitura e resolução.</li>
-            <li><em>Atenção:</em> Pedir ajuda em tudo ou errar permite avançar e ganhar XP de estímulo, mas não alcança a nota 10,0.</li>
+            <li><strong>Conclusão Impecável (sem erros e sem dicas):</strong> até <strong>143 XP</strong> por conto (concluir os 7 contos de forma impecável totaliza 1.001 XP, arredondado para <strong>1.000 XP = Nota Máxima 10,0</strong>).</li>
+            <li><strong>Com Auxílio de Dica ou Erro Prévio:</strong> ganha <strong>50 XP</strong> por conto como incentivo pedagógico de persistência na leitura e resolução.</li>
+            <li><em>Recuperação:</em> Quem perdeu pontos por erros ou dicas nos contos pode recuperá-los no <strong>Simulado Final</strong>!</li>
           </ul>
         </div>
 
@@ -528,15 +528,15 @@
           <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
             <span style="font-size: 1.5rem;">🎓</span>
             <div>
-              <h4 style="margin: 0; font-size: 1.05rem;">Simulado Final (Desafio Supremo)</h4>
-              <span style="font-size: 0.82rem; color: #17a2b8; font-weight: 600;">Até 100 XP (= até 1,0 ponto na nota)</span>
+              <h4 style="margin: 0; font-size: 1.05rem;">Simulado Final (Complemento Pedagógico)</h4>
+              <span style="font-size: 0.82rem; color: #17a2b8; font-weight: 600;">Até +100 XP (+1,0 na nota) • Teto 1.000 XP</span>
             </div>
           </div>
           <ul style="margin: 0; padding-left: 18px; font-size: 0.9rem; line-height: 1.6; color: var(--text-main);">
-            <li><strong>5 Questões Inéditas</strong> no formato de vestibulares consagrados (FUVEST, UNICAMP, ENEM).</li>
-            <li><strong>Cada acerto vale +20 XP</strong> (= <strong>+0,2 na nota escolar</strong>).</li>
-            <li>Gabaritar as 5 questões concede <strong>100 XP cheios (+1,0 ponto)</strong>.</li>
-            <li><strong>Critério de Aprovação:</strong> Acertar no mínimo 3 das 5 questões (60%) <strong>E</strong> obter nota global $\ge 6,0$.</li>
+            <li><strong>5 Questões Inéditas</strong> de vestibulares consagrados (FUVEST, UNICAMP, ENEM).</li>
+            <li><strong>Cada acerto vale +20 XP (+0,2 na nota escolar)</strong>, funcionando como complemento/recuperação para quem perdeu pontos nos contos.</li>
+            <li><strong>Teto Inviolável de 1.000 XP:</strong> O simulado não ultrapassa o teto máximo de 1.000 XP (Nota 10,0). Alunos com nota 10,0 perfeita não necessitam do complemento.</li>
+            <li><strong>Critério de Aprovação no Simulado:</strong> Acertar no mínimo 3 das 5 questões (60%) <strong>E</strong> obter nota global $\ge 6,0$.</li>
           </ul>
         </div>
       </div>

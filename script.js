@@ -28,7 +28,7 @@
       location: "📍 Botafogo & Passeio Público, Rio de Janeiro",
       image: "assets/miss_dollar.jpg",
       tags: ["Ironia", "Interesse Social", "Narrador Dissimulado"],
-      xpValue: 150,
+      xpValue: 143,
       summary: "O Dr. Mendonça encontra na rua a cadelinha galga 'Miss Dollar' e a devolve sem aceitar recompensa à sua dona, D. Margarida. A viúva rica, traumatizada por um casamento anterior onde temia ser amada só por dinheiro, reluta diante da corte do médico, até que um episódio noturno com a tia D. Antônia sela o destino do casal.",
       
       step1Context: {
@@ -175,7 +175,7 @@
       location: "📍 Rua do Ouvidor, Rio de Janeiro",
       image: "assets/luiz_soares.jpg",
       tags: ["Dândi", "Parasitismo Burguês", "Casamento por Interesse"],
-      xpValue: 150,
+      xpValue: 143,
       summary: "Luís Soares dissipa sua herança vivendo como dândi e tenta garantir seu sustento com a herança do tio, o Major Vilela. Para demonstrar regeneração, aceita um emprego público arranjado pelo major. Quando descobre que a prima Adelaide herdará trezentos contos de réis se casar com ele, simula paixão súbita, mas é desmascarado e rejeitado pela jovem.",
 
       step1Context: {
@@ -322,7 +322,7 @@
       location: "📍 Salões da Corte, Rio de Janeiro",
       image: "assets/mulher_de_preto.jpg",
       tags: ["Honra", "Mediação Moral", "Aparência de Culpa"],
-      xpValue: 150,
+      xpValue: 143,
       summary: "O jovem médico Dr. Estêvão Soares apaixona-se por Madalena, mulher elegante vestida de preto que ele supõe equivocadamente ser viúva. Na verdade, ela é a esposa legítima de seu grande amigo, o deputado Meneses, de quem vivia separada por um falso e injusto ciúme. Ao saber que ela nunca o traiu e anseia pela restauração do lar, Estêvão sacrifica seu sentimento e atua como nobre mediador para reconciliar o casal.",
 
       step1Context: {
@@ -469,7 +469,7 @@
       location: "📍 Residência da Família, Botafogo (Rio de Janeiro)",
       image: "assets/segredo_augusta.jpg",
       tags: ["Vaidade Feminina", "Terror de Ser Avó", "Conflito Doméstico"],
-      xpValue: 150,
+      xpValue: 143,
       summary: "Vasconcelos, arruinado por gastos e dívidas, pressiona para casar sua filha Adelaide (de apenas quinze anos) com o amigo Gomes, julgando-o rico e capaz de salvar a família da falência. A esposa Augusta, porém, opõe-se veementemente: alega publicamente que a moça é jovem demais, mas seu segredo inconfessável é o terror patológico de envelhecer e ser chamada de avó nos círculos da corte.",
 
       step1Context: {
@@ -616,7 +616,7 @@
       location: "📍 Petrópolis & Rio de Janeiro",
       image: "assets/confissoes_viuva.jpg",
       tags: ["Narrativa Epistolar", "Cinismo Amoroso", "Desilusão"],
-      xpValue: 150,
+      xpValue: 143,
       summary: "Em cartas confessionais enviadas de Petrópolis à amiga Carlota, a jovem viúva Eugênia revela como resistiu às investidas de Emílio durante seu casamento sem amor, apenas para descobrir, após ficar viúva, o cinismo do pretendente, que só a desejava como amante proibida.",
 
       step1Context: {
@@ -763,7 +763,7 @@
       location: "📍 Petrópolis, Rio de Janeiro",
       image: "assets/cover_.jpg",
       tags: ["Dissimulação", "Geometria do Desejo", "Vaidade Feminina"],
-      xpValue: 150,
+      xpValue: 143,
       summary: "Em Petrópolis, na casa de Ernesto Azevedo e Adelaide, Tito finge indiferença absoluta ao amor para despertar o orgulho da viúva rica D. Emília, que é cortejada pelo idoso Diogo. No final, Tito revela que utilizou a 'linha curva' (estratégia indireta) para conquistá-la após ter falhado no passado com a 'linha reta' (declaração direta).",
 
       step1Context: {
@@ -910,7 +910,7 @@
       location: "📍 Convento de São Bento, Rio de Janeiro",
       image: "assets/frei_simao.jpg",
       tags: ["Tragédia", "Tirania Familiar", "Desencanto Absoluto"],
-      xpValue: 150,
+      xpValue: 143,
       summary: "Simão e a órfã Helena cresceram juntos e apaixonaram-se, mas os pais de Simão opuseram-se ao enlace, mandando o rapaz para longe e mentindo que Helena havia morrido. Desolado, Simão professou votos no convento beneditino. Anos depois, ao reencontrar Helena viva e casada por imposição, o choque causa a morte da moça e mergulha Frei Simão na loucura, culminando em sua célebre frase final no leito de morte: 'Morro odiando a humanidade!'.",
 
       step1Context: {
@@ -1126,56 +1126,56 @@
       id: "ach-miss-dollar",
       title: "Mestre de Miss Dollar",
       icon: "🐾",
-      desc: "Desvendou 'Miss Dollar' com 150 XP (sem errar e sem pedir dicas).",
+      desc: "Desvendou 'Miss Dollar' com 143 XP (sem errar e sem pedir dicas).",
       condition: (u) => u.perfectStories && u.perfectStories.includes("miss-dollar")
     },
     {
       id: "ach-luiz-soares",
       title: "Desmascarador de Luís Soares",
       icon: "🎩",
-      desc: "Desvendou 'Luís Soares' com 150 XP (sem errar e sem pedir dicas).",
+      desc: "Desvendou 'Luís Soares' com 143 XP (sem errar e sem pedir dicas).",
       condition: (u) => u.perfectStories && u.perfectStories.includes("luiz-soares")
     },
     {
       id: "ach-mulher-de-preto",
       title: "Segredo de Magdalena",
       icon: "🎭",
-      desc: "Desvendou 'A Mulher de Preto' com 150 XP (sem errar e sem pedir dicas).",
+      desc: "Desvendou 'A Mulher de Preto' com 143 XP (sem errar e sem pedir dicas).",
       condition: (u) => u.perfectStories && u.perfectStories.includes("mulher-de-preto")
     },
     {
       id: "ach-segredo-augusta",
       title: "Vaidade Desfeita",
       icon: "💎",
-      desc: "Desvendou 'O Segredo de Augusta' com 150 XP (sem errar e sem pedir dicas).",
+      desc: "Desvendou 'O Segredo de Augusta' com 143 XP (sem errar e sem pedir dicas).",
       condition: (u) => u.perfectStories && u.perfectStories.includes("segredo-augusta")
     },
     {
       id: "ach-confissoes-viuva",
       title: "Lucidez de Eugênia",
       icon: "✉️",
-      desc: "Desvendou 'Confissões de uma Viúva Moça' com 150 XP (sem errar e sem pedir dicas).",
+      desc: "Desvendou 'Confissões de uma Viúva Moça' com 143 XP (sem errar e sem pedir dicas).",
       condition: (u) => u.perfectStories && u.perfectStories.includes("confissoes-viuva")
     },
     {
       id: "ach-linha-reta-curva",
       title: "Estrategista Geométrico",
       icon: "📐",
-      desc: "Desvendou 'Linha Reta e Linha Curva' com 150 XP (sem errar e sem pedir dicas).",
+      desc: "Desvendou 'Linha Reta e Linha Curva' com 143 XP (sem errar e sem pedir dicas).",
       condition: (u) => u.perfectStories && u.perfectStories.includes("linha-reta-curva")
     },
     {
       id: "ach-frei-simao",
       title: "Monge da Verdade",
       icon: "⛪",
-      desc: "Desvendou 'Frei Simão' com 150 XP (sem errar e sem pedir dicas).",
+      desc: "Desvendou 'Frei Simão' com 143 XP (sem errar e sem pedir dicas).",
       condition: (u) => u.perfectStories && u.perfectStories.includes("frei-simao")
     },
     {
       id: "ach-super-machadiano",
       title: "Lenda Machadiana de 1870",
       icon: "👑",
-      desc: "SUPER CONQUISTA: Concluiu TODOS OS 7 CONTOS de forma impecável (150 XP em cada, 100% sem erros e sem dicas)!",
+      desc: "SUPER CONQUISTA: Concluiu TODOS OS 7 CONTOS de forma impecável (143 XP em cada, atingindo 1000 XP e Nota 10,0 sem erros e sem dicas)!",
       isSuper: true,
       condition: (u) => u.perfectStories && u.perfectStories.length >= 7
     }
@@ -1570,9 +1570,9 @@
      CÁLCULO OFICIAL DE NOTA (0.0 a 10.0)
      Regra Pedagógica Fixada:
      - 1.000 XP Máximo = Nota 10,0 (Nota = XP ÷ 100).
-     - 7 Contos somam até 900 XP (128~132 XP por conto limpo; 45 XP com dica/erro).
-     - Simulado Final (Boss) soma até 100 XP (5 questões × 20 XP cada = +0,2 por questão).
-     - Aluno que concluiu 7 contos errando/pedindo dicas (~400 XP) obtém nota 4.0.
+     - 7 Contos chegam a 143 XP cada se concluídos perfeitamente (7 x 143 = 1.001 XP, arredondado para 1.000 XP = Nota 10,0).
+     - Conclusão com auxílio (dicas/erros): 50 XP por conto como incentivo de leitura e persistência.
+     - Simulado Final (Boss): até 100 XP (5 questões × 20 XP cada = +0,2 por questão), funcionando como complemento pedagógico de recuperação para quem perdeu pontos, sem ultrapassar o teto de 1.000 XP.
      ========================================================================== */
   function calculateStudentGrade(student) {
     if (!student) return '0.0';
@@ -1875,6 +1875,17 @@
 
     STORIES.forEach((story, idx) => {
       const isCompleted = STATE.currentUser ? STATE.currentUser.completedStories.includes(story.id) : false;
+      const isPerfect = isCompleted && STATE.currentUser && Array.isArray(STATE.currentUser.perfectStories) && STATE.currentUser.perfectStories.includes(story.id);
+      
+      let xpBadgeHtml = `<span class="story-xp-info">⭐ +${story.xpValue} XP</span>`;
+      if (isCompleted) {
+        if (isPerfect) {
+          xpBadgeHtml = `<span class="story-xp-info" style="color: #ffd700; font-weight: 700;">⭐ +143 XP (Impecável)</span>`;
+        } else {
+          xpBadgeHtml = `<span class="story-xp-info" style="color: var(--primary-gold);">📜 +50 XP (Concluído)</span>`;
+        }
+      }
+
       const card = document.createElement('div');
       card.className = `story-card ${isCompleted ? 'story-card-completed' : ''}`;
 
@@ -1882,8 +1893,8 @@
         <div class="story-card-img-wrapper">
           <img src="${story.image}" alt="${story.title}" class="story-card-img" onerror="this.src='assets/cover.jpg'">
           <span class="story-num-badge">${story.numberText}</span>
-          <span class="story-status-badge ${isCompleted ? 'status-completed' : 'status-pending'}">
-            ${isCompleted ? '✓ Concluído' : '📍 Disponível'}
+          <span class="story-status-badge ${isCompleted ? (isPerfect ? 'status-perfect' : 'status-completed') : 'status-pending'}">
+            ${isCompleted ? (isPerfect ? '⭐ Impecável' : '✓ Concluído') : '📍 Disponível'}
           </span>
         </div>
         <div class="story-card-body">
@@ -1894,7 +1905,7 @@
             ${story.tags.map(t => `<span class="story-tag-pill">${t}</span>`).join('')}
           </div>
           <div class="story-card-footer">
-            <span class="story-xp-info">⭐ +${story.xpValue} XP</span>
+            ${xpBadgeHtml}
             <button class="btn ${isCompleted ? 'btn-outline' : 'btn-primary'} btn-sm" onclick="window.CF_GAME.openStory(${idx})">
               ${isCompleted ? 'Revisar Enigma' : 'Investigar Conto'}
             </button>
@@ -2297,18 +2308,18 @@
         STATE.currentUser.completedStories.push(storyId);
         
         // Regra Pedagógica Fixada:
-        // Contos somam até 900 XP (Contos 0 a 5: 128 XP; Conto 6: 132 XP = 900 XP total).
-        // Se pediu ajuda (dica) ou errou, ganha 45 XP como recompensa de persistência por leitura.
-        const perfectStoryXP = (STATE.currentStoryIndex === STORIES.length - 1) ? 132 : 128;
+        // Cada conto concluído perfeitamente concede 143 XP (7 contos = 1001 XP, arredondado para 1000 XP = Nota 10,0).
+        // Se pediu ajuda (dica) ou errou, ganha 50 XP como incentivo pedagógico por persistência e leitura.
+        const perfectStoryXP = 143;
         
         if (isPerfectAttempt) {
           STATE.currentUser.perfectStories.push(storyId);
           addXP(perfectStoryXP, `Desempenho Impecável: ${story.title}`, '🏆');
-          showToast(`🏆 Desempenho Impecável! Você concluiu ${story.title} de primeira sem erros e sem dicas (+${perfectStoryXP} XP / +${(perfectStoryXP/100).toFixed(1)} nota)!`, 'success');
+          showToast(`🏆 Desempenho Impecável! Você concluiu ${story.title} de primeira sem erros e sem dicas (+${perfectStoryXP} XP)!`, 'success');
         } else {
-          const persistenceXP = 45;
+          const persistenceXP = 50;
           addXP(persistenceXP, `Conclusão e Leitura: ${story.title}`, '📜');
-          showToast(`📜 Conto Concluído! Recompensa por leitura e persistência (+${persistenceXP} XP / +0,5 na nota). (Dica ou erro impediram a pontuação máxima de ${perfectStoryXP} XP neste conto).`, 'info');
+          showToast(`📜 Conto Concluído! Recompensa por leitura e persistência (+${persistenceXP} XP). O Simulado Final (Boss) poderá complementar sua nota até 10,0 (+0,2 por questão)!`, 'info');
         }
       } else {
         // Repeat Play (Anti-farming protection: 0 base XP)
@@ -2460,31 +2471,38 @@
     } else {
       // Finish Boss
       // Regra Pedagógica Fixada:
-      // O Simulado Final vale no máximo 1,0 ponto (100 XP).
-      // Cada uma das 5 questões vale 20 XP (+0,2 na nota).
+      // O Simulado Final (Boss) vale 20 XP (+0,2) por questão (até 100 XP / 1,0 ponto no total).
+      // Funciona como COMPLEMENTO PEDAGÓGICO / RECUPERAÇÃO para quem perdeu pontos nos contos.
+      // Em nenhuma hipótese a pontuação total pode ultrapassar 1.000 XP (Nota 10,0).
+      const prevXP = Number(STATE.currentUser.xp) || 0;
       const prevBossScore = typeof STATE.currentUser.bossScore === 'number' ? STATE.currentUser.bossScore : 0;
       const currentScore = STATE.bossScore;
       const xpPerQuestion = 20;
       
-      let xpGained = 0;
+      let xpToAward = 0;
       if (typeof STATE.currentUser.bossScore !== 'number') {
-        xpGained = currentScore * xpPerQuestion;
-        if (xpGained > 0) {
-          addXP(xpGained, `Simulado Final: ${currentScore}/5 acertos`, '🎓');
-        }
+        xpToAward = currentScore * xpPerQuestion;
       } else if (currentScore > prevBossScore) {
-        xpGained = (currentScore - prevBossScore) * xpPerQuestion;
-        addXP(xpGained, `Recorde Simulado: ${currentScore}/5 acertos`, '🎓');
+        xpToAward = (currentScore - prevBossScore) * xpPerQuestion;
+      }
+
+      if (xpToAward > 0) {
+        addXP(xpToAward, `Simulado Final (Complemento): ${currentScore}/5 acertos`, '🎓');
       }
 
       STATE.currentUser.bossScore = Math.max(prevBossScore, currentScore);
       STATE.currentUser.bossPassed = STATE.currentUser.bossScore >= 3;
 
-      const notaBossGanho = (currentScore * 0.2).toFixed(1);
-      if (STATE.currentUser.bossPassed) {
-        showToast(`🎓 Simulado Concluído! Você acertou ${currentScore}/${BOSS_QUESTIONS.length} questões (+${notaBossGanho} na nota) e foi Aprovado!`, "success");
+      const currentXP = Number(STATE.currentUser.xp) || 0;
+      const notaAtual = (currentXP / 100).toFixed(1);
+
+      if (prevXP >= 1000) {
+        showToast(`🎓 Simulado Concluído! Você acertou ${currentScore}/${BOSS_QUESTIONS.length} questões. Como sua nota já é 10,0 (1.000 XP), o complemento não é necessário!`, "success");
+      } else if (xpToAward > 0) {
+        const actualGain = currentXP - prevXP;
+        showToast(`🎓 Simulado Concluído! Você acertou ${currentScore}/${BOSS_QUESTIONS.length} questões (+${actualGain} XP de complemento pedagógico / Nota atual: ${notaAtual})!`, "success");
       } else {
-        showToast(`🎓 Simulado Concluído! Você acertou ${currentScore}/${BOSS_QUESTIONS.length} questões (+${notaBossGanho} na nota). Média mínima do simulado: 3 acertos.`, "warning");
+        showToast(`🎓 Simulado Concluído! Você acertou ${currentScore}/${BOSS_QUESTIONS.length} questões (Nota atual: ${notaAtual}).`, "info");
       }
       saveToStorage();
       closeModal(DOM.modalGame);
@@ -2612,7 +2630,7 @@
         <div class="achievement-info">
           <h4>${ach.title} ${isSuper ? '<span class="super-badge-pill">SUPER</span>' : ''}</h4>
           <p>${ach.desc}</p>
-          <span class="achievement-status">${isUnlocked ? '✓ Desbloqueada! (+150 XP Perfeito)' : '🔒 Bloqueada (Exige 150 XP sem erros e sem dicas)'}</span>
+          <span class="achievement-status">${isUnlocked ? '✓ Desbloqueada! (+143 XP Impecável)' : '🔒 Bloqueada (Exige 143 XP de primeira sem erros e sem dicas)'}</span>
         </div>
       `;
       DOM.achievementsGrid.appendChild(card);
@@ -2790,7 +2808,7 @@
       row.innerHTML = `
         <span><strong>${storyLabel}:</strong> ${story.title}</span>
         <span class="badge ${isCompleted ? (isPerfect ? 'badge-gold' : 'badge-green') : 'badge-dim'}">
-          ${isCompleted ? (isPerfect ? '⭐ Impecável (+128~132 XP)' : '✓ Concluído (+45 XP)') : '○ Pendente'}
+          ${isCompleted ? (isPerfect ? '⭐ Impecável (+143 XP)' : '✓ Concluído (+50 XP)') : '○ Pendente'}
         </span>
       `;
       DOM.detailStudentStoriesList.appendChild(row);
