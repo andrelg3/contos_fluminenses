@@ -1191,6 +1191,7 @@
     headerBadgeCount: document.getElementById('headerBadgeCount'),
     btnRanking: document.getElementById('btnRanking'),
     btnConquistas: document.getElementById('btnConquistas'),
+    btnRules: document.getElementById('btnRules'),
     btnProfessor: document.getElementById('btnProfessor'),
     btnSwitchUser: document.getElementById('btnSwitchUser'),
 
@@ -1199,6 +1200,11 @@
     overallProgressBar: document.getElementById('overallProgressBar'),
     overallPercentText: document.getElementById('overallPercentText'),
     btnStartBoss: document.getElementById('btnStartBoss'),
+
+    // Rules & Scoring Modal
+    modalRules: document.getElementById('modalRules'),
+    rulesBackdrop: document.getElementById('rulesBackdrop'),
+    btnCloseRules: document.getElementById('btnCloseRules'),
 
     // Login Modal
     modalLogin: document.getElementById('modalLogin'),
@@ -1269,6 +1275,14 @@
     detailStudentStoriesCount: document.getElementById('detailStudentStoriesCount'),
     detailStudentBossStatus: document.getElementById('detailStudentBossStatus'),
     detailStudentStoriesList: document.getElementById('detailStudentStoriesList'),
+
+    // Apps Script Modal
+    modalAppsScriptCode: document.getElementById('modalAppsScriptCode'),
+    btnOpenAppsScriptModal: document.getElementById('btnOpenAppsScriptModal'),
+    btnCloseAppsScriptModal: document.getElementById('btnCloseAppsScriptModal'),
+    appsScriptBackdrop: document.getElementById('appsScriptBackdrop'),
+    btnCopyAppsScriptCode: document.getElementById('btnCopyAppsScriptCode'),
+    codeAppsScriptBlock: document.getElementById('codeAppsScriptBlock'),
 
     // Confirmation Modal
     modalConfirm: document.getElementById('modalConfirm'),
@@ -1512,50 +1526,62 @@
     if (Array.isArray(student.completedStories) && student.completedStories.length > 0) {
       return Math.min(STORIES.length, student.completedStories.length);
     }
-    if (typeof student.completedStoriesCount === 'number' && student.completedStoriesCount > 0) {
+    if (typeof student.completedStoriesCount === 'number' && student.completedStoriesCount > 0 && student.completedStoriesCount <= STORIES.length) {
       return Math.min(STORIES.length, student.completedStoriesCount);
-    }
-    const xp = Number(student.xp) || 0;
-    if (xp >= 1050) {
-      return STORIES.length; // 7 contos
-    }
-    if (xp > 0) {
-      return Math.min(STORIES.length, Math.max(1, Math.round(xp / 150)));
     }
     return 0;
   }
 
+  function getStudentApprovalStatus(student) {
+    if (!student) return { text: 'Pendente', shortText: 'Pendente', approved: false, color: '#ffc107', badgeClass: 'badge-pending' };
+    const gradeNum = parseFloat(calculateStudentGrade(student));
+    const hasBossScore = typeof student.bossScore === 'number';
+    const bossScore = hasBossScore ? student.bossScore : 0;
+    const didAttemptBoss = hasBossScore || student.bossPassed;
+
+    if (didAttemptBoss) {
+      if (gradeNum >= 6.0 && bossScore >= 3) {
+        return { 
+          text: `✓ Aprovado (${bossScore}/5)`, 
+          shortText: 'Aprovado',
+          approved: true, 
+          color: '#28a745', 
+          badgeClass: 'badge-success' 
+        };
+      }
+      return { 
+        text: `Em Recuperação (${bossScore}/5)`, 
+        shortText: 'Em Recuperação',
+        approved: false, 
+        color: '#dc3545', 
+        badgeClass: 'badge-warning' 
+      };
+    }
+    return { 
+      text: 'Pendente', 
+      shortText: 'Pendente',
+      approved: false, 
+      color: '#ffc107', 
+      badgeClass: 'badge-pending' 
+    };
+  }
+
+  /* ==========================================================================
+     CÁLCULO OFICIAL DE NOTA (0.0 a 10.0)
+     Regra Pedagógica Fixada:
+     - 1.000 XP Máximo = Nota 10,0 (Nota = XP ÷ 100).
+     - 7 Contos somam até 900 XP (128~132 XP por conto limpo; 45 XP com dica/erro).
+     - Simulado Final (Boss) soma até 100 XP (5 questões × 20 XP cada = +0,2 por questão).
+     - Aluno que concluiu 7 contos errando/pedindo dicas (~400 XP) obtém nota 4.0.
+     ========================================================================== */
   function calculateStudentGrade(student) {
     if (!student) return '0.0';
     const xp = Number(student.xp) || 0;
-    const completedCount = getStudentCompletedCount(student);
+    if (xp <= 0) return '0.0';
 
-    // Aluno que concluiu todos os contos e boss, ou alcançou 1050+ XP: nota máxima 10.0
-    if (xp >= 1050 || (completedCount >= STORIES.length && student.bossPassed)) {
-      return '10.0';
-    }
-
-    // Componente 1: Contos concluídos (7 contos -> até 7.0 pontos)
-    const storiesScore = (completedCount / STORIES.length) * 7.0;
-
-    // Componente 2: Simulado Final / Desafio dos Mestres (até 3.0 pontos)
-    let bossScore = 0;
-    if (student.bossPassed) {
-      bossScore = 3.0;
-    } else if (typeof student.bossScore === 'number' && student.bossScore > 0) {
-      bossScore = (student.bossScore / 5) * 3.0;
-    }
-
-    let gradeNum = storiesScore + bossScore;
-
-    // Se o aluno tem pontuação de XP significativa mas contos isolados não sincronizaram
-    if (xp > 0) {
-      const xpProportional = Math.min(10.0, (xp / 1050) * 10.0);
-      gradeNum = Math.max(gradeNum, xpProportional);
-    }
-
-    // Trava estritamente entre 0.0 e 10.0
-    const clamped = Math.min(10.0, Math.max(0.0, gradeNum));
+    // Regra direta: 1.000 XP = 10.0
+    const rawGrade = xp / 100;
+    const clamped = Math.min(10.0, Math.max(0.0, rawGrade));
     return clamped.toFixed(1);
   }
 
@@ -1572,15 +1598,18 @@
     }
     student.xp = Number(student.xp) || 0;
 
-    const count = getStudentCompletedCount(student);
-    if (student.completedStories.length === 0 && count > 0) {
+    // Se completedStories estiver vazio mas houver contos declarados no objeto
+    if (student.completedStories.length === 0 && typeof student.completedStoriesCount === 'number' && student.completedStoriesCount > 0) {
       const allIds = STORIES.map(s => s.id);
-      student.completedStories = allIds.slice(0, count);
+      student.completedStories = allIds.slice(0, Math.min(STORIES.length, student.completedStoriesCount));
     }
     student.completedStoriesCount = student.completedStories.length;
 
-    if (student.xp >= 1050 || student.completedStoriesCount >= STORIES.length) {
-      student.bossPassed = true;
+    // Boss status: NÃO forçar aprovação arbitrária!
+    if (typeof student.bossScore === 'number') {
+      student.bossPassed = student.bossScore >= 3;
+    } else if (student.bossPassed === undefined) {
+      student.bossPassed = false;
     }
 
     student.grade = calculateStudentGrade(student);
@@ -1628,18 +1657,34 @@
     normalizeStudentData(student);
     const completedCount = getStudentCompletedCount(student);
     const notaCalculada = calculateStudentGrade(student);
+    const approvalStatus = getStudentApprovalStatus(student);
+
+    // Compatibilidade com a versão legada do Apps Script que faz:
+    // var grade = ((data.completedStories.length / 7) * 10).toFixed(1);
+    // Para que o script legado NUNCA MAIS mostre "151.4" e grave uma nota proporcional correta no Sheets:
+    const notaNum = parseFloat(notaCalculada) || 0;
+    const legacyEquivCount = Math.min(STORIES.length, Math.max(0, Math.round((notaNum / 10) * STORIES.length)));
+    const legacyStoriesArray = [];
+    for (let i = 0; i < legacyEquivCount; i++) {
+      legacyStoriesArray.push(STORIES[i] ? STORIES[i].id : `c${i+1}`);
+    }
 
     const payload = {
       action: 'saveStudent',
       id: student.id,
       name: student.name,
-      studentClass: student.studentClass,
-      xp: student.xp,
-      completedStoriesCount: completedCount,
-      completedStories: (student.completedStories || []).join(', '),
-      bossPassed: student.bossPassed ? 'Aprovado' : 'Pendente',
+      studentClass: student.studentClass || 'Sem Turma',
+      xp: student.xp || 0,
       grade: notaCalculada,
+      score: notaCalculada,
       score10: notaCalculada,
+      nota: notaCalculada,
+      completedStoriesCount: completedCount,
+      completedStories: legacyStoriesArray,
+      realCompletedStories: student.completedStories || [],
+      bossPassed: approvalStatus.shortText,
+      bossStatus: approvalStatus.text,
+      bossScore: student.bossScore || 0,
       timestamp: new Date().toLocaleString('pt-BR')
     };
 
@@ -2251,20 +2296,19 @@
       if (isFirstTime) {
         STATE.currentUser.completedStories.push(storyId);
         
-        let baseXP = 100;
-        if (STATE.usedHintInCurrentStory) {
-          baseXP = 50;
-          addXP(50, `Conclusão (c/ Dica): ${story.title}`, '📜');
-        } else {
-          addXP(100, `Conclusão Limpa: ${story.title}`, '📜');
-        }
-
+        // Regra Pedagógica Fixada:
+        // Contos somam até 900 XP (Contos 0 a 5: 128 XP; Conto 6: 132 XP = 900 XP total).
+        // Se pediu ajuda (dica) ou errou, ganha 45 XP como recompensa de persistência por leitura.
+        const perfectStoryXP = (STATE.currentStoryIndex === STORIES.length - 1) ? 132 : 128;
+        
         if (isPerfectAttempt) {
           STATE.currentUser.perfectStories.push(storyId);
-          addXP(50, `Conquista Perfeita: ${story.title}`, '🌟');
-          showToast(`🏆 Conquista Perfeita! Desvendou ${story.title} sem errar e sem dicas (+50 XP)!`);
+          addXP(perfectStoryXP, `Desempenho Impecável: ${story.title}`, '🏆');
+          showToast(`🏆 Desempenho Impecável! Você concluiu ${story.title} de primeira sem erros e sem dicas (+${perfectStoryXP} XP / +${(perfectStoryXP/100).toFixed(1)} nota)!`, 'success');
         } else {
-          showToast(`🎉 Parabéns! Você concluiu ${story.title}! (+${baseXP} XP)`);
+          const persistenceXP = 45;
+          addXP(persistenceXP, `Conclusão e Leitura: ${story.title}`, '📜');
+          showToast(`📜 Conto Concluído! Recompensa por leitura e persistência (+${persistenceXP} XP / +0,5 na nota). (Dica ou erro impediram a pontuação máxima de ${perfectStoryXP} XP neste conto).`, 'info');
         }
       } else {
         // Repeat Play (Anti-farming protection: 0 base XP)
@@ -2415,12 +2459,33 @@
       renderBossQuestion();
     } else {
       // Finish Boss
-      const xpGained = STATE.bossScore * 100;
-      addXP(xpGained);
-      if (STATE.bossScore >= 2) {
-        STATE.currentUser.bossPassed = true;
+      // Regra Pedagógica Fixada:
+      // O Simulado Final vale no máximo 1,0 ponto (100 XP).
+      // Cada uma das 5 questões vale 20 XP (+0,2 na nota).
+      const prevBossScore = typeof STATE.currentUser.bossScore === 'number' ? STATE.currentUser.bossScore : 0;
+      const currentScore = STATE.bossScore;
+      const xpPerQuestion = 20;
+      
+      let xpGained = 0;
+      if (typeof STATE.currentUser.bossScore !== 'number') {
+        xpGained = currentScore * xpPerQuestion;
+        if (xpGained > 0) {
+          addXP(xpGained, `Simulado Final: ${currentScore}/5 acertos`, '🎓');
+        }
+      } else if (currentScore > prevBossScore) {
+        xpGained = (currentScore - prevBossScore) * xpPerQuestion;
+        addXP(xpGained, `Recorde Simulado: ${currentScore}/5 acertos`, '🎓');
       }
-      showToast(`🎓 Simulado Concluído! Você acertou ${STATE.bossScore}/${BOSS_QUESTIONS.length} questões! (+${xpGained} XP)`);
+
+      STATE.currentUser.bossScore = Math.max(prevBossScore, currentScore);
+      STATE.currentUser.bossPassed = STATE.currentUser.bossScore >= 3;
+
+      const notaBossGanho = (currentScore * 0.2).toFixed(1);
+      if (STATE.currentUser.bossPassed) {
+        showToast(`🎓 Simulado Concluído! Você acertou ${currentScore}/${BOSS_QUESTIONS.length} questões (+${notaBossGanho} na nota) e foi Aprovado!`, "success");
+      } else {
+        showToast(`🎓 Simulado Concluído! Você acertou ${currentScore}/${BOSS_QUESTIONS.length} questões (+${notaBossGanho} na nota). Média mínima do simulado: 3 acertos.`, "warning");
+      }
       saveToStorage();
       closeModal(DOM.modalGame);
       onUserLoggedIn();
@@ -2446,11 +2511,15 @@
 
   function addXP(amount, title = 'Recompensa', icon = '⭐') {
     if (!STATE.currentUser) return;
-    STATE.currentUser.xp = Math.max(0, (STATE.currentUser.xp || 0) + amount);
+    // Teto máximo oficial fixado: 1.000 XP (referente à nota 10,0)
+    const current = Number(STATE.currentUser.xp) || 0;
+    const updated = Math.min(1000, Math.max(0, current + amount));
+    const actualGain = updated - current;
+    STATE.currentUser.xp = updated;
     DOM.headerPlayerXP.textContent = `${STATE.currentUser.xp} XP`;
     
-    const type = amount > 0 ? (title.includes('Conquista') ? 'bonus' : 'gain') : (amount < 0 ? 'loss' : 'neutral');
-    logXPEvent(title, amount, type, icon);
+    const type = actualGain > 0 ? (title.includes('Conquista') ? 'bonus' : 'gain') : (amount < 0 ? 'loss' : 'neutral');
+    logXPEvent(title, actualGain, type, icon);
 
     checkAchievements();
     saveToStorage();
@@ -2703,22 +2772,25 @@
 
     const completedCount = getStudentCompletedCount(student);
     const grade = calculateStudentGrade(student);
+    const approval = getStudentApprovalStatus(student);
     DOM.detailStudentGrade.textContent = `${grade} / 10`;
     DOM.detailStudentStoriesCount.textContent = `${completedCount} / 7`;
-    DOM.detailStudentBossStatus.textContent = student.bossPassed ? '✓ Aprovado' : 'Pendente';
+    DOM.detailStudentBossStatus.textContent = approval.text;
+    DOM.detailStudentBossStatus.style.color = approval.color;
 
     // Lista de contos
     DOM.detailStudentStoriesList.innerHTML = '';
-    STORIES.forEach(story => {
+    STORIES.forEach((story, idx) => {
       const isCompleted = student.completedStories && student.completedStories.includes(story.id);
       const isPerfect = student.perfectStories && student.perfectStories.includes(story.id);
 
       const row = document.createElement('div');
       row.className = 'student-story-row';
+      const storyLabel = story.numberText || `Conto ${idx + 1}`;
       row.innerHTML = `
-        <span>${story.number}. ${story.title}</span>
+        <span><strong>${storyLabel}:</strong> ${story.title}</span>
         <span class="badge ${isCompleted ? (isPerfect ? 'badge-gold' : 'badge-green') : 'badge-dim'}">
-          ${isCompleted ? (isPerfect ? '⭐ Impecável (150 XP)' : '✓ Concluído') : '○ Pendente'}
+          ${isCompleted ? (isPerfect ? '⭐ Impecável (+128~132 XP)' : '✓ Concluído (+45 XP)') : '○ Pendente'}
         </span>
       `;
       DOM.detailStudentStoriesList.appendChild(row);
@@ -2772,6 +2844,7 @@
     list.forEach(std => {
       const completedCount = getStudentCompletedCount(std);
       const nota10 = calculateStudentGrade(std);
+      const approval = getStudentApprovalStatus(std);
       const tr = document.createElement('tr');
       const scoreNum = parseFloat(nota10);
 
@@ -2779,9 +2852,9 @@
         <td><strong>${std.name}</strong></td>
         <td>${std.studentClass || 'Sem Turma'}</td>
         <td>${std.xp || 0} XP</td>
-        <td><strong style="color:${scoreNum >= 7.0 ? '#28a745' : scoreNum >= 5.0 ? '#ffc107' : '#dc3545'}">${nota10}</strong></td>
+        <td><strong style="color:${scoreNum >= 7.0 ? '#28a745' : scoreNum >= 6.0 ? '#17a2b8' : scoreNum >= 5.0 ? '#ffc107' : '#dc3545'}">${nota10}</strong></td>
         <td>${completedCount} / 7 Contos</td>
-        <td>${std.bossPassed ? '✓ Aprovado' : 'Pendente'}</td>
+        <td><span style="color:${approval.color}; font-weight:600;">${approval.text}</span></td>
         <td>
           <button class="btn btn-outline btn-sm" onclick="window.CF_GAME.showStudentDetails('${std.id}')">
             🔍 Detalhes
@@ -2800,12 +2873,13 @@
     }
 
     let csvContent = "data:text/csv;charset=utf-8,";
-    csvContent += "ID,Nome do Aluno,Turma,Pontuacao (XP),Nota Sugerida (0-10),Contos Concluidos,Simulado Final\n";
+    csvContent += "ID,Nome do Aluno,Turma,Pontuacao (XP),Nota Oficial (0-10),Contos Concluidos,Simulado Final\n";
 
     list.forEach(s => {
       const completedCount = getStudentCompletedCount(s);
       const nota10 = calculateStudentGrade(s);
-      csvContent += `"${s.id}","${s.name}","${s.studentClass || ''}",${s.xp || 0},${nota10},"${completedCount}/7","${s.bossPassed ? 'Aprovado' : 'Pendente'}"\n`;
+      const approval = getStudentApprovalStatus(s);
+      csvContent += `"${s.id}","${s.name}","${s.studentClass || ''}",${s.xp || 0},${nota10},"${completedCount}/7","${approval.shortText}"\n`;
     });
 
     const encodedUri = encodeURI(csvContent);
@@ -2865,6 +2939,12 @@
       openModal(DOM.modalConquistas);
     });
 
+    if (DOM.btnRules) {
+      DOM.btnRules.addEventListener('click', () => {
+        openModal(DOM.modalRules);
+      });
+    }
+
     DOM.btnProfessor.addEventListener('click', () => {
       fetchClassesFromGoogleSheets();
       fetchRankingFromGoogleSheets();
@@ -2898,6 +2978,13 @@
     DOM.btnCloseConquistas.addEventListener('click', () => closeModal(DOM.modalConquistas));
     DOM.btnCloseHistory.addEventListener('click', () => closeModal(DOM.modalHistory));
     DOM.btnCloseProfessor.addEventListener('click', () => closeModal(DOM.modalProfessor));
+
+    if (DOM.btnCloseRules) {
+      DOM.btnCloseRules.addEventListener('click', () => closeModal(DOM.modalRules));
+    }
+    if (DOM.rulesBackdrop) {
+      DOM.rulesBackdrop.addEventListener('click', () => closeModal(DOM.modalRules));
+    }
 
     if (DOM.btnCloseGoogleSheets) {
       DOM.btnCloseGoogleSheets.addEventListener('click', () => closeModal(DOM.modalGoogleSheets));
@@ -2947,6 +3034,63 @@
     }
     if (DOM.btnSyncSheetsNow) {
       DOM.btnSyncSheetsNow.addEventListener('click', refreshDataNow);
+    }
+
+    // Apps Script Modal Listeners
+    if (DOM.btnOpenAppsScriptModal) {
+      DOM.btnOpenAppsScriptModal.addEventListener('click', () => openModal(DOM.modalAppsScriptCode));
+    }
+    if (DOM.btnCloseAppsScriptModal) {
+      DOM.btnCloseAppsScriptModal.addEventListener('click', () => closeModal(DOM.modalAppsScriptCode));
+    }
+    if (DOM.appsScriptBackdrop) {
+      DOM.appsScriptBackdrop.addEventListener('click', () => closeModal(DOM.modalAppsScriptCode));
+    }
+    if (DOM.btnCopyAppsScriptCode) {
+      DOM.btnCopyAppsScriptCode.addEventListener('click', () => {
+        const codeText = DOM.codeAppsScriptBlock ? DOM.codeAppsScriptBlock.textContent : '';
+        const setCopySuccess = () => {
+          DOM.btnCopyAppsScriptCode.textContent = "✅ Código Copiado!";
+          showToast("Código do Apps Script copiado para a área de transferência!", "success");
+          setTimeout(() => {
+            if (DOM.btnCopyAppsScriptCode) DOM.btnCopyAppsScriptCode.textContent = "📋 Copiar Código Completo";
+          }, 2500);
+        };
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(codeText)
+            .then(setCopySuccess)
+            .catch(() => {
+              const ta = document.createElement('textarea');
+              ta.value = codeText;
+              ta.style.position = 'fixed';
+              ta.style.opacity = '0';
+              document.body.appendChild(ta);
+              ta.select();
+              try {
+                document.execCommand('copy');
+                setCopySuccess();
+              } catch {
+                showToast("Por favor, selecione e copie o código manualmente.", "warning");
+              }
+              document.body.removeChild(ta);
+            });
+        } else {
+          const ta = document.createElement('textarea');
+          ta.value = codeText;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          try {
+            document.execCommand('copy');
+            setCopySuccess();
+          } catch {
+            showToast("Por favor, selecione e copie o código manualmente.", "warning");
+          }
+          document.body.removeChild(ta);
+        }
+      });
     }
 
     const btnProfLoginShortcut = document.getElementById('btnProfLoginShortcut');
