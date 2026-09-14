@@ -12,7 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Playfair+Display:ital,wght@0,600;0,800;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
   <!-- Main Styling -->
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=20260914_compact">
 </head>
 <body>
 
@@ -56,11 +56,15 @@
         <button id="btnConquistas" class="btn btn-secondary">
           <span class="icon">🎖️</span> Conquistas
         </button>
-        <button id="btnRules" class="btn btn-secondary" title="Ver regras, cálculo de XP e sistema de notas">
-          <span class="icon">📜</span> Regras & Notas
+        <button id="btnRules" class="btn btn-secondary btn-compact" title="Ver regras, cálculo de XP e sistema de notas">
+          <span class="icon">📜</span>
+          <span class="nav-label-full">Regras & Notas</span>
+          <span class="nav-label-short">Regras</span>
         </button>
-        <button id="btnProfessor" class="btn btn-accent">
-          <span class="icon">👨‍🏫</span> Área do Professor
+        <button id="btnProfessor" class="btn btn-accent btn-compact" title="Área do Professor e Gestão Pedagógica">
+          <span class="icon">👨‍🏫</span>
+          <span class="nav-label-full">Área do Professor</span>
+          <span class="nav-label-short">Professor</span>
         </button>
         <button id="btnSwitchUser" class="btn btn-icon hidden" title="Trocar Aluno / Sair">
           <span>🔄</span>
@@ -823,6 +827,6 @@ function doGet(e) {
   <div id="toastContainer" class="toast-container"></div>
 
   <!-- Main JavaScript File -->
-  <script src="script.js"></script>
+  <script src="script.js?v=20260914_granular"></script>
 </body>
 </html>

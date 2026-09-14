@@ -74,6 +74,11 @@
   scrollbar-color: rgba(212, 175, 55, 0.25) transparent;
 }
 
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 body {
   font-family: var(--font-sans);
   background-color: var(--bg-primary);
@@ -121,11 +126,11 @@ code {
 .header-container {
   max-width: 1300px;
   margin: 0 auto;
-  padding: 12px 24px;
+  padding: 10px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 12px;
   flex-wrap: nowrap;
 }
 
@@ -345,8 +350,31 @@ code {
 .nav-actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   flex-shrink: 0;
+}
+
+.nav-actions .btn {
+  padding: 8px 14px;
+  font-size: 0.86rem;
+  white-space: nowrap;
+}
+
+/* Botões 'Regras & Notas' e 'Área do Professor' compactos para evitar rolagem horizontal */
+.nav-actions .btn-compact,
+#btnRules,
+#btnProfessor {
+  padding: 6px 11px;
+  font-size: 0.82rem;
+  gap: 6px;
+}
+
+.nav-label-short {
+  display: none;
+}
+
+.nav-label-full {
+  display: inline;
 }
 
 /* ==========================================================================
@@ -1775,6 +1803,59 @@ select.form-input {
 }
 
 /* Responsive Tweaks */
+@media (max-width: 1260px) {
+  .header-container {
+    padding: 8px 14px;
+    gap: 8px;
+  }
+  .player-bar {
+    gap: 10px;
+    padding: 4px 12px;
+  }
+  .nav-actions {
+    gap: 6px;
+  }
+  .nav-actions .btn {
+    padding: 6px 10px;
+    font-size: 0.82rem;
+    gap: 4px;
+  }
+  .nav-label-full {
+    display: none;
+  }
+  .nav-label-short {
+    display: inline;
+  }
+}
+
+@media (max-width: 992px) {
+  .app-title {
+    font-size: 1.15rem;
+  }
+  .app-subtitle {
+    display: none;
+  }
+  .player-bar {
+    padding: 4px 8px;
+    gap: 6px;
+  }
+  .player-name {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 860px) {
+  .header-container {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+  .nav-actions {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
 @media (max-width: 768px) {
   .hero-title { font-size: 1.7rem; }
   .story-grid { grid-template-columns: 1fr; }

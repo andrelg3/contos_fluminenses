@@ -1596,6 +1596,9 @@
     if (!Array.isArray(student.xpHistory)) {
       student.xpHistory = [];
     }
+    if (!student.storyScores || typeof student.storyScores !== 'object') {
+      student.storyScores = {};
+    }
     student.xp = Number(student.xp) || 0;
 
     // Se completedStories estiver vazio mas houver contos declarados no objeto
@@ -1814,6 +1817,7 @@
         xp: 0,
         completedStories: [],
         perfectStories: [],
+        storyScores: {},
         achievements: [],
         xpHistory: [],
         answersHistory: {},
@@ -1876,11 +1880,14 @@
     STORIES.forEach((story, idx) => {
       const isCompleted = STATE.currentUser ? STATE.currentUser.completedStories.includes(story.id) : false;
       const isPerfect = isCompleted && STATE.currentUser && Array.isArray(STATE.currentUser.perfectStories) && STATE.currentUser.perfectStories.includes(story.id);
+      const earnedScore = STATE.currentUser && STATE.currentUser.storyScores ? STATE.currentUser.storyScores[story.id] : null;
       
       let xpBadgeHtml = `<span class="story-xp-info">⭐ Até 143 XP</span>`;
       if (isCompleted) {
         if (isPerfect) {
           xpBadgeHtml = `<span class="story-xp-info" style="color: #ffd700; font-weight: 700;">⭐ +143 XP (Impecável)</span>`;
+        } else if (earnedScore) {
+          xpBadgeHtml = `<span class="story-xp-info" style="color: var(--primary-gold);">✓ +${earnedScore} XP</span>`;
         } else {
           xpBadgeHtml = `<span class="story-xp-info" style="color: var(--primary-gold);">✓ Concluído</span>`;
         }
@@ -2358,6 +2365,9 @@
       const storyId = story.id;
       if (!STATE.currentUser.completedStories) STATE.currentUser.completedStories = [];
       if (!STATE.currentUser.perfectStories) STATE.currentUser.perfectStories = [];
+      if (!STATE.currentUser.storyScores || typeof STATE.currentUser.storyScores !== 'object') {
+        STATE.currentUser.storyScores = {};
+      }
 
       const isFirstTime = !STATE.currentUser.completedStories.includes(storyId);
       
@@ -2366,27 +2376,40 @@
       const step4Earned = STATE.step4XP; // 18 ou 36 XP
       const storyEarnedXP = Math.min(143, step2Earned + step3Earned + step4Earned);
       const isPerfectAttempt = (storyEarnedXP === 143);
+      const previousStoryXP = STATE.currentUser.storyScores[storyId] || 0;
 
       if (isFirstTime) {
         STATE.currentUser.completedStories.push(storyId);
+        STATE.currentUser.storyScores[storyId] = storyEarnedXP;
         
         if (isPerfectAttempt) {
           STATE.currentUser.perfectStories.push(storyId);
           addXP(storyEarnedXP, `Desempenho Impecável: ${story.title}`, '🏆');
-          showToast(`🏆 Desempenho Impecável em ${story.title}! Enigma: +71 XP | Análise: +36 XP | Vestibular: +36 XP = +143 XP total!`, 'success');
+          showToast(`🏆 Desempenho Impecável em ${story.title}! Enigma: +${step2Earned} XP | Análise: +${step3Earned} XP | Vestibular: +${step4Earned} XP = +${storyEarnedXP} XP!`, 'success');
         } else {
           addXP(storyEarnedXP, `Conclusão: ${story.title}`, '📜');
           showToast(`📜 Conto Concluído! Enigma: +${step2Earned} XP | Análise: +${step3Earned} XP | Vestibular: +${step4Earned} XP = +${storyEarnedXP} XP obtidos!`, 'info');
         }
       } else {
-        // Repeat Play (Anti-farming protection: 0 base XP)
-        if (isPerfectAttempt && !STATE.currentUser.perfectStories.includes(storyId)) {
-          STATE.currentUser.perfectStories.push(storyId);
-          logXPEvent(`Conquista Perfeita (Repetição): ${story.title}`, 0, 'neutral', '🌟');
-          showToast(`🏆 Conquista Perfeita em ${story.title}! (Sem XP adicional em repetições)`);
+        // Repeat Play / Re-tentativa
+        // Se o aluno obteve mais XP nesta rodada do que no histórico anterior (ex: ganhou 50 antes e agora fez 75 ou 143):
+        if (storyEarnedXP > previousStoryXP) {
+          const diffXP = storyEarnedXP - previousStoryXP;
+          STATE.currentUser.storyScores[storyId] = storyEarnedXP;
+          if (isPerfectAttempt && !STATE.currentUser.perfectStories.includes(storyId)) {
+            STATE.currentUser.perfectStories.push(storyId);
+          }
+          addXP(diffXP, `Melhoria de Desempenho: ${story.title} (+${diffXP} XP)`, '⭐');
+          showToast(`⭐ Desempenho Superado em ${story.title}! Nova pontuação: ${storyEarnedXP} XP (Enigma: ${step2Earned}, Análise: ${step3Earned}, Vestibular: ${step4Earned}). Diferença creditada: +${diffXP} XP!`, 'success');
         } else {
-          logXPEvent(`Revisão de Conto: ${story.title}`, 0, 'neutral', '📖');
-          showToast(`📖 ${story.title} revisado! (Sem XP adicional em repetições)`);
+          if (isPerfectAttempt && !STATE.currentUser.perfectStories.includes(storyId)) {
+            STATE.currentUser.perfectStories.push(storyId);
+            logXPEvent(`Conquista Perfeita (Repetição): ${story.title}`, 0, 'neutral', '🌟');
+            showToast(`🏆 Conquista Perfeita em ${story.title}! (Sem XP adicional em repetições)`);
+          } else {
+            logXPEvent(`Revisão de Conto: ${story.title}`, 0, 'neutral', '📖');
+            showToast(`📖 ${story.title} revisado (${storyEarnedXP} XP)! (Sem acréscimo em relação à sua melhor marca anterior de ${previousStoryXP} XP)`);
+          }
         }
       }
 
@@ -2866,14 +2889,30 @@
     STORIES.forEach((story, idx) => {
       const isCompleted = student.completedStories && student.completedStories.includes(story.id);
       const isPerfect = student.perfectStories && student.perfectStories.includes(story.id);
+      const earnedXP = student.storyScores && student.storyScores[story.id] ? student.storyScores[story.id] : null;
 
       const row = document.createElement('div');
       row.className = 'student-story-row';
       const storyLabel = story.numberText || `Conto ${idx + 1}`;
+      let badgeLabel = '○ Pendente';
+      let badgeClass = 'badge-dim';
+      if (isCompleted) {
+        if (isPerfect) {
+          badgeLabel = '⭐ Impecável (+143 XP)';
+          badgeClass = 'badge-gold';
+        } else if (earnedXP) {
+          badgeLabel = `✓ Concluído (+${earnedXP} XP)`;
+          badgeClass = 'badge-green';
+        } else {
+          badgeLabel = '✓ Concluído';
+          badgeClass = 'badge-green';
+        }
+      }
+
       row.innerHTML = `
         <span><strong>${storyLabel}:</strong> ${story.title}</span>
-        <span class="badge ${isCompleted ? (isPerfect ? 'badge-gold' : 'badge-green') : 'badge-dim'}">
-          ${isCompleted ? (isPerfect ? '⭐ Impecável (+143 XP)' : '✓ Concluído') : '○ Pendente'}
+        <span class="badge ${badgeClass}">
+          ${badgeLabel}
         </span>
       `;
       DOM.detailStudentStoriesList.appendChild(row);
