@@ -208,9 +208,9 @@
         </div>
         <div class="game-stepper" id="gameStepper">
           <div class="step-pill active" id="stepPill1">1. Contexto</div>
-          <div class="step-pill" id="stepPill2">2. O Enigma</div>
-          <div class="step-pill" id="stepPill3">3. Análise Oculta</div>
-          <div class="step-pill" id="stepPill4">4. Vestibular</div>
+          <div class="step-pill" id="stepPill2">2. O Enigma (até 71 XP)</div>
+          <div class="step-pill" id="stepPill3">3. Análise Oculta (36 XP)</div>
+          <div class="step-pill" id="stepPill4">4. Vestibular (36 XP)</div>
         </div>
       </div>
 
@@ -222,7 +222,7 @@
       <!-- Game Footer Controls -->
       <div class="game-footer">
         <button id="btnHintGame" class="btn btn-outline">
-          💡 Pedir Dica (-50 XP)
+          💡 Pedir Ajuda / Dica (-30 XP)
         </button>
         <div class="game-footer-right">
           <button id="btnPrevGame" class="btn btn-secondary hidden">Voltar</button>
@@ -394,7 +394,7 @@
         <!-- Critério Pedagógico Banner -->
         <div style="background: rgba(212, 175, 55, 0.08); border: 1px solid var(--border-gold); padding: 12px 18px; border-radius: 8px; margin-bottom: 20px; font-size: 0.92rem; line-height: 1.5;">
           <strong>🎯 Critério de Avaliação Fixado:</strong> 
-          <span><strong>1.000 XP = Nota 10,0</strong> (Nota = XP ÷ 100). Cada um dos <strong>7 Contos</strong> concluído perfeitamente concede até <strong>143 XP</strong> (totalizando 1.001 XP, arredondado para <strong>1.000 XP = Nota 10,0</strong>). O <strong>Simulado Final (Boss)</strong> vale <strong>20 XP (+0,2)</strong> por acerto, servindo de complemento pedagógico de recuperação para quem perdeu pontos, sem ultrapassar o teto de 1.000 XP.</span>
+          <span><strong>1.000 XP = Nota 10,0</strong> (Nota = XP ÷ 100). Cada um dos <strong>7 Contos</strong> vale até <strong>143 XP</strong>, dividido em 3 fases: <strong>O Enigma (até 71 XP)</strong>, <strong>Análise Oculta (36 XP)</strong> e <strong>Vestibular (36 XP)</strong>. O <strong>Simulado Final (Boss)</strong> concede <strong>20 XP (+0,2)</strong> por questão, servindo de complemento/recuperação para quem perdeu pontos, respeitando o teto de 1.000 XP.</span>
         </div>
 
         <!-- Student Performance Table -->
@@ -512,14 +512,16 @@
           <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
             <span style="font-size: 1.5rem;">📖</span>
             <div>
-              <h4 style="margin: 0; font-size: 1.05rem;">Os 7 Contos da Obra</h4>
-              <span style="font-size: 0.82rem; color: #28a745; font-weight: 600;">Até 143 XP cada (= 1.000 XP / Nota 10,0)</span>
+              <h4 style="margin: 0; font-size: 1.05rem;">Os 7 Contos (Até 143 XP cada)</h4>
+              <span style="font-size: 0.82rem; color: #28a745; font-weight: 600;">Divisão interna precisa em 3 etapas avaliativas</span>
             </div>
           </div>
           <ul style="margin: 0; padding-left: 18px; font-size: 0.9rem; line-height: 1.6; color: var(--text-main);">
-            <li><strong>Conclusão Impecável (sem erros e sem dicas):</strong> até <strong>143 XP</strong> por conto (concluir os 7 contos de forma impecável totaliza 1.001 XP, arredondado para <strong>1.000 XP = Nota Máxima 10,0</strong>).</li>
-            <li><strong>Com Auxílio de Dica ou Erro Prévio:</strong> ganha <strong>50 XP</strong> por conto como incentivo pedagógico de persistência na leitura e resolução.</li>
-            <li><em>Recuperação:</em> Quem perdeu pontos por erros ou dicas nos contos pode recuperá-los no <strong>Simulado Final</strong>!</li>
+            <li><strong>2. O Enigma (Ordenação cronológica):</strong> vale até <strong>71 XP</strong>. Pedir ajuda/dica deduz <strong>-30 XP</strong>. Cada erro na verificação deduz <strong>-10 XP</strong>. Piso de segurança: o aluno garante no mínimo <strong>21 XP</strong> nesta etapa mesmo errando e pedindo dica.</li>
+            <li><strong>3. Análise Oculta:</strong> vale <strong>36 XP</strong> no acerto de primeira. Se errar, a pontuação cai pela metade (<strong>18 XP</strong>).</li>
+            <li><strong>4. Desafio Vestibular:</strong> vale <strong>36 XP</strong> no acerto de primeira. Se errar, cai pela metade (<strong>18 XP</strong>).</li>
+            <li><strong>Total por Conto:</strong> até <strong>143 XP</strong> (71 + 36 + 36). Por exemplo: se o aluno pediu ajuda e errou no Enigma (21 XP), mas acertou de primeira a Análise (36 XP) e o Vestibular (36 XP), conquista <strong>93 XP</strong>!</li>
+            <li><strong>7 Contos Perfeitos:</strong> 7 × 143 XP = 1.001 XP, arredondado para o teto de <strong>1.000 XP (Nota 10,0)</strong>.</li>
           </ul>
         </div>
 

@@ -1571,7 +1571,7 @@
      Regra Pedagógica Fixada:
      - 1.000 XP Máximo = Nota 10,0 (Nota = XP ÷ 100).
      - 7 Contos chegam a 143 XP cada se concluídos perfeitamente (7 x 143 = 1.001 XP, arredondado para 1.000 XP = Nota 10,0).
-     - Conclusão com auxílio (dicas/erros): 50 XP por conto como incentivo de leitura e persistência.
+     - Pontuação em 3 etapas por conto: 2. O Enigma (até 71 XP; dica: -30, erro: -10, piso mínimo: 21 XP), 3. Análise Oculta (36 XP; se errar cai pela metade para 18 XP) e 4. Vestibular (36 XP; se errar cai pela metade para 18 XP).
      - Simulado Final (Boss): até 100 XP (5 questões × 20 XP cada = +0,2 por questão), funcionando como complemento pedagógico de recuperação para quem perdeu pontos, sem ultrapassar o teto de 1.000 XP.
      ========================================================================== */
   function calculateStudentGrade(student) {
@@ -1877,12 +1877,12 @@
       const isCompleted = STATE.currentUser ? STATE.currentUser.completedStories.includes(story.id) : false;
       const isPerfect = isCompleted && STATE.currentUser && Array.isArray(STATE.currentUser.perfectStories) && STATE.currentUser.perfectStories.includes(story.id);
       
-      let xpBadgeHtml = `<span class="story-xp-info">⭐ +${story.xpValue} XP</span>`;
+      let xpBadgeHtml = `<span class="story-xp-info">⭐ Até 143 XP</span>`;
       if (isCompleted) {
         if (isPerfect) {
           xpBadgeHtml = `<span class="story-xp-info" style="color: #ffd700; font-weight: 700;">⭐ +143 XP (Impecável)</span>`;
         } else {
-          xpBadgeHtml = `<span class="story-xp-info" style="color: var(--primary-gold);">📜 +50 XP (Concluído)</span>`;
+          xpBadgeHtml = `<span class="story-xp-info" style="color: var(--primary-gold);">✓ Concluído</span>`;
         }
       }
 
@@ -1958,6 +1958,18 @@
     STATE.step2Passed = false;
     STATE.step3Passed = false;
     STATE.step4Passed = false;
+
+    // Pontuação Granular Pedagógica (Total máx: 143 XP)
+    // 2. O Enigma: Vale até 71 XP (dica: -30, erro: -10, piso mínimo: 21 XP)
+    // 3. Análise Oculta: Vale 36 XP (se errar: cai para 18 XP)
+    // 4. Vestibular: Vale 36 XP (se errar: cai para 18 XP)
+    STATE.step2XP = 71;
+    STATE.step2HintUsed = false;
+    STATE.step2ErrorCount = 0;
+    STATE.step3XP = 36;
+    STATE.step3MadeError = false;
+    STATE.step4XP = 36;
+    STATE.step4MadeError = false;
 
     const story = STORIES[index];
     DOM.gameStoryNumber.textContent = story.numberText;
@@ -2046,13 +2058,19 @@
     // Step 2: Puzzle de Sequência Lógica
     else if (STATE.currentStep === 2) {
       DOM.btnHintGame.classList.remove('hidden');
-      DOM.btnNextGame.textContent = STATE.step2Passed ? 'Ir para Análise Psicológica →' : 'Verificar Sequência →';
+      DOM.btnHintGame.textContent = STATE.step2HintUsed ? '💡 Dica Revelada (-30 XP)' : '💡 Pedir Ajuda / Dica (-30 XP)';
+      DOM.btnNextGame.textContent = STATE.step2Passed ? 'Ir para Análise Oculta →' : 'Verificar Sequência →';
 
       const activePuzzle = STATE.activeStoryChallenge ? STATE.activeStoryChallenge.puzzle : story.step2Puzzle;
 
       DOM.gameBody.innerHTML = `
         <div class="slide-container">
-          <p class="puzzle-instruction">🧩 ${activePuzzle.instruction}</p>
+          <p class="puzzle-instruction">
+            🧩 ${activePuzzle.instruction}
+            <span id="liveStep2XP" style="display:inline-block; margin-left:8px; padding:2px 10px; border-radius:12px; background:rgba(212,175,55,0.15); border:1px solid var(--border-gold); font-size:0.85rem; color:var(--primary-gold); font-weight:700;">
+              Etapa: ${STATE.step2XP} XP (máx. 71)
+            </span>
+          </p>
           <div class="puzzle-sequence-box" id="puzzleContainer">
             ${STATE.activePuzzleOrder.map((frag, idx) => `
               <div class="puzzle-slot-item" data-slot="${idx}" id="puzzleSlot_${idx}">
@@ -2069,7 +2087,7 @@
           </div>
           <div id="step2Feedback" class="feedback-box ${STATE.step2Passed ? 'feedback-correct' : 'hidden'}">
             ${STATE.step2Passed ? `
-              <div class="feedback-title">✓ Sequência Cronológica Decifrada!</div>
+              <div class="feedback-title">✓ Sequência Cronológica Decifrada! (+${STATE.step2XP} XP garantidos)</div>
               <p>Excelente dedução! A linha temporal dos acontecimentos foi reconstituída com fidelidade à narrativa machadiana.</p>
             ` : ''}
           </div>
@@ -2088,7 +2106,12 @@
       DOM.gameBody.innerHTML = `
         <div class="slide-container">
           <h3>🎭 ${activeAnalysis.title}</h3>
-          <p class="puzzle-instruction">${activeAnalysis.question}</p>
+          <p class="puzzle-instruction">
+            ${activeAnalysis.question}
+            <span id="liveStep3XP" style="display:inline-block; margin-left:8px; padding:2px 10px; border-radius:12px; background:rgba(40,167,69,0.15); border:1px solid rgba(40,167,69,0.4); font-size:0.85rem; color:#28a745; font-weight:700;">
+              Vale ${STATE.step3XP} XP ${STATE.step3MadeError ? '(reduzido pela metade)' : ''}
+            </span>
+          </p>
 
           <div class="quiz-options" id="step3Options">
             ${optionsToRender.map(opt => `
@@ -2114,7 +2137,12 @@
       DOM.gameBody.innerHTML = `
         <div class="slide-container">
           <span class="boss-badge">${activeVest.examTag}</span>
-          <p class="puzzle-instruction" style="margin-top: 10px;">${activeVest.question}</p>
+          <p class="puzzle-instruction" style="margin-top: 10px;">
+            ${activeVest.question}
+            <span id="liveStep4XP" style="display:inline-block; margin-left:8px; padding:2px 10px; border-radius:12px; background:rgba(40,167,69,0.15); border:1px solid rgba(40,167,69,0.4); font-size:0.85rem; color:#28a745; font-weight:700;">
+              Vale ${STATE.step4XP} XP ${STATE.step4MadeError ? '(reduzido pela metade)' : ''}
+            </span>
+          </p>
 
           <div class="quiz-options" id="step4Options">
             ${optionsToRender.map(opt => `
@@ -2191,20 +2219,44 @@
       if (selectedOpt.correct) {
         selectedCard.classList.add('correct');
         feedbackBox.classList.add('feedback-correct');
+        const earnedXP = (stepId === 'step3') ? STATE.step3XP : STATE.step4XP;
         feedbackBox.innerHTML = `
-          <div class="feedback-title">✓ Resposta Correta!</div>
+          <div class="feedback-title">✓ Resposta Correta (+${earnedXP} XP)!</div>
           <p>${stepId === 'step3' ? data.feedbackCorrect : data.explanation}</p>
         `;
         if (stepId === 'step3') STATE.step3Passed = true;
         if (stepId === 'step4') STATE.step4Passed = true;
       } else {
         STATE.madeErrorInCurrentStory = true;
-        if (stepId === 'step3') STATE.step3Passed = false;
-        if (stepId === 'step4') STATE.step4Passed = false;
+        if (stepId === 'step3') {
+          STATE.step3Passed = false;
+          STATE.step3MadeError = true;
+          STATE.step3XP = 18; // Cai pela metade!
+          const liveEl = document.getElementById('liveStep3XP');
+          if (liveEl) {
+            liveEl.style.color = '#dc3545';
+            liveEl.style.borderColor = 'rgba(220,53,69,0.4)';
+            liveEl.style.background = 'rgba(220,53,69,0.12)';
+            liveEl.textContent = 'Vale 18 XP (reduzido pela metade)';
+          }
+        }
+        if (stepId === 'step4') {
+          STATE.step4Passed = false;
+          STATE.step4MadeError = true;
+          STATE.step4XP = 18; // Cai pela metade!
+          const liveEl = document.getElementById('liveStep4XP');
+          if (liveEl) {
+            liveEl.style.color = '#dc3545';
+            liveEl.style.borderColor = 'rgba(220,53,69,0.4)';
+            liveEl.style.background = 'rgba(220,53,69,0.12)';
+            liveEl.textContent = 'Vale 18 XP (reduzido pela metade)';
+          }
+        }
         selectedCard.classList.add('incorrect');
         feedbackBox.classList.add('feedback-incorrect');
         feedbackBox.innerHTML = `
-          <div class="feedback-title">✗ Tente Novamente!</div>
+          <div class="feedback-title">✗ Alternativa Incorreta!</div>
+          <p style="color: #dc3545; font-weight: 600; margin-bottom: 6px;">⚠️ A pontuação desta questão caiu pela metade: vale agora 18 XP.</p>
           <p>${stepId === 'step3' ? data.feedbackIncorrect : "Analise o contexto histórico e a crítica social machadiana para escolher a alternativa ideal."}</p>
         `;
       }
@@ -2230,6 +2282,12 @@
       if (!isCorrect) {
         STATE.madeErrorInCurrentStory = true;
         STATE.step2Passed = false;
+        STATE.step2ErrorCount = (STATE.step2ErrorCount || 0) + 1;
+
+        // Deduz 10 XP por erro na ordenação, com piso mínimo de 21 XP
+        STATE.step2XP = Math.max(21, STATE.step2XP - 10);
+        const liveEl = document.getElementById('liveStep2XP');
+        if (liveEl) liveEl.innerHTML = `Etapa: <strong>${STATE.step2XP} XP</strong> (máx. 71)`;
 
         fragmentEls.forEach(el => {
           el.classList.remove('puzzle-fragment-correct');
@@ -2241,11 +2299,11 @@
           feedbackBox.classList.remove('hidden', 'feedback-correct');
           feedbackBox.classList.add('feedback-incorrect');
           feedbackBox.innerHTML = `
-            <div class="feedback-title">✗ Sequência Incorreta!</div>
-            <p>A ordem cronológica dos fatos ainda contém incoerências em relação ao conto. Use as setas ▲ e ▼ para reordenar os acontecimentos antes de prosseguir.</p>
+            <div class="feedback-title">✗ Sequência Incorreta (-10 XP)!</div>
+            <p>A ordem cronológica dos fatos ainda contém incoerências. Saldo atual desta etapa: <strong>${STATE.step2XP} XP</strong> (piso de 21 XP). Use as setas ▲ e ▼ para reordenar os fatos antes de prosseguir.</p>
           `;
         }
-        showToast("A sequência ainda não está correta! Reordene os fatos antes de avançar.", "warning");
+        showToast(`A sequência ainda não está correta (-10 XP). Saldo do Enigma: ${STATE.step2XP} XP. Reordene os fatos antes de avançar.`, "warning");
         return;
       }
 
@@ -2266,13 +2324,13 @@
           feedbackBox.classList.remove('hidden', 'feedback-incorrect');
           feedbackBox.classList.add('feedback-correct');
           feedbackBox.innerHTML = `
-            <div class="feedback-title">✓ Sequência Cronológica Decifrada!</div>
+            <div class="feedback-title">✓ Sequência Cronológica Decifrada! (+${STATE.step2XP} XP garantidos)</div>
             <p>Excelente dedução! A linha temporal dos acontecimentos foi reconstituída com fidelidade à narrativa machadiana.</p>
           `;
         }
 
-        DOM.btnNextGame.textContent = 'Ir para Análise Psicológica →';
-        showToast("✓ Enigma resolvido! Sequência cronológica correta!", "success");
+        DOM.btnNextGame.textContent = 'Ir para Análise Oculta →';
+        showToast(`✓ Enigma resolvido! +${STATE.step2XP} XP garantidos nesta etapa!`, "success");
         return; // Permite ao aluno visualizar e ler a confirmação de acerto antes de avançar
       }
     }
@@ -2302,24 +2360,23 @@
       if (!STATE.currentUser.perfectStories) STATE.currentUser.perfectStories = [];
 
       const isFirstTime = !STATE.currentUser.completedStories.includes(storyId);
-      const isPerfectAttempt = !STATE.usedHintInCurrentStory && !STATE.madeErrorInCurrentStory;
+      
+      const step2Earned = STATE.step2XP; // 21 a 71 XP
+      const step3Earned = STATE.step3XP; // 18 ou 36 XP
+      const step4Earned = STATE.step4XP; // 18 ou 36 XP
+      const storyEarnedXP = Math.min(143, step2Earned + step3Earned + step4Earned);
+      const isPerfectAttempt = (storyEarnedXP === 143);
 
       if (isFirstTime) {
         STATE.currentUser.completedStories.push(storyId);
         
-        // Regra Pedagógica Fixada:
-        // Cada conto concluído perfeitamente concede 143 XP (7 contos = 1001 XP, arredondado para 1000 XP = Nota 10,0).
-        // Se pediu ajuda (dica) ou errou, ganha 50 XP como incentivo pedagógico por persistência e leitura.
-        const perfectStoryXP = 143;
-        
         if (isPerfectAttempt) {
           STATE.currentUser.perfectStories.push(storyId);
-          addXP(perfectStoryXP, `Desempenho Impecável: ${story.title}`, '🏆');
-          showToast(`🏆 Desempenho Impecável! Você concluiu ${story.title} de primeira sem erros e sem dicas (+${perfectStoryXP} XP)!`, 'success');
+          addXP(storyEarnedXP, `Desempenho Impecável: ${story.title}`, '🏆');
+          showToast(`🏆 Desempenho Impecável em ${story.title}! Enigma: +71 XP | Análise: +36 XP | Vestibular: +36 XP = +143 XP total!`, 'success');
         } else {
-          const persistenceXP = 50;
-          addXP(persistenceXP, `Conclusão e Leitura: ${story.title}`, '📜');
-          showToast(`📜 Conto Concluído! Recompensa por leitura e persistência (+${persistenceXP} XP). O Simulado Final (Boss) poderá complementar sua nota até 10,0 (+0,2 por questão)!`, 'info');
+          addXP(storyEarnedXP, `Conclusão: ${story.title}`, '📜');
+          showToast(`📜 Conto Concluído! Enigma: +${step2Earned} XP | Análise: +${step3Earned} XP | Vestibular: +${step4Earned} XP = +${storyEarnedXP} XP obtidos!`, 'info');
         }
       } else {
         // Repeat Play (Anti-farming protection: 0 base XP)
@@ -2350,12 +2407,20 @@
     const story = STORIES[STATE.currentStoryIndex];
     const activePuzzle = STATE.activeStoryChallenge ? STATE.activeStoryChallenge.puzzle : story.step2Puzzle;
     if (STATE.currentStep === 2 && activePuzzle && activePuzzle.hint) {
-      if (STATE.usedHintInCurrentStory) {
+      if (STATE.step2HintUsed) {
         showToast(`💡 DICA DO NARRADOR: ${activePuzzle.hint}`, "warning");
         return;
       }
+      STATE.step2HintUsed = true;
       STATE.usedHintInCurrentStory = true;
-      showToast(`💡 DICA: ${activePuzzle.hint} (-50 XP de bônus limpo)`, "warning");
+      // Perde 30 XP com piso mínimo de 21 XP
+      STATE.step2XP = Math.max(21, STATE.step2XP - 30);
+
+      const liveEl = document.getElementById('liveStep2XP');
+      if (liveEl) liveEl.innerHTML = `Etapa: <strong>${STATE.step2XP} XP</strong> (máx. 71)`;
+      DOM.btnHintGame.textContent = '💡 Dica Revelada (-30 XP)';
+
+      showToast(`💡 DICA: ${activePuzzle.hint} (-30 XP na etapa do Enigma! Saldo restante da etapa: ${STATE.step2XP} XP)`, "warning");
     }
   }
 
@@ -2808,7 +2873,7 @@
       row.innerHTML = `
         <span><strong>${storyLabel}:</strong> ${story.title}</span>
         <span class="badge ${isCompleted ? (isPerfect ? 'badge-gold' : 'badge-green') : 'badge-dim'}">
-          ${isCompleted ? (isPerfect ? '⭐ Impecável (+143 XP)' : '✓ Concluído (+50 XP)') : '○ Pendente'}
+          ${isCompleted ? (isPerfect ? '⭐ Impecável (+143 XP)' : '✓ Concluído') : '○ Pendente'}
         </span>
       `;
       DOM.detailStudentStoriesList.appendChild(row);
