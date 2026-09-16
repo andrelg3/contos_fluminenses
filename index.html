@@ -136,7 +136,7 @@
           <h3 class="boss-title">Simulado Integrado de Vestibular</h3>
           <p class="boss-desc">
             Teste multidisciplinar com 5 questões de exames (FUVEST, UNICAMP, ENEM) sobre <em>Contos Fluminenses</em>. 
-            <strong>Cada acerto vale +20 XP (+0,2 na nota)</strong> como recuperação/complemento para quem perdeu pontos nos contos (não ultrapassa o teto máximo de 1.000 XP / Nota 10,0).
+            <strong>Cada acerto vale +20 XP (+0,2 na nota)</strong> na 1ª tentativa oficial (teto máximo de 1.000 XP / Nota 10,0). Repetições servem como treino sem acréscimo de nota.
           </p>
         </div>
         <button id="btnStartBoss" class="btn btn-primary btn-large">
@@ -521,10 +521,10 @@
             </div>
           </div>
           <ul style="margin: 0; padding-left: 18px; font-size: 0.9rem; line-height: 1.6; color: var(--text-main);">
-            <li><strong>2. O Enigma (Ordenação cronológica):</strong> vale até <strong>71 XP</strong>. Pedir ajuda/dica deduz <strong>-30 XP</strong>. Cada erro na verificação deduz <strong>-10 XP</strong>. Piso de segurança: o aluno garante no mínimo <strong>21 XP</strong> nesta etapa mesmo errando e pedindo dica.</li>
-            <li><strong>3. Análise Oculta:</strong> vale <strong>36 XP</strong> no acerto de primeira. Se errar, a pontuação cai pela metade (<strong>18 XP</strong>).</li>
-            <li><strong>4. Desafio Vestibular:</strong> vale <strong>36 XP</strong> no acerto de primeira. Se errar, cai pela metade (<strong>18 XP</strong>).</li>
-            <li><strong>Total por Conto:</strong> até <strong>143 XP</strong> (71 + 36 + 36). Por exemplo: se o aluno pediu ajuda e errou no Enigma (21 XP), mas acertou de primeira a Análise (36 XP) e o Vestibular (36 XP), conquista <strong>93 XP</strong>!</li>
+            <li><strong>2. O Enigma (Ordenação cronológica):</strong> vale até <strong>71 XP</strong>. Pode pedir dica (-30 XP se acertar). Ao verificar a sequência, se errar, não poderá fazer novamente e ganha <strong>0 XP</strong> nesta etapa. Se acertar, ganha os pontos da etapa (71 XP ou 41 XP com dica).</li>
+            <li><strong>3. Análise Oculta:</strong> vale <strong>36 XP</strong>. Seleciona a resposta e clica em verificar. Se estiver errada, fica vermelha, não ganha XP (<strong>0 XP</strong>) e avança para o vestibular. Se acertar, ganha <strong>36 XP</strong>.</li>
+            <li><strong>4. Desafio Vestibular:</strong> vale <strong>36 XP</strong>. Seleciona a alternativa e clica em verificar. Se estiver errada, fica vermelha, ganha <strong>0 XP</strong> e avança para concluir. Se acertar, ganha <strong>36 XP</strong>.</li>
+            <li><strong>Total por Conto:</strong> até <strong>143 XP</strong> (71 + 36 + 36). Acertando as 3 etapas, o aluno conquista os 143 XP completos do conto.</li>
             <li><strong>7 Contos Perfeitos:</strong> 7 × 143 XP = 1.001 XP, arredondado para o teto de <strong>1.000 XP (Nota 10,0)</strong>.</li>
           </ul>
         </div>
@@ -540,9 +540,10 @@
           </div>
           <ul style="margin: 0; padding-left: 18px; font-size: 0.9rem; line-height: 1.6; color: var(--text-main);">
             <li><strong>5 Questões Inéditas</strong> de vestibulares consagrados (FUVEST, UNICAMP, ENEM).</li>
-            <li><strong>Cada acerto vale +20 XP (+0,2 na nota escolar)</strong>, funcionando como complemento/recuperação para quem perdeu pontos nos contos.</li>
+            <li><strong>Tentativa Única Oficial:</strong> A nota e o XP do Simulado Final são contabilizados apenas 1 vez (na 1ª tentativa oficial), evitando repetições predatórias de pontuação (farming).</li>
+            <li><strong>Cada acerto vale +20 XP (+0,2 na nota escolar)</strong>, funcionando como complemento pedagógico para quem perdeu pontos nos contos.</li>
             <li><strong>Teto Inviolável de 1.000 XP:</strong> O simulado não ultrapassa o teto máximo de 1.000 XP (Nota 10,0). Alunos com nota 10,0 perfeita não necessitam do complemento.</li>
-            <li><strong>Critério de Aprovação no Simulado:</strong> Acertar no mínimo 3 das 5 questões (60%) <strong>E</strong> obter nota global $\ge 6,0$.</li>
+            <li><strong>Registro Visual de Desempenho:</strong> Apresenta a pontuação de acertos obtida (ex: 5/5, 3/5 em verde; abaixo de 3 em vermelho; ou Pendente quando ainda não realizado).</li>
           </ul>
         </div>
       </div>
@@ -625,7 +626,8 @@ function doPost(e) {
       
       var completedCount = data.completedStoriesCount !== undefined ? data.completedStoriesCount : 0;
       var completedStr = "'" + completedCount + "/7"; // O apóstrofo impede que o Sheets converta em data!
-      var bossStatus = String(data.bossStatus || data.bossPassed || 'Pendente');
+      var rawBoss = String(data.bossStatus || data.bossPassed || 'Pendente').trim();
+      var bossStatus = (rawBoss !== 'Pendente' && rawBoss.indexOf('/') !== -1 && !rawBoss.startsWith("'")) ? ("'" + rawBoss) : rawBoss;
       var timestamp = data.timestamp || Utilities.formatDate(new Date(), "GMT-3", "dd/MM/yyyy HH:mm:ss");
 
       // Cabeçalho se a planilha estiver vazia
@@ -778,7 +780,10 @@ function doGet(e) {
           : (Math.min(10.0, xp / 100)).toFixed(1);
         var storiesStr = String(rows[r][colMap.stories] || '0/7');
         var storiesCount = parseInt(storiesStr.split('/')[0]) || 0;
-        var bossPassed = String(rows[r][colMap.boss] || '').indexOf('Aprovado') !== -1;
+        var rawBoss = String(rows[r][colMap.boss] || '').trim();
+        var matchBoss = rawBoss.match(/(\d+)\/5/);
+        var bossScoreVal = matchBoss ? parseInt(matchBoss[1], 10) : null;
+        var bossPassed = bossScoreVal !== null ? (bossScoreVal >= 3) : (rawBoss.indexOf('Aprovado') !== -1);
         var lastActive = rows[r][colMap.timestamp] || '';
 
         data.push({
@@ -788,7 +793,9 @@ function doGet(e) {
           xp: xp,
           grade: grade,
           completedStoriesCount: storiesCount,
+          bossScore: bossScoreVal,
           bossPassed: bossPassed,
+          bossStatus: bossScoreVal !== null ? (bossScoreVal + '/5') : (rawBoss || 'Pendente'),
           lastActive: lastActive
         });
       }
@@ -827,6 +834,6 @@ function doGet(e) {
   <div id="toastContainer" class="toast-container"></div>
 
   <!-- Main JavaScript File -->
-  <script src="script.js?v=20260914_granular"></script>
+  <script src="script.js?v=20260914_boss_clean_1x"></script>
 </body>
 </html>

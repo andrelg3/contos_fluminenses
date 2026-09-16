@@ -1534,32 +1534,32 @@
 
   function getStudentApprovalStatus(student) {
     if (!student) return { text: 'Pendente', shortText: 'Pendente', approved: false, color: '#ffc107', badgeClass: 'badge-pending' };
-    const gradeNum = parseFloat(calculateStudentGrade(student));
-    const hasBossScore = typeof student.bossScore === 'number';
-    const bossScore = hasBossScore ? student.bossScore : 0;
-    const didAttemptBoss = hasBossScore || student.bossPassed;
 
-    if (didAttemptBoss) {
-      if (gradeNum >= 6.0 && bossScore >= 3) {
-        return { 
-          text: `✓ Aprovado (${bossScore}/5)`, 
-          shortText: 'Aprovado',
-          approved: true, 
-          color: '#28a745', 
-          badgeClass: 'badge-success' 
-        };
+    let bossScore = null;
+    if (typeof student.bossScore === 'number') {
+      bossScore = student.bossScore;
+    } else if (student.bossStatus || student.boss || student.bossPassed) {
+      const match = String(student.bossStatus || student.boss || student.bossPassed || '').match(/(\d+)\/5/);
+      if (match) {
+        bossScore = parseInt(match[1], 10);
       }
+    }
+
+    if (bossScore !== null) {
+      const isApproved = bossScore >= 3;
+      const scoreStr = `${bossScore}/5`;
       return { 
-        text: `Em Recuperação (${bossScore}/5)`, 
-        shortText: 'Em Recuperação',
-        approved: false, 
-        color: '#dc3545', 
-        badgeClass: 'badge-warning' 
+        text: scoreStr, 
+        shortText: scoreStr, 
+        approved: isApproved, 
+        color: isApproved ? '#28a745' : '#dc3545', 
+        badgeClass: isApproved ? 'badge-success' : 'badge-danger' 
       };
     }
+
     return { 
       text: 'Pendente', 
-      shortText: 'Pendente',
+      shortText: 'Pendente', 
       approved: false, 
       color: '#ffc107', 
       badgeClass: 'badge-pending' 
@@ -1571,8 +1571,11 @@
      Regra Pedagógica Fixada:
      - 1.000 XP Máximo = Nota 10,0 (Nota = XP ÷ 100).
      - 7 Contos chegam a 143 XP cada se concluídos perfeitamente (7 x 143 = 1.001 XP, arredondado para 1.000 XP = Nota 10,0).
-     - Pontuação em 3 etapas por conto: 2. O Enigma (até 71 XP; dica: -30, erro: -10, piso mínimo: 21 XP), 3. Análise Oculta (36 XP; se errar cai pela metade para 18 XP) e 4. Vestibular (36 XP; se errar cai pela metade para 18 XP).
-     - Simulado Final (Boss): até 100 XP (5 questões × 20 XP cada = +0,2 por questão), funcionando como complemento pedagógico de recuperação para quem perdeu pontos, sem ultrapassar o teto de 1.000 XP.
+     - Pontuação em 3 etapas avaliativas por conto:
+         2. O Enigma: até 71 XP (dica: -30 XP se acertar; se errar ao verificar, não pode tentar novamente e ganha 0 XP).
+         3. Análise Oculta: 36 XP se acertar de primeira; se errar, ganha 0 XP e avança para o vestibular.
+         4. Vestibular: 36 XP se acertar de primeira; se errar, ganha 0 XP e avança para a conclusão.
+     - Simulado Final (Boss): até 100 XP (5 questões × 20 XP cada = +0,2 por questão), contabilizado uma única vez oficial.
      ========================================================================== */
   function calculateStudentGrade(student) {
     if (!student) return '0.0';
@@ -1601,6 +1604,34 @@
     }
     student.xp = Number(student.xp) || 0;
 
+    // Higienização contra farm no Simulado Final: garantir estritamente a 1ª tentativa
+    if (Array.isArray(student.xpHistory) && student.xpHistory.length > 0) {
+      const bossEntries = [];
+      student.xpHistory.forEach((entry, idx) => {
+        if (entry && entry.title && entry.title.includes('Simulado Final') && (entry.amount > 0 || entry.title.includes('acertos'))) {
+          bossEntries.push({ entry, idx });
+        }
+      });
+      // Como unshift insere no topo, o mais antigo (1ª tentativa) fica no final da lista
+      if (bossEntries.length > 1) {
+        const firstAttemptObj = bossEntries[bossEntries.length - 1].entry;
+        const matchFirst = String(firstAttemptObj.title).match(/(\d+)\/5/);
+        if (matchFirst) {
+          student.bossScore = parseInt(matchFirst[1], 10);
+        }
+        let excessXP = 0;
+        for (let b = 0; b < bossEntries.length - 1; b++) {
+          excessXP += Number(bossEntries[b].entry.amount) || 0;
+          bossEntries[b].entry.amount = 0;
+          bossEntries[b].entry.type = 'neutral';
+          bossEntries[b].entry.title = bossEntries[b].entry.title.replace('(Complemento):', '(Revisão sem XP):');
+        }
+        if (excessXP > 0) {
+          student.xp = Math.max(0, (Number(student.xp) || 0) - excessXP);
+        }
+      }
+    }
+
     // Se completedStories estiver vazio mas houver contos declarados no objeto
     if (student.completedStories.length === 0 && typeof student.completedStoriesCount === 'number' && student.completedStoriesCount > 0) {
       const allIds = STORIES.map(s => s.id);
@@ -1608,9 +1639,17 @@
     }
     student.completedStoriesCount = student.completedStories.length;
 
-    // Boss status: NÃO forçar aprovação arbitrária!
+    // Boss status e pontuação: extrair valor numérico de 0 a 5 se disponível
     if (typeof student.bossScore === 'number') {
       student.bossPassed = student.bossScore >= 3;
+    } else if (student.bossStatus || student.boss || student.bossPassed) {
+      const match = String(student.bossStatus || student.boss || student.bossPassed || '').match(/(\d+)\/5/);
+      if (match) {
+        student.bossScore = parseInt(match[1], 10);
+        student.bossPassed = student.bossScore >= 3;
+      } else {
+        student.bossPassed = false;
+      }
     } else if (student.bossPassed === undefined) {
       student.bossPassed = false;
     }
@@ -1672,6 +1711,9 @@
       legacyStoriesArray.push(STORIES[i] ? STORIES[i].id : `c${i+1}`);
     }
 
+    const bossDisplay = approvalStatus.text;
+    const bossSheetValue = bossDisplay === 'Pendente' ? 'Pendente' : ("'" + bossDisplay);
+
     const payload = {
       action: 'saveStudent',
       id: student.id,
@@ -1685,9 +1727,9 @@
       completedStoriesCount: completedCount,
       completedStories: legacyStoriesArray,
       realCompletedStories: student.completedStories || [],
-      bossPassed: approvalStatus.shortText,
-      bossStatus: approvalStatus.text,
-      bossScore: student.bossScore || 0,
+      bossPassed: bossDisplay,
+      bossStatus: bossSheetValue,
+      bossScore: typeof student.bossScore === 'number' ? student.bossScore : (bossDisplay === 'Pendente' ? '' : student.bossScore),
       timestamp: new Date().toLocaleString('pt-BR')
     };
 
@@ -1859,6 +1901,22 @@
     checkAchievements();
     updateOverallProgress();
     renderStoryGrid();
+
+    if (DOM.btnStartBoss) {
+      if (typeof STATE.currentUser.bossScore === 'number') {
+        DOM.btnStartBoss.disabled = true;
+        DOM.btnStartBoss.textContent = `✓ Simulado Concluído (${STATE.currentUser.bossScore}/5 acertos)`;
+        DOM.btnStartBoss.style.opacity = '0.75';
+        DOM.btnStartBoss.style.cursor = 'not-allowed';
+        DOM.btnStartBoss.title = "O Simulado Final já foi concluído e pontuado oficialmente (tentativa única).";
+      } else {
+        DOM.btnStartBoss.disabled = false;
+        DOM.btnStartBoss.textContent = "⚡ Iniciar Simulado Final (5 Questões)";
+        DOM.btnStartBoss.style.opacity = '1';
+        DOM.btnStartBoss.style.cursor = 'pointer';
+        DOM.btnStartBoss.title = "";
+      }
+    }
   }
 
   function switchUser() {
@@ -1867,6 +1925,13 @@
     DOM.playerBar.classList.add('hidden');
     DOM.btnSwitchUser.classList.add('hidden');
     DOM.inputStudentName.value = '';
+    if (DOM.btnStartBoss) {
+      DOM.btnStartBoss.disabled = false;
+      DOM.btnStartBoss.textContent = "⚡ Iniciar Simulado Final (5 Questões)";
+      DOM.btnStartBoss.style.opacity = '1';
+      DOM.btnStartBoss.style.cursor = 'pointer';
+      DOM.btnStartBoss.title = "";
+    }
     fetchClassesFromGoogleSheets();
     openModal(DOM.modalLogin);
   }
@@ -1963,20 +2028,22 @@
     STATE.usedHintInCurrentStory = false;
     STATE.madeErrorInCurrentStory = false;
     STATE.step2Passed = false;
+    STATE.step2Verified = false;
     STATE.step3Passed = false;
+    STATE.step3Verified = false;
+    STATE.step3SelectedLetter = null;
     STATE.step4Passed = false;
+    STATE.step4Verified = false;
+    STATE.step4SelectedLetter = null;
 
-    // Pontuação Granular Pedagógica (Total máx: 143 XP)
-    // 2. O Enigma: Vale até 71 XP (dica: -30, erro: -10, piso mínimo: 21 XP)
-    // 3. Análise Oculta: Vale 36 XP (se errar: cai para 18 XP)
-    // 4. Vestibular: Vale 36 XP (se errar: cai para 18 XP)
+    // Pontuação Pedagógica por Conto (Total máx: 143 XP)
+    // 2. O Enigma: Vale até 71 XP (dica: -30 XP se acertar; se errar ao verificar, não pode tentar novamente e ganha 0 XP)
+    // 3. Análise Oculta: Vale 36 XP (se errar: ganha 0 XP e avança para vestibular)
+    // 4. Vestibular: Vale 36 XP (se errar: ganha 0 XP e avança para conclusão)
     STATE.step2XP = 71;
     STATE.step2HintUsed = false;
-    STATE.step2ErrorCount = 0;
     STATE.step3XP = 36;
-    STATE.step3MadeError = false;
     STATE.step4XP = 36;
-    STATE.step4MadeError = false;
 
     const story = STORIES[index];
     DOM.gameStoryNumber.textContent = story.numberText;
@@ -2062,53 +2129,76 @@
       DOM.btnHintGame.classList.add('hidden');
     }
     
-    // Step 2: Puzzle de Sequência Lógica
+    // Step 2: Puzzle de Sequência Lógica (até 71 XP)
     else if (STATE.currentStep === 2) {
-      DOM.btnHintGame.classList.remove('hidden');
-      DOM.btnHintGame.textContent = STATE.step2HintUsed ? '💡 Dica Revelada (-30 XP)' : '💡 Pedir Ajuda / Dica (-30 XP)';
-      DOM.btnNextGame.textContent = STATE.step2Passed ? 'Ir para Análise Oculta →' : 'Verificar Sequência →';
+      if (STATE.step2Verified) {
+        DOM.btnHintGame.classList.add('hidden');
+        DOM.btnNextGame.textContent = 'Ir para Análise Oculta →';
+      } else {
+        DOM.btnHintGame.classList.remove('hidden');
+        DOM.btnHintGame.disabled = STATE.step2HintUsed;
+        DOM.btnHintGame.textContent = STATE.step2HintUsed ? '💡 Dica Revelada (-30 XP)' : '💡 Pedir Ajuda / Dica (-30 XP)';
+        DOM.btnNextGame.textContent = 'Verificar Sequência →';
+      }
 
       const activePuzzle = STATE.activeStoryChallenge ? STATE.activeStoryChallenge.puzzle : story.step2Puzzle;
+
+      let badgeText = `Etapa: ${STATE.step2XP} XP (máx. 71)`;
+      if (STATE.step2Verified) {
+        badgeText = STATE.step2Passed ? `Etapa Concluída: +${STATE.step2XP} XP` : `Etapa Concluída: 0 XP`;
+      } else if (STATE.step2HintUsed) {
+        badgeText = `Etapa: ${STATE.step2XP} XP se acertar (dica usada)`;
+      }
 
       DOM.gameBody.innerHTML = `
         <div class="slide-container">
           <p class="puzzle-instruction">
             🧩 ${activePuzzle.instruction}
             <span id="liveStep2XP" style="display:inline-block; margin-left:8px; padding:2px 10px; border-radius:12px; background:rgba(212,175,55,0.15); border:1px solid var(--border-gold); font-size:0.85rem; color:var(--primary-gold); font-weight:700;">
-              Etapa: ${STATE.step2XP} XP (máx. 71)
+              ${badgeText}
             </span>
           </p>
           <div class="puzzle-sequence-box" id="puzzleContainer">
             ${STATE.activePuzzleOrder.map((frag, idx) => `
               <div class="puzzle-slot-item" data-slot="${idx}" id="puzzleSlot_${idx}">
                 <span class="slot-num-badge">${idx + 1}º</span>
-                <div class="puzzle-fragment-item ${STATE.step2Passed ? 'puzzle-fragment-correct' : ''}" data-id="${frag.id}">
+                <div class="puzzle-fragment-item ${STATE.step2Verified ? (STATE.step2Passed ? 'puzzle-fragment-correct' : 'puzzle-fragment-incorrect') : ''}" data-id="${frag.id}">
                   <span class="fragment-text">${frag.text}</span>
                   <div class="fragment-controls">
-                    <button class="btn-move" onclick="window.CF_GAME.moveFragment(${idx}, -1)" ${idx === 0 || STATE.step2Passed ? 'disabled' : ''}>▲</button>
-                    <button class="btn-move" onclick="window.CF_GAME.moveFragment(${idx}, 1)" ${idx === STATE.activePuzzleOrder.length - 1 || STATE.step2Passed ? 'disabled' : ''}>▼</button>
+                    <button class="btn-move" onclick="window.CF_GAME.moveFragment(${idx}, -1)" ${idx === 0 || STATE.step2Verified ? 'disabled' : ''}>▲</button>
+                    <button class="btn-move" onclick="window.CF_GAME.moveFragment(${idx}, 1)" ${idx === STATE.activePuzzleOrder.length - 1 || STATE.step2Verified ? 'disabled' : ''}>▼</button>
                   </div>
                 </div>
               </div>
             `).join('')}
           </div>
-          <div id="step2Feedback" class="feedback-box ${STATE.step2Passed ? 'feedback-correct' : 'hidden'}">
-            ${STATE.step2Passed ? `
-              <div class="feedback-title">✓ Sequência Cronológica Decifrada! (+${STATE.step2XP} XP garantidos)</div>
-              <p>Excelente dedução! A linha temporal dos acontecimentos foi reconstituída com fidelidade à narrativa machadiana.</p>
-            ` : ''}
+          <div id="step2Feedback" class="feedback-box ${STATE.step2Verified ? (STATE.step2Passed ? 'feedback-correct' : 'feedback-incorrect') : 'hidden'}">
+            ${STATE.step2Verified ? (
+              STATE.step2Passed ? `
+                <div class="feedback-title">✓ Sequência Cronológica Decifrada! (+${STATE.step2XP} XP garantidos)</div>
+                <p>Excelente dedução! A linha temporal dos acontecimentos foi reconstituída com fidelidade à narrativa machadiana.</p>
+              ` : `
+                <div class="feedback-title">✗ Sequência Incorreta (0 XP)!</div>
+                <p>A ordem cronológica dos fatos estava incorreta. Você não poderá tentar novamente nesta etapa e nenhum XP foi contabilizado.</p>
+              `
+            ) : ''}
           </div>
         </div>
       `;
     }
 
-    // Step 3: Análise Psicológica & Máscara Social
+    // Step 3: Análise Psicológica & Máscara Social (36 XP)
     else if (STATE.currentStep === 3) {
       DOM.btnHintGame.classList.add('hidden');
-      DOM.btnNextGame.textContent = 'Ir para Vestibular →';
+      DOM.btnNextGame.textContent = STATE.step3Verified ? 'Ir para Vestibular →' : 'Verificar Resposta →';
 
       const activeAnalysis = STATE.activeStoryChallenge ? STATE.activeStoryChallenge.analysis : story.step3Analysis;
       const optionsToRender = STATE.activeStep3Options || activeAnalysis.options;
+
+      let badgeText = 'Vale 36 XP';
+      if (STATE.step3Verified) {
+        badgeText = STATE.step3Passed ? '✓ +36 XP garantidos' : '✗ 0 XP (Incorreta)';
+      }
 
       DOM.gameBody.innerHTML = `
         <div class="slide-container">
@@ -2116,30 +2206,55 @@
           <p class="puzzle-instruction">
             ${activeAnalysis.question}
             <span id="liveStep3XP" style="display:inline-block; margin-left:8px; padding:2px 10px; border-radius:12px; background:rgba(40,167,69,0.15); border:1px solid rgba(40,167,69,0.4); font-size:0.85rem; color:#28a745; font-weight:700;">
-              Vale ${STATE.step3XP} XP ${STATE.step3MadeError ? '(reduzido pela metade)' : ''}
+              ${badgeText}
             </span>
           </p>
 
           <div class="quiz-options" id="step3Options">
-            ${optionsToRender.map(opt => `
-              <div class="quiz-option-card" onclick="window.CF_GAME.selectQuizOption('step3', '${opt.letter}')" data-letter="${opt.letter}">
-                <span class="option-letter">${opt.letter}</span>
-                <span class="option-text">${opt.text}</span>
-              </div>
-            `).join('')}
+            ${optionsToRender.map(opt => {
+              const isSelected = STATE.step3SelectedLetter === opt.letter;
+              let extraClass = '';
+              if (isSelected) extraClass += ' selected';
+              if (STATE.step3Verified) {
+                extraClass += ' disabled-quiz';
+                if (isSelected && opt.correct) extraClass += ' correct';
+                if (isSelected && !opt.correct) extraClass += ' incorrect';
+              }
+              return `
+                <div class="quiz-option-card ${extraClass}" onclick="window.CF_GAME.selectQuizOption('step3', '${opt.letter}')" data-letter="${opt.letter}">
+                  <span class="option-letter">${opt.letter}</span>
+                  <span class="option-text">${opt.text}</span>
+                </div>
+              `;
+            }).join('')}
           </div>
-          <div id="step3Feedback" class="feedback-box hidden"></div>
+          <div id="step3Feedback" class="feedback-box ${STATE.step3Verified ? (STATE.step3Passed ? 'feedback-correct' : 'feedback-incorrect') : 'hidden'}">
+            ${STATE.step3Verified ? (
+              STATE.step3Passed ? `
+                <div class="feedback-title">✓ Resposta Correta (+36 XP)!</div>
+                <p>${activeAnalysis.feedbackCorrect || "Excelente interpretação das nuances e da crítica social machadiana!"}</p>
+              ` : `
+                <div class="feedback-title">✗ Resposta Incorreta (0 XP)!</div>
+                <p>${activeAnalysis.feedbackIncorrect || "Alternativa incorreta. Conforme as regras, você não pode tentar novamente e nenhum XP foi contabilizado nesta etapa."}</p>
+              `
+            ) : ''}
+          </div>
         </div>
       `;
     }
 
-    // Step 4: Simulado Estilo Vestibular
+    // Step 4: Simulado Estilo Vestibular (36 XP)
     else if (STATE.currentStep === 4) {
       DOM.btnHintGame.classList.add('hidden');
-      DOM.btnNextGame.textContent = 'Concluir Investigação ✨';
+      DOM.btnNextGame.textContent = STATE.step4Verified ? 'Concluir Investigação ✨' : 'Verificar Resposta →';
 
       const activeVest = STATE.activeStoryChallenge ? STATE.activeStoryChallenge.vestibular : story.step4Vestibular;
       const optionsToRender = STATE.activeStep4Options || activeVest.options;
+
+      let badgeText = 'Vale 36 XP';
+      if (STATE.step4Verified) {
+        badgeText = STATE.step4Passed ? '✓ +36 XP garantidos' : '✗ 0 XP (Incorreta)';
+      }
 
       DOM.gameBody.innerHTML = `
         <div class="slide-container">
@@ -2147,26 +2262,46 @@
           <p class="puzzle-instruction" style="margin-top: 10px;">
             ${activeVest.question}
             <span id="liveStep4XP" style="display:inline-block; margin-left:8px; padding:2px 10px; border-radius:12px; background:rgba(40,167,69,0.15); border:1px solid rgba(40,167,69,0.4); font-size:0.85rem; color:#28a745; font-weight:700;">
-              Vale ${STATE.step4XP} XP ${STATE.step4MadeError ? '(reduzido pela metade)' : ''}
+              ${badgeText}
             </span>
           </p>
 
           <div class="quiz-options" id="step4Options">
-            ${optionsToRender.map(opt => `
-              <div class="quiz-option-card" onclick="window.CF_GAME.selectQuizOption('step4', '${opt.letter}')" data-letter="${opt.letter}">
-                <span class="option-letter">${opt.letter}</span>
-                <span class="option-text">${opt.text}</span>
-              </div>
-            `).join('')}
+            ${optionsToRender.map(opt => {
+              const isSelected = STATE.step4SelectedLetter === opt.letter;
+              let extraClass = '';
+              if (isSelected) extraClass += ' selected';
+              if (STATE.step4Verified) {
+                extraClass += ' disabled-quiz';
+                if (isSelected && opt.correct) extraClass += ' correct';
+                if (isSelected && !opt.correct) extraClass += ' incorrect';
+              }
+              return `
+                <div class="quiz-option-card ${extraClass}" onclick="window.CF_GAME.selectQuizOption('step4', '${opt.letter}')" data-letter="${opt.letter}">
+                  <span class="option-letter">${opt.letter}</span>
+                  <span class="option-text">${opt.text}</span>
+                </div>
+              `;
+            }).join('')}
           </div>
-          <div id="step4Feedback" class="feedback-box hidden"></div>
+          <div id="step4Feedback" class="feedback-box ${STATE.step4Verified ? (STATE.step4Passed ? 'feedback-correct' : 'feedback-incorrect') : 'hidden'}">
+            ${STATE.step4Verified ? (
+              STATE.step4Passed ? `
+                <div class="feedback-title">✓ Resposta Correta (+36 XP)!</div>
+                <p>${activeVest.explanation || "Gabarito oficial de vestibular compreendido com perfeição!"}</p>
+              ` : `
+                <div class="feedback-title">✗ Resposta Incorreta (0 XP)!</div>
+                <p>${activeVest.explanation || "Alternativa incorreta. Conforme as regras, você não pode tentar novamente e nenhum XP foi contabilizado nesta etapa."}</p>
+              `
+            ) : ''}
+          </div>
         </div>
       `;
     }
   }
 
   function moveFragment(index, direction) {
-    if (STATE.isAnimatingPuzzle || STATE.step2Passed) return;
+    if (STATE.isAnimatingPuzzle || STATE.step2Verified) return;
     const targetIdx = index + direction;
     if (targetIdx < 0 || targetIdx >= STATE.activePuzzleOrder.length) return;
 
@@ -2202,71 +2337,24 @@
   }
 
   function selectQuizOption(stepId, letter) {
-    const container = document.getElementById(`${stepId}Options`);
-    const feedbackBox = document.getElementById(`${stepId}Feedback`);
-    if (!container) return;
-
-    const cards = container.querySelectorAll('.quiz-option-card');
-    cards.forEach(c => c.classList.remove('selected', 'correct', 'incorrect'));
-
-    const selectedCard = container.querySelector(`[data-letter="${letter}"]`);
-    if (selectedCard) selectedCard.classList.add('selected');
-
-    const story = STORIES[STATE.currentStoryIndex];
-    const data = stepId === 'step3' 
-      ? (STATE.activeStoryChallenge ? STATE.activeStoryChallenge.analysis : story.step3Analysis)
-      : (STATE.activeStoryChallenge ? STATE.activeStoryChallenge.vestibular : story.step4Vestibular);
-
-    const activeOptions = stepId === 'step3' ? STATE.activeStep3Options : STATE.activeStep4Options;
-    const optionsList = activeOptions || data.options;
-    const selectedOpt = optionsList.find(o => o.letter === letter);
-
-    if (selectedOpt) {
-      feedbackBox.classList.remove('hidden', 'feedback-correct', 'feedback-incorrect');
-      if (selectedOpt.correct) {
-        selectedCard.classList.add('correct');
-        feedbackBox.classList.add('feedback-correct');
-        const earnedXP = (stepId === 'step3') ? STATE.step3XP : STATE.step4XP;
-        feedbackBox.innerHTML = `
-          <div class="feedback-title">✓ Resposta Correta (+${earnedXP} XP)!</div>
-          <p>${stepId === 'step3' ? data.feedbackCorrect : data.explanation}</p>
-        `;
-        if (stepId === 'step3') STATE.step3Passed = true;
-        if (stepId === 'step4') STATE.step4Passed = true;
-      } else {
-        STATE.madeErrorInCurrentStory = true;
-        if (stepId === 'step3') {
-          STATE.step3Passed = false;
-          STATE.step3MadeError = true;
-          STATE.step3XP = 18; // Cai pela metade!
-          const liveEl = document.getElementById('liveStep3XP');
-          if (liveEl) {
-            liveEl.style.color = '#dc3545';
-            liveEl.style.borderColor = 'rgba(220,53,69,0.4)';
-            liveEl.style.background = 'rgba(220,53,69,0.12)';
-            liveEl.textContent = 'Vale 18 XP (reduzido pela metade)';
-          }
-        }
-        if (stepId === 'step4') {
-          STATE.step4Passed = false;
-          STATE.step4MadeError = true;
-          STATE.step4XP = 18; // Cai pela metade!
-          const liveEl = document.getElementById('liveStep4XP');
-          if (liveEl) {
-            liveEl.style.color = '#dc3545';
-            liveEl.style.borderColor = 'rgba(220,53,69,0.4)';
-            liveEl.style.background = 'rgba(220,53,69,0.12)';
-            liveEl.textContent = 'Vale 18 XP (reduzido pela metade)';
-          }
-        }
-        selectedCard.classList.add('incorrect');
-        feedbackBox.classList.add('feedback-incorrect');
-        feedbackBox.innerHTML = `
-          <div class="feedback-title">✗ Alternativa Incorreta!</div>
-          <p style="color: #dc3545; font-weight: 600; margin-bottom: 6px;">⚠️ A pontuação desta questão caiu pela metade: vale agora 18 XP.</p>
-          <p>${stepId === 'step3' ? data.feedbackIncorrect : "Analise o contexto histórico e a crítica social machadiana para escolher a alternativa ideal."}</p>
-        `;
-      }
+    if (stepId === 'step3') {
+      if (STATE.step3Verified) return; // Travado após verificação
+      STATE.step3SelectedLetter = letter;
+      const container = document.getElementById('step3Options');
+      if (!container) return;
+      const cards = container.querySelectorAll('.quiz-option-card');
+      cards.forEach(c => c.classList.remove('selected'));
+      const selectedCard = container.querySelector(`[data-letter="${letter}"]`);
+      if (selectedCard) selectedCard.classList.add('selected');
+    } else if (stepId === 'step4') {
+      if (STATE.step4Verified) return; // Travado após verificação
+      STATE.step4SelectedLetter = letter;
+      const container = document.getElementById('step4Options');
+      if (!container) return;
+      const cards = container.querySelectorAll('.quiz-option-card');
+      cards.forEach(c => c.classList.remove('selected'));
+      const selectedCard = container.querySelector(`[data-letter="${letter}"]`);
+      if (selectedCard) selectedCard.classList.add('selected');
     }
   }
 
@@ -2279,143 +2367,240 @@
     const story = STORIES[STATE.currentStoryIndex];
     const activePuzzle = STATE.activeStoryChallenge ? STATE.activeStoryChallenge.puzzle : story.step2Puzzle;
 
-    // Validate Step 2 Puzzle
+    // Step 1: Contexto -> Avançar para o Enigma
+    if (STATE.currentStep === 1) {
+      STATE.currentStep = 2;
+      renderGameStep();
+      return;
+    }
+
+    // Step 2: O Enigma (Ordenação cronológica)
     if (STATE.currentStep === 2) {
-      const currentIds = STATE.activePuzzleOrder.map(f => f.id);
-      const isCorrect = currentIds.every((id, idx) => id === activePuzzle.correctOrder[idx]);
-      const feedbackBox = document.getElementById('step2Feedback');
-      const fragmentEls = document.querySelectorAll('.puzzle-fragment-item');
+      if (!STATE.step2Verified) {
+        // Clicou em "Verificar Sequência →"
+        STATE.step2Verified = true;
+        DOM.btnHintGame.classList.add('hidden');
 
-      if (!isCorrect) {
-        STATE.madeErrorInCurrentStory = true;
-        STATE.step2Passed = false;
-        STATE.step2ErrorCount = (STATE.step2ErrorCount || 0) + 1;
-
-        // Deduz 10 XP por erro na ordenação, com piso mínimo de 21 XP
-        STATE.step2XP = Math.max(21, STATE.step2XP - 10);
-        const liveEl = document.getElementById('liveStep2XP');
-        if (liveEl) liveEl.innerHTML = `Etapa: <strong>${STATE.step2XP} XP</strong> (máx. 71)`;
-
-        fragmentEls.forEach(el => {
-          el.classList.remove('puzzle-fragment-correct');
-          el.classList.add('puzzle-fragment-incorrect');
-          setTimeout(() => el.classList.remove('puzzle-fragment-incorrect'), 600);
-        });
-
-        if (feedbackBox) {
-          feedbackBox.classList.remove('hidden', 'feedback-correct');
-          feedbackBox.classList.add('feedback-incorrect');
-          feedbackBox.innerHTML = `
-            <div class="feedback-title">✗ Sequência Incorreta (-10 XP)!</div>
-            <p>A ordem cronológica dos fatos ainda contém incoerências. Saldo atual desta etapa: <strong>${STATE.step2XP} XP</strong> (piso de 21 XP). Use as setas ▲ e ▼ para reordenar os fatos antes de prosseguir.</p>
-          `;
-        }
-        showToast(`A sequência ainda não está correta (-10 XP). Saldo do Enigma: ${STATE.step2XP} XP. Reordene os fatos antes de avançar.`, "warning");
-        return;
-      }
-
-      // Se a sequência está correta e ainda não havia sido confirmada:
-      if (!STATE.step2Passed) {
-        STATE.step2Passed = true;
-
-        fragmentEls.forEach(el => {
-          el.classList.remove('puzzle-fragment-incorrect');
-          el.classList.add('puzzle-fragment-correct');
-        });
-
-        // Desabilita botões de movimento após decifrar
+        const currentIds = STATE.activePuzzleOrder.map(f => f.id);
+        const isCorrect = currentIds.every((id, idx) => id === activePuzzle.correctOrder[idx]);
+        const feedbackBox = document.getElementById('step2Feedback');
+        const fragmentEls = document.querySelectorAll('.puzzle-fragment-item');
         const moveBtns = document.querySelectorAll('.btn-move');
         moveBtns.forEach(btn => btn.disabled = true);
 
-        if (feedbackBox) {
-          feedbackBox.classList.remove('hidden', 'feedback-incorrect');
-          feedbackBox.classList.add('feedback-correct');
-          feedbackBox.innerHTML = `
-            <div class="feedback-title">✓ Sequência Cronológica Decifrada! (+${STATE.step2XP} XP garantidos)</div>
-            <p>Excelente dedução! A linha temporal dos acontecimentos foi reconstituída com fidelidade à narrativa machadiana.</p>
-          `;
-        }
-
-        DOM.btnNextGame.textContent = 'Ir para Análise Oculta →';
-        showToast(`✓ Enigma resolvido! +${STATE.step2XP} XP garantidos nesta etapa!`, "success");
-        return; // Permite ao aluno visualizar e ler a confirmação de acerto antes de avançar
-      }
-    }
-    // Validate Step 3 Analysis Quiz
-    else if (STATE.currentStep === 3) {
-      if (!STATE.step3Passed) {
-        showToast("Selecione e acerte a resposta da análise psicológica para avançar!", "warning");
-        return;
-      }
-    }
-    // Validate Step 4 Vestibular Quiz
-    else if (STATE.currentStep === 4) {
-      if (!STATE.step4Passed) {
-        showToast("Selecione e acerte a questão de vestibular para concluir a investigação!", "warning");
-        return;
-      }
-    }
-
-    // Advance
-    if (STATE.currentStep < 4) {
-      STATE.currentStep++;
-      renderGameStep();
-    } else {
-      // Completed Story!
-      const storyId = story.id;
-      if (!STATE.currentUser.completedStories) STATE.currentUser.completedStories = [];
-      if (!STATE.currentUser.perfectStories) STATE.currentUser.perfectStories = [];
-      if (!STATE.currentUser.storyScores || typeof STATE.currentUser.storyScores !== 'object') {
-        STATE.currentUser.storyScores = {};
-      }
-
-      const isFirstTime = !STATE.currentUser.completedStories.includes(storyId);
-      
-      const step2Earned = STATE.step2XP; // 21 a 71 XP
-      const step3Earned = STATE.step3XP; // 18 ou 36 XP
-      const step4Earned = STATE.step4XP; // 18 ou 36 XP
-      const storyEarnedXP = Math.min(143, step2Earned + step3Earned + step4Earned);
-      const isPerfectAttempt = (storyEarnedXP === 143);
-      const previousStoryXP = STATE.currentUser.storyScores[storyId] || 0;
-
-      if (isFirstTime) {
-        STATE.currentUser.completedStories.push(storyId);
-        STATE.currentUser.storyScores[storyId] = storyEarnedXP;
-        
-        if (isPerfectAttempt) {
-          STATE.currentUser.perfectStories.push(storyId);
-          addXP(storyEarnedXP, `Desempenho Impecável: ${story.title}`, '🏆');
-          showToast(`🏆 Desempenho Impecável em ${story.title}! Enigma: +${step2Earned} XP | Análise: +${step3Earned} XP | Vestibular: +${step4Earned} XP = +${storyEarnedXP} XP!`, 'success');
+        if (isCorrect) {
+          STATE.step2Passed = true;
+          fragmentEls.forEach(el => {
+            el.classList.remove('puzzle-fragment-incorrect');
+            el.classList.add('puzzle-fragment-correct');
+          });
+          if (feedbackBox) {
+            feedbackBox.classList.remove('hidden', 'feedback-incorrect');
+            feedbackBox.classList.add('feedback-correct');
+            feedbackBox.innerHTML = `
+              <div class="feedback-title">✓ Sequência Cronológica Decifrada! (+${STATE.step2XP} XP garantidos)</div>
+              <p>Excelente dedução! A linha temporal dos acontecimentos foi reconstituída com fidelidade à narrativa machadiana.</p>
+            `;
+          }
+          DOM.btnNextGame.textContent = 'Ir para Análise Oculta →';
+          showToast(`✓ Enigma resolvido! +${STATE.step2XP} XP garantidos nesta etapa!`, "success");
         } else {
-          addXP(storyEarnedXP, `Conclusão: ${story.title}`, '📜');
-          showToast(`📜 Conto Concluído! Enigma: +${step2Earned} XP | Análise: +${step3Earned} XP | Vestibular: +${step4Earned} XP = +${storyEarnedXP} XP obtidos!`, 'info');
+          STATE.step2Passed = false;
+          STATE.step2XP = 0; // Errou: 0 XP! Não pode fazer novamente para tentar acertar!
+          fragmentEls.forEach(el => {
+            el.classList.remove('puzzle-fragment-correct');
+            el.classList.add('puzzle-fragment-incorrect');
+          });
+          if (feedbackBox) {
+            feedbackBox.classList.remove('hidden', 'feedback-correct');
+            feedbackBox.classList.add('feedback-incorrect');
+            feedbackBox.innerHTML = `
+              <div class="feedback-title">✗ Sequência Incorreta (0 XP)!</div>
+              <p>A ordem cronológica dos fatos estava incorreta. Você não poderá tentar novamente nesta etapa e nenhum XP foi contabilizado.</p>
+            `;
+          }
+          DOM.btnNextGame.textContent = 'Ir para Análise Oculta →';
+          showToast(`✗ Sequência incorreta! Você não pontuou nesta etapa (0 XP).`, "error");
         }
+        return;
       } else {
-        // Repeat Play / Re-tentativa
-        // Se o aluno obteve mais XP nesta rodada do que no histórico anterior (ex: ganhou 50 antes e agora fez 75 ou 143):
-        if (storyEarnedXP > previousStoryXP) {
-          const diffXP = storyEarnedXP - previousStoryXP;
-          STATE.currentUser.storyScores[storyId] = storyEarnedXP;
-          if (isPerfectAttempt && !STATE.currentUser.perfectStories.includes(storyId)) {
-            STATE.currentUser.perfectStories.push(storyId);
+        // Já verificado: clicou em "Ir para Análise Oculta →"
+        STATE.currentStep = 3;
+        renderGameStep();
+        return;
+      }
+    }
+
+    // Step 3: Análise Oculta (36 XP)
+    if (STATE.currentStep === 3) {
+      if (!STATE.step3Verified) {
+        // Clicou em "Verificar Resposta →"
+        if (!STATE.step3SelectedLetter) {
+          showToast("Selecione uma resposta antes de verificar!", "warning");
+          return;
+        }
+
+        STATE.step3Verified = true;
+        const activeAnalysis = STATE.activeStoryChallenge ? STATE.activeStoryChallenge.analysis : story.step3Analysis;
+        const optionsList = STATE.activeStep3Options || activeAnalysis.options;
+        const selectedOpt = optionsList.find(o => o.letter === STATE.step3SelectedLetter);
+        const container = document.getElementById('step3Options');
+        const feedbackBox = document.getElementById('step3Feedback');
+        const selectedCard = container ? container.querySelector(`[data-letter="${STATE.step3SelectedLetter}"]`) : null;
+
+        if (container) {
+          container.querySelectorAll('.quiz-option-card').forEach(c => c.classList.add('disabled-quiz'));
+        }
+
+        if (selectedOpt && selectedOpt.correct) {
+          STATE.step3Passed = true;
+          STATE.step3XP = 36;
+          if (selectedCard) selectedCard.classList.add('correct');
+          if (feedbackBox) {
+            feedbackBox.classList.remove('hidden', 'feedback-incorrect');
+            feedbackBox.classList.add('feedback-correct');
+            feedbackBox.innerHTML = `
+              <div class="feedback-title">✓ Resposta Correta (+36 XP)!</div>
+              <p>${activeAnalysis.feedbackCorrect || "Excelente interpretação crítica e literária!"}</p>
+            `;
           }
-          addXP(diffXP, `Melhoria de Desempenho: ${story.title} (+${diffXP} XP)`, '⭐');
-          showToast(`⭐ Desempenho Superado em ${story.title}! Nova pontuação: ${storyEarnedXP} XP (Enigma: ${step2Earned}, Análise: ${step3Earned}, Vestibular: ${step4Earned}). Diferença creditada: +${diffXP} XP!`, 'success');
+          DOM.btnNextGame.textContent = 'Ir para Vestibular →';
+          showToast("✓ Resposta correta! +36 XP garantidos!", "success");
         } else {
-          if (isPerfectAttempt && !STATE.currentUser.perfectStories.includes(storyId)) {
+          STATE.step3Passed = false;
+          STATE.step3XP = 0; // Errou: 0 XP! Não ganha nada
+          if (selectedCard) selectedCard.classList.add('incorrect');
+          if (feedbackBox) {
+            feedbackBox.classList.remove('hidden', 'feedback-correct');
+            feedbackBox.classList.add('feedback-incorrect');
+            feedbackBox.innerHTML = `
+              <div class="feedback-title">✗ Resposta Incorreta (0 XP)!</div>
+              <p>${activeAnalysis.feedbackIncorrect || "Alternativa incorreta. Conforme as regras, você não pode tentar novamente e nenhum XP foi contabilizado nesta etapa."}</p>
+            `;
+          }
+          DOM.btnNextGame.textContent = 'Ir para Vestibular →';
+          showToast("✗ Resposta incorreta! 0 XP contabilizados nesta etapa.", "error");
+        }
+        return;
+      } else {
+        // Já verificado: clicou em "Ir para Vestibular →"
+        STATE.currentStep = 4;
+        renderGameStep();
+        return;
+      }
+    }
+
+    // Step 4: Simulado Estilo Vestibular (36 XP)
+    if (STATE.currentStep === 4) {
+      if (!STATE.step4Verified) {
+        // Clicou em "Verificar Resposta →"
+        if (!STATE.step4SelectedLetter) {
+          showToast("Selecione uma resposta antes de verificar!", "warning");
+          return;
+        }
+
+        STATE.step4Verified = true;
+        const activeVest = STATE.activeStoryChallenge ? STATE.activeStoryChallenge.vestibular : story.step4Vestibular;
+        const optionsList = STATE.activeStep4Options || activeVest.options;
+        const selectedOpt = optionsList.find(o => o.letter === STATE.step4SelectedLetter);
+        const container = document.getElementById('step4Options');
+        const feedbackBox = document.getElementById('step4Feedback');
+        const selectedCard = container ? container.querySelector(`[data-letter="${STATE.step4SelectedLetter}"]`) : null;
+
+        if (container) {
+          container.querySelectorAll('.quiz-option-card').forEach(c => c.classList.add('disabled-quiz'));
+        }
+
+        if (selectedOpt && selectedOpt.correct) {
+          STATE.step4Passed = true;
+          STATE.step4XP = 36;
+          if (selectedCard) selectedCard.classList.add('correct');
+          if (feedbackBox) {
+            feedbackBox.classList.remove('hidden', 'feedback-incorrect');
+            feedbackBox.classList.add('feedback-correct');
+            feedbackBox.innerHTML = `
+              <div class="feedback-title">✓ Resposta Correta (+36 XP)!</div>
+              <p>${activeVest.explanation || "Gabarito padrão vestibular preciso!"}</p>
+            `;
+          }
+          DOM.btnNextGame.textContent = 'Concluir Investigação ✨';
+          showToast("✓ Resposta correta! +36 XP garantidos!", "success");
+        } else {
+          STATE.step4Passed = false;
+          STATE.step4XP = 0; // Errou: 0 XP! Não ganha nada
+          if (selectedCard) selectedCard.classList.add('incorrect');
+          if (feedbackBox) {
+            feedbackBox.classList.remove('hidden', 'feedback-correct');
+            feedbackBox.classList.add('feedback-incorrect');
+            feedbackBox.innerHTML = `
+              <div class="feedback-title">✗ Resposta Incorreta (0 XP)!</div>
+              <p>${activeVest.explanation || "Alternativa incorreta. Conforme as regras, você não pode tentar novamente e nenhum XP foi contabilizado nesta etapa."}</p>
+            `;
+          }
+          DOM.btnNextGame.textContent = 'Concluir Investigação ✨';
+          showToast("✗ Resposta incorreta! 0 XP contabilizados nesta etapa.", "error");
+        }
+        return;
+      } else {
+        // Já verificado: clicou em "Concluir Investigação ✨"
+        const storyId = story.id;
+        if (!STATE.currentUser.completedStories) STATE.currentUser.completedStories = [];
+        if (!STATE.currentUser.perfectStories) STATE.currentUser.perfectStories = [];
+        if (!STATE.currentUser.storyScores || typeof STATE.currentUser.storyScores !== 'object') {
+          STATE.currentUser.storyScores = {};
+        }
+
+        const isFirstTime = !STATE.currentUser.completedStories.includes(storyId);
+        const step2Earned = STATE.step2XP; // 0, 41 ou 71 XP
+        const step3Earned = STATE.step3XP; // 0 ou 36 XP
+        const step4Earned = STATE.step4XP; // 0 ou 36 XP
+        const storyEarnedXP = Math.min(143, step2Earned + step3Earned + step4Earned);
+        const isPerfectAttempt = (storyEarnedXP === 143);
+        const previousStoryXP = STATE.currentUser.storyScores[storyId] || 0;
+
+        if (isFirstTime) {
+          STATE.currentUser.completedStories.push(storyId);
+          STATE.currentUser.storyScores[storyId] = storyEarnedXP;
+          
+          if (isPerfectAttempt) {
             STATE.currentUser.perfectStories.push(storyId);
-            logXPEvent(`Conquista Perfeita (Repetição): ${story.title}`, 0, 'neutral', '🌟');
-            showToast(`🏆 Conquista Perfeita em ${story.title}! (Sem XP adicional em repetições)`);
+            addXP(storyEarnedXP, `Desempenho Impecável: ${story.title} (143 XP)`, '🏆');
+            showToast(`🏆 Desempenho Impecável em ${story.title}! Enigma: ${step2Earned} XP | Análise: ${step3Earned} XP | Vestibular: ${step4Earned} XP = +${storyEarnedXP} XP!`, 'success');
           } else {
-            logXPEvent(`Revisão de Conto: ${story.title}`, 0, 'neutral', '📖');
-            showToast(`📖 ${story.title} revisado (${storyEarnedXP} XP)! (Sem acréscimo em relação à sua melhor marca anterior de ${previousStoryXP} XP)`);
+            if (storyEarnedXP > 0) {
+              addXP(storyEarnedXP, `Conclusão do Conto: ${story.title} (${step2Earned} XP Enigma + ${step3Earned} XP Análise + ${step4Earned} XP Vestibular)`, '📜');
+              showToast(`📜 Conto Concluído! Enigma: ${step2Earned} XP | Análise: ${step3Earned} XP | Vestibular: ${step4Earned} XP = +${storyEarnedXP} XP obtidos!`, 'info');
+            } else {
+              logXPEvent(`Conclusão do Conto: ${story.title} (0 XP obtidos)`, 0, 'neutral', '📜');
+              showToast(`📜 Conto Concluído com 0 XP nesta tentativa. Continue firme nos próximos contos!`, 'warning');
+            }
+          }
+        } else {
+          // Replay / Revisão
+          if (storyEarnedXP > previousStoryXP) {
+            const diffXP = storyEarnedXP - previousStoryXP;
+            STATE.currentUser.storyScores[storyId] = storyEarnedXP;
+            if (isPerfectAttempt && !STATE.currentUser.perfectStories.includes(storyId)) {
+              STATE.currentUser.perfectStories.push(storyId);
+            }
+            addXP(diffXP, `Melhoria de Desempenho: ${story.title} (+${diffXP} XP)`, '⭐');
+            showToast(`⭐ Desempenho Superado em ${story.title}! Nova melhor marca: ${storyEarnedXP} XP. Diferença creditada: +${diffXP} XP!`, 'success');
+          } else {
+            if (isPerfectAttempt && !STATE.currentUser.perfectStories.includes(storyId)) {
+              STATE.currentUser.perfectStories.push(storyId);
+              logXPEvent(`Conquista Perfeita (Repetição): ${story.title}`, 0, 'neutral', '🌟');
+              showToast(`🏆 Conquista Perfeita em ${story.title}! (Sem XP adicional em repetições)`);
+            } else {
+              logXPEvent(`Revisão de Conto: ${story.title}`, 0, 'neutral', '📖');
+              showToast(`📖 ${story.title} revisado (${storyEarnedXP} XP nesta tentativa)! Sua melhor marca anterior era ${previousStoryXP} XP.`);
+            }
           }
         }
-      }
 
-      saveToStorage();
-      closeModal(DOM.modalGame);
-      onUserLoggedIn();
+        saveToStorage();
+        closeModal(DOM.modalGame);
+        onUserLoggedIn();
+      }
     }
   }
 
@@ -2430,20 +2615,25 @@
     const story = STORIES[STATE.currentStoryIndex];
     const activePuzzle = STATE.activeStoryChallenge ? STATE.activeStoryChallenge.puzzle : story.step2Puzzle;
     if (STATE.currentStep === 2 && activePuzzle && activePuzzle.hint) {
+      if (STATE.step2Verified) {
+        showToast("A sequência já foi verificada!", "info");
+        return;
+      }
       if (STATE.step2HintUsed) {
         showToast(`💡 DICA DO NARRADOR: ${activePuzzle.hint}`, "warning");
         return;
       }
       STATE.step2HintUsed = true;
       STATE.usedHintInCurrentStory = true;
-      // Perde 30 XP com piso mínimo de 21 XP
-      STATE.step2XP = Math.max(21, STATE.step2XP - 30);
+      // Diminui o XP da etapa caso acerte (71 - 30 = 41 XP)
+      STATE.step2XP = Math.max(0, STATE.step2XP - 30);
 
       const liveEl = document.getElementById('liveStep2XP');
-      if (liveEl) liveEl.innerHTML = `Etapa: <strong>${STATE.step2XP} XP</strong> (máx. 71)`;
+      if (liveEl) liveEl.innerHTML = `Etapa: <strong>${STATE.step2XP} XP</strong> se acertar (dica utilizada)`;
       DOM.btnHintGame.textContent = '💡 Dica Revelada (-30 XP)';
+      DOM.btnHintGame.disabled = true;
 
-      showToast(`💡 DICA: ${activePuzzle.hint} (-30 XP na etapa do Enigma! Saldo restante da etapa: ${STATE.step2XP} XP)`, "warning");
+      showToast(`💡 DICA: ${activePuzzle.hint} (-30 XP na etapa do Enigma se acertar! Valerá ${STATE.step2XP} XP)`, "warning");
     }
   }
 
@@ -2468,13 +2658,19 @@
       return;
     }
 
+    if (typeof STATE.currentUser.bossScore === 'number') {
+      showToast(`Você já concluiu o Simulado Final com ${STATE.currentUser.bossScore}/5 acertos! A nota oficial é contabilizada apenas 1 vez e não pode ser refeita para evitar farm de pontos.`, "warning");
+      return;
+    }
+
     STATE.isBossMode = true;
     STATE.bossQuestionIndex = 0;
     STATE.bossScore = 0;
+    STATE.lastBossCorrect = false;
 
     DOM.gameStoryNumber.textContent = "DESAFIO SUPREMO";
     DOM.gameStoryTitle.textContent = "Simulado Integrado de Vestibular";
-    DOM.gameStoryLocation.textContent = "📍 FUVEST, UNICAMP & ENEM";
+    DOM.gameStoryLocation.textContent = "📍 FUVEST, UNICAMP & ENEM • Tentativa Oficial Única";
 
     renderBossQuestion();
     openModal(DOM.modalGame);
@@ -2493,9 +2689,14 @@
       letter: letters[i]
     }));
 
+    const isRevision = typeof STATE.currentUser.bossScore === 'number';
+    const tagDisplay = isRevision 
+      ? `${q.examTag} — ${q.storyRef} • Treino (Oficial: ${STATE.currentUser.bossScore}/5)` 
+      : `${q.examTag} — ${q.storyRef}`;
+
     DOM.gameBody.innerHTML = `
       <div class="slide-container">
-        <span class="boss-badge">${q.examTag} — ${q.storyRef}</span>
+        <span class="boss-badge">${tagDisplay}</span>
         <p class="puzzle-instruction" style="white-space: pre-line; margin-top: 12px;">${q.question}</p>
 
         <div class="quiz-options" id="bossOptions">
@@ -2557,41 +2758,46 @@
       STATE.lastBossCorrect = false;
       renderBossQuestion();
     } else {
-      // Finish Boss
-      // Regra Pedagógica Fixada:
-      // O Simulado Final (Boss) vale 20 XP (+0,2) por questão (até 100 XP / 1,0 ponto no total).
-      // Funciona como COMPLEMENTO PEDAGÓGICO / RECUPERAÇÃO para quem perdeu pontos nos contos.
-      // Em nenhuma hipótese a pontuação total pode ultrapassar 1.000 XP (Nota 10,0).
+      // Conclusão do Simulado Final
+      // Regra Pedagógica Rigorosa:
+      // A nota e o XP do Simulado Final são contabilizados APENAS 1 VEZ (na 1ª tentativa oficial).
+      // Cada acerto vale 20 XP (+0,2 na nota) até o teto de 100 XP / 1,0 ponto.
+      // Tentativas posteriores funcionam estritamente como treino/revisão (0 XP adicional e sem alteração da nota oficial), impedindo farming.
       const prevXP = Number(STATE.currentUser.xp) || 0;
-      const prevBossScore = typeof STATE.currentUser.bossScore === 'number' ? STATE.currentUser.bossScore : 0;
+      const isFirstTime = (typeof STATE.currentUser.bossScore !== 'number');
+      const prevBossScore = isFirstTime ? 0 : STATE.currentUser.bossScore;
       const currentScore = STATE.bossScore;
       const xpPerQuestion = 20;
-      
-      let xpToAward = 0;
-      if (typeof STATE.currentUser.bossScore !== 'number') {
-        xpToAward = currentScore * xpPerQuestion;
-      } else if (currentScore > prevBossScore) {
-        xpToAward = (currentScore - prevBossScore) * xpPerQuestion;
-      }
 
-      if (xpToAward > 0) {
-        addXP(xpToAward, `Simulado Final (Complemento): ${currentScore}/5 acertos`, '🎓');
-      }
+      if (isFirstTime) {
+        // 1ª Tentativa Oficial
+        STATE.currentUser.bossScore = currentScore;
+        STATE.currentUser.bossPassed = currentScore >= 3;
+        const xpToAward = currentScore * xpPerQuestion;
 
-      STATE.currentUser.bossScore = Math.max(prevBossScore, currentScore);
-      STATE.currentUser.bossPassed = STATE.currentUser.bossScore >= 3;
+        if (xpToAward > 0) {
+          addXP(xpToAward, `Simulado Final: ${currentScore}/5 acertos`, '🎓');
+        } else {
+          logXPEvent(`Simulado Final: 0/5 acertos`, 0, 'neutral', '🎓');
+        }
 
-      const currentXP = Number(STATE.currentUser.xp) || 0;
-      const notaAtual = (currentXP / 100).toFixed(1);
+        const currentXP = Number(STATE.currentUser.xp) || 0;
+        const notaAtual = (currentXP / 100).toFixed(1);
 
-      if (prevXP >= 1000) {
-        showToast(`🎓 Simulado Concluído! Você acertou ${currentScore}/${BOSS_QUESTIONS.length} questões. Como sua nota já é 10,0 (1.000 XP), o complemento não é necessário!`, "success");
-      } else if (xpToAward > 0) {
-        const actualGain = currentXP - prevXP;
-        showToast(`🎓 Simulado Concluído! Você acertou ${currentScore}/${BOSS_QUESTIONS.length} questões (+${actualGain} XP de complemento pedagógico / Nota atual: ${notaAtual})!`, "success");
+        if (prevXP >= 1000) {
+          showToast(`🎓 Simulado Concluído! Você acertou ${currentScore}/${BOSS_QUESTIONS.length} questões. Como sua nota já é 10,0 (1.000 XP), o complemento não foi necessário!`, "success");
+        } else if (xpToAward > 0) {
+          const actualGain = currentXP - prevXP;
+          showToast(`🎓 Simulado Concluído! Você acertou ${currentScore}/${BOSS_QUESTIONS.length} questões (+${actualGain} XP oficiais / Nota atual: ${notaAtual})!`, "success");
+        } else {
+          showToast(`🎓 Simulado Concluído! Você acertou ${currentScore}/${BOSS_QUESTIONS.length} questões (Nota atual: ${notaAtual}).`, "info");
+        }
       } else {
-        showToast(`🎓 Simulado Concluído! Você acertou ${currentScore}/${BOSS_QUESTIONS.length} questões (Nota atual: ${notaAtual}).`, "info");
+        // Tentativa Repetida (Modo Treino / Anti-farming)
+        logXPEvent(`Revisão do Simulado Final: ${currentScore}/5 acertos`, 0, 'neutral', '🎓');
+        showToast(`📖 Simulado revisado (${currentScore}/${BOSS_QUESTIONS.length} acertos)! A pontuação é contabilizada apenas 1x e permanece a da 1ª tentativa (${prevBossScore}/5 acertos, sem acréscimo de XP).`, "info");
       }
+
       saveToStorage();
       closeModal(DOM.modalGame);
       onUserLoggedIn();
