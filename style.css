@@ -1283,16 +1283,20 @@ select.form-input {
 .game-footer {
   background: rgba(0, 0, 0, 0.5);
   border-top: 1px solid var(--border-gold);
-  padding: 10px 20px;
+  padding: 12px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-shrink: 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .game-footer-right {
   display: flex;
+  align-items: center;
   gap: 12px;
+  margin-left: auto; /* Alinha sempre os botões de ação à direita do quadro */
 }
 
 /* ==========================================================================

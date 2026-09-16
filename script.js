@@ -1632,6 +1632,22 @@
       }
     }
 
+    // Higienização contra farm de repetições em contos ("Melhoria de Desempenho")
+    if (Array.isArray(student.xpHistory) && student.xpHistory.length > 0) {
+      let excessStoryXP = 0;
+      student.xpHistory.forEach(entry => {
+        if (entry && entry.title && entry.title.includes('Melhoria de Desempenho') && Number(entry.amount) > 0) {
+          excessStoryXP += Number(entry.amount) || 0;
+          entry.amount = 0;
+          entry.type = 'neutral';
+          entry.title = entry.title.replace('Melhoria de Desempenho', 'Revisão de Conto (sem XP)');
+        }
+      });
+      if (excessStoryXP > 0) {
+        student.xp = Math.max(0, (Number(student.xp) || 0) - excessStoryXP);
+      }
+    }
+
     // Se completedStories estiver vazio mas houver contos declarados no objeto
     if (student.completedStories.length === 0 && typeof student.completedStoriesCount === 'number' && student.completedStoriesCount > 0) {
       const allIds = STORIES.map(s => s.id);
@@ -2046,9 +2062,21 @@
     STATE.step4XP = 36;
 
     const story = STORIES[index];
+    const isCompleted = STATE.currentUser.completedStories && STATE.currentUser.completedStories.includes(story.id);
+    STATE.isReviewMode = Boolean(isCompleted);
+
     DOM.gameStoryNumber.textContent = story.numberText;
     DOM.gameStoryTitle.textContent = story.title;
-    DOM.gameStoryLocation.textContent = story.location;
+
+    if (isCompleted) {
+      const recordedScore = (STATE.currentUser.storyScores && typeof STATE.currentUser.storyScores[story.id] === 'number')
+        ? STATE.currentUser.storyScores[story.id]
+        : 0;
+      DOM.gameStoryLocation.textContent = `📍 ${story.location} • Modo Treino / Revisão (Oficial: ${recordedScore} XP)`;
+      showToast(`📖 Modo Revisão: A nota deste conto já foi registrada oficialmente (${recordedScore} XP). Esta repetição serve apenas para treino e não concede XP.`, "info");
+    } else {
+      DOM.gameStoryLocation.textContent = story.location;
+    }
 
     // 1. Dynamic selection from Pools (Random variant for replayability)
     const puzzlePool = story.puzzlesPool && story.puzzlesPool.length ? story.puzzlesPool : [story.step2Puzzle];
@@ -2144,7 +2172,11 @@
       const activePuzzle = STATE.activeStoryChallenge ? STATE.activeStoryChallenge.puzzle : story.step2Puzzle;
 
       let badgeText = `Etapa: ${STATE.step2XP} XP (máx. 71)`;
-      if (STATE.step2Verified) {
+      if (STATE.isReviewMode) {
+        badgeText = STATE.step2Verified 
+          ? (STATE.step2Passed ? 'Revisão: Correta (0 XP)' : 'Revisão: Incorreta (0 XP)')
+          : 'Modo Revisão (0 XP)';
+      } else if (STATE.step2Verified) {
         badgeText = STATE.step2Passed ? `Etapa Concluída: +${STATE.step2XP} XP` : `Etapa Concluída: 0 XP`;
       } else if (STATE.step2HintUsed) {
         badgeText = `Etapa: ${STATE.step2XP} XP se acertar (dica usada)`;
@@ -2175,7 +2207,7 @@
           <div id="step2Feedback" class="feedback-box ${STATE.step2Verified ? (STATE.step2Passed ? 'feedback-correct' : 'feedback-incorrect') : 'hidden'}">
             ${STATE.step2Verified ? (
               STATE.step2Passed ? `
-                <div class="feedback-title">✓ Sequência Cronológica Decifrada! (+${STATE.step2XP} XP garantidos)</div>
+                <div class="feedback-title">✓ Sequência Cronológica Decifrada! ${STATE.isReviewMode ? '(Modo Revisão)' : `(+${STATE.step2XP} XP garantidos)`}</div>
                 <p>Excelente dedução! A linha temporal dos acontecimentos foi reconstituída com fidelidade à narrativa machadiana.</p>
               ` : `
                 <div class="feedback-title">✗ Sequência Incorreta (0 XP)!</div>
@@ -2195,9 +2227,13 @@
       const activeAnalysis = STATE.activeStoryChallenge ? STATE.activeStoryChallenge.analysis : story.step3Analysis;
       const optionsToRender = STATE.activeStep3Options || activeAnalysis.options;
 
-      let badgeText = 'Vale 36 XP';
+      let badgeText = STATE.isReviewMode ? 'Modo Revisão (0 XP)' : 'Vale 36 XP';
       if (STATE.step3Verified) {
-        badgeText = STATE.step3Passed ? '✓ +36 XP garantidos' : '✗ 0 XP (Incorreta)';
+        if (STATE.isReviewMode) {
+          badgeText = STATE.step3Passed ? 'Revisão: Correta (0 XP)' : 'Revisão: Incorreta (0 XP)';
+        } else {
+          badgeText = STATE.step3Passed ? '✓ +36 XP garantidos' : '✗ 0 XP (Incorreta)';
+        }
       }
 
       DOM.gameBody.innerHTML = `
@@ -2231,7 +2267,7 @@
           <div id="step3Feedback" class="feedback-box ${STATE.step3Verified ? (STATE.step3Passed ? 'feedback-correct' : 'feedback-incorrect') : 'hidden'}">
             ${STATE.step3Verified ? (
               STATE.step3Passed ? `
-                <div class="feedback-title">✓ Resposta Correta (+36 XP)!</div>
+                <div class="feedback-title">✓ Resposta Correta ${STATE.isReviewMode ? '(Modo Revisão)' : '(+36 XP)'}!</div>
                 <p>${activeAnalysis.feedbackCorrect || "Excelente interpretação das nuances e da crítica social machadiana!"}</p>
               ` : `
                 <div class="feedback-title">✗ Resposta Incorreta (0 XP)!</div>
@@ -2251,9 +2287,13 @@
       const activeVest = STATE.activeStoryChallenge ? STATE.activeStoryChallenge.vestibular : story.step4Vestibular;
       const optionsToRender = STATE.activeStep4Options || activeVest.options;
 
-      let badgeText = 'Vale 36 XP';
+      let badgeText = STATE.isReviewMode ? 'Modo Revisão (0 XP)' : 'Vale 36 XP';
       if (STATE.step4Verified) {
-        badgeText = STATE.step4Passed ? '✓ +36 XP garantidos' : '✗ 0 XP (Incorreta)';
+        if (STATE.isReviewMode) {
+          badgeText = STATE.step4Passed ? 'Revisão: Correta (0 XP)' : 'Revisão: Incorreta (0 XP)';
+        } else {
+          badgeText = STATE.step4Passed ? '✓ +36 XP garantidos' : '✗ 0 XP (Incorreta)';
+        }
       }
 
       DOM.gameBody.innerHTML = `
@@ -2287,7 +2327,7 @@
           <div id="step4Feedback" class="feedback-box ${STATE.step4Verified ? (STATE.step4Passed ? 'feedback-correct' : 'feedback-incorrect') : 'hidden'}">
             ${STATE.step4Verified ? (
               STATE.step4Passed ? `
-                <div class="feedback-title">✓ Resposta Correta (+36 XP)!</div>
+                <div class="feedback-title">✓ Resposta Correta ${STATE.isReviewMode ? '(Modo Revisão)' : '(+36 XP)'}!</div>
                 <p>${activeVest.explanation || "Gabarito oficial de vestibular compreendido com perfeição!"}</p>
               ` : `
                 <div class="feedback-title">✗ Resposta Incorreta (0 XP)!</div>
@@ -2403,7 +2443,7 @@
             `;
           }
           DOM.btnNextGame.textContent = 'Ir para Análise Oculta →';
-          showToast(`✓ Enigma resolvido! +${STATE.step2XP} XP garantidos nesta etapa!`, "success");
+          showToast(STATE.isReviewMode ? "✓ Enigma resolvido! (Modo Revisão - nota oficial mantida)" : `✓ Enigma resolvido! +${STATE.step2XP} XP garantidos nesta etapa!`, "success");
         } else {
           STATE.step2Passed = false;
           STATE.step2XP = 0; // Errou: 0 XP! Não pode fazer novamente para tentar acertar!
@@ -2420,7 +2460,7 @@
             `;
           }
           DOM.btnNextGame.textContent = 'Ir para Análise Oculta →';
-          showToast(`✗ Sequência incorreta! Você não pontuou nesta etapa (0 XP).`, "error");
+          showToast(STATE.isReviewMode ? "✗ Sequência incorreta! (Modo Revisão)" : "✗ Sequência incorreta! Você não pontuou nesta etapa (0 XP).", "error");
         }
         return;
       } else {
@@ -2460,12 +2500,12 @@
             feedbackBox.classList.remove('hidden', 'feedback-incorrect');
             feedbackBox.classList.add('feedback-correct');
             feedbackBox.innerHTML = `
-              <div class="feedback-title">✓ Resposta Correta (+36 XP)!</div>
+              <div class="feedback-title">✓ Resposta Correta ${STATE.isReviewMode ? '(Modo Revisão)' : '(+36 XP)'}!</div>
               <p>${activeAnalysis.feedbackCorrect || "Excelente interpretação crítica e literária!"}</p>
             `;
           }
           DOM.btnNextGame.textContent = 'Ir para Vestibular →';
-          showToast("✓ Resposta correta! +36 XP garantidos!", "success");
+          showToast(STATE.isReviewMode ? "✓ Resposta correta! (Modo Revisão - nota oficial mantida)" : "✓ Resposta correta! +36 XP garantidos!", "success");
         } else {
           STATE.step3Passed = false;
           STATE.step3XP = 0; // Errou: 0 XP! Não ganha nada
@@ -2479,7 +2519,7 @@
             `;
           }
           DOM.btnNextGame.textContent = 'Ir para Vestibular →';
-          showToast("✗ Resposta incorreta! 0 XP contabilizados nesta etapa.", "error");
+          showToast(STATE.isReviewMode ? "✗ Resposta incorreta! (Modo Revisão)" : "✗ Resposta incorreta! 0 XP contabilizados nesta etapa.", "error");
         }
         return;
       } else {
@@ -2519,12 +2559,12 @@
             feedbackBox.classList.remove('hidden', 'feedback-incorrect');
             feedbackBox.classList.add('feedback-correct');
             feedbackBox.innerHTML = `
-              <div class="feedback-title">✓ Resposta Correta (+36 XP)!</div>
+              <div class="feedback-title">✓ Resposta Correta ${STATE.isReviewMode ? '(Modo Revisão)' : '(+36 XP)'}!</div>
               <p>${activeVest.explanation || "Gabarito padrão vestibular preciso!"}</p>
             `;
           }
           DOM.btnNextGame.textContent = 'Concluir Investigação ✨';
-          showToast("✓ Resposta correta! +36 XP garantidos!", "success");
+          showToast(STATE.isReviewMode ? "✓ Resposta correta! (Modo Revisão - nota oficial mantida)" : "✓ Resposta correta! +36 XP garantidos!", "success");
         } else {
           STATE.step4Passed = false;
           STATE.step4XP = 0; // Errou: 0 XP! Não ganha nada
@@ -2538,7 +2578,7 @@
             `;
           }
           DOM.btnNextGame.textContent = 'Concluir Investigação ✨';
-          showToast("✗ Resposta incorreta! 0 XP contabilizados nesta etapa.", "error");
+          showToast(STATE.isReviewMode ? "✗ Resposta incorreta! (Modo Revisão)" : "✗ Resposta incorreta! 0 XP contabilizados nesta etapa.", "error");
         }
         return;
       } else {
@@ -2556,7 +2596,9 @@
         const step4Earned = STATE.step4XP; // 0 ou 36 XP
         const storyEarnedXP = Math.min(143, step2Earned + step3Earned + step4Earned);
         const isPerfectAttempt = (storyEarnedXP === 143);
-        const previousStoryXP = STATE.currentUser.storyScores[storyId] || 0;
+        const previousStoryXP = (typeof STATE.currentUser.storyScores[storyId] === 'number')
+          ? STATE.currentUser.storyScores[storyId]
+          : 0;
 
         if (isFirstTime) {
           STATE.currentUser.completedStories.push(storyId);
@@ -2576,25 +2618,10 @@
             }
           }
         } else {
-          // Replay / Revisão
-          if (storyEarnedXP > previousStoryXP) {
-            const diffXP = storyEarnedXP - previousStoryXP;
-            STATE.currentUser.storyScores[storyId] = storyEarnedXP;
-            if (isPerfectAttempt && !STATE.currentUser.perfectStories.includes(storyId)) {
-              STATE.currentUser.perfectStories.push(storyId);
-            }
-            addXP(diffXP, `Melhoria de Desempenho: ${story.title} (+${diffXP} XP)`, '⭐');
-            showToast(`⭐ Desempenho Superado em ${story.title}! Nova melhor marca: ${storyEarnedXP} XP. Diferença creditada: +${diffXP} XP!`, 'success');
-          } else {
-            if (isPerfectAttempt && !STATE.currentUser.perfectStories.includes(storyId)) {
-              STATE.currentUser.perfectStories.push(storyId);
-              logXPEvent(`Conquista Perfeita (Repetição): ${story.title}`, 0, 'neutral', '🌟');
-              showToast(`🏆 Conquista Perfeita em ${story.title}! (Sem XP adicional em repetições)`);
-            } else {
-              logXPEvent(`Revisão de Conto: ${story.title}`, 0, 'neutral', '📖');
-              showToast(`📖 ${story.title} revisado (${storyEarnedXP} XP nesta tentativa)! Sua melhor marca anterior era ${previousStoryXP} XP.`);
-            }
-          }
+          // Replay / Revisão de Conto já concluído anteriormente:
+          // REGRA RIGOROSA: Ao refazer, NENHUM XP adicional é concedido, e a nota oficial anterior permanece inalterada.
+          logXPEvent(`Revisão de Conto: ${story.title}`, 0, 'neutral', '📖');
+          showToast(`📖 Revisão de ${story.title} concluída! A pontuação oficial de ${previousStoryXP} XP foi mantida (repetições não alteram nota ou XP).`, 'info');
         }
 
         saveToStorage();
@@ -3298,6 +3325,7 @@
     // Modal Close buttons
     DOM.btnCloseGame.addEventListener('click', () => {
       STATE.currentStep = 1;
+      STATE.isReviewMode = false;
       STATE.step3Passed = false;
       STATE.step4Passed = false;
       closeModal(DOM.modalGame);
